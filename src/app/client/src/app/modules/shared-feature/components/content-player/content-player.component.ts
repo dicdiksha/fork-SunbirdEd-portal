@@ -13,6 +13,8 @@ import { takeUntil, mergeMap } from 'rxjs/operators';
 import { Subject, of, throwError } from 'rxjs';
 import { PublicPlayerService, ComponentCanDeactivate } from '@sunbird/public';
 import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { WebviewComponent } from '../../webview/webview.component';
 
 @Component({
   selector: 'app-content-player',
@@ -47,7 +49,8 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   groupId: string;
   isQuestionSet = false;
   isDesktopApp = false;
-
+  modalRef: BsModalRef;
+  
   @HostListener('window:beforeunload')
     canDeactivate() {
       // returning true will navigate without confirmation
@@ -63,7 +66,9 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
     public copyContentService: CopyContentService, public permissionService: PermissionService,
     public contentUtilsServiceService: ContentUtilsServiceService, public popupControlService: PopupControlService,
     private configService: ConfigService,
-    public layoutService: LayoutService, public telemetryService: TelemetryService) {
+    public layoutService: LayoutService, public telemetryService: TelemetryService,
+    public modalService: BsModalService
+    ) {
     this.playerOption = {
       showContentRating: true
     };
@@ -97,6 +102,17 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
       pipe(takeUntil(this.unsubscribe)).subscribe(isFullScreen => {
         this.isFullScreenView = isFullScreen;
       });
+  }
+
+  openWebview() {
+    // let siteUrl = 'https://fr.giveawayoftheday.com'; //https://collabgeo.nic.in/collabGeo
+    let siteUrl = 'https://collabgeo.nic.in/collabGeo';
+    localStorage.setItem('siteUrl',siteUrl);
+
+    this.modalRef = this.modalService.show(WebviewComponent)
+    this.modalRef.setClass('modal-webview');
+    // this.modalRef.content.portalUrl = siteUrl;
+
   }
 
   initLayout() {

@@ -18,6 +18,8 @@ import { PublicPlayerService } from '@sunbird/public';
 import { TocCardType, PlatformType } from '@project-sunbird/common-consumption';
 import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
 import { ContentManagerService } from '../../../public/module/offline/services';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { WebviewComponent } from '../../webview/webview.component';
 
 @Component({
   selector: 'app-collection-player',
@@ -103,6 +105,7 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy, AfterViewIn
   disableDelete: Boolean = false;
   isAvailableLocally = false;
   noContentMessage = '';
+  modalRef: BsModalRef;
 
   constructor(public route: ActivatedRoute, public playerService: PlayerService,
     private windowScrollService: WindowScrollService, public router: Router, public navigationHelperService: NavigationHelperService,
@@ -115,7 +118,9 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy, AfterViewIn
     public publicPlayerService: PublicPlayerService, public coursesService: CoursesService,
     private utilService: UtilService, public contentManagerService: ContentManagerService,
     public connectionService: ConnectionService, private telemetryService: TelemetryService,
-    private offlineCardService: OfflineCardService) {
+    private offlineCardService: OfflineCardService,
+    public modalService: BsModalService
+    ) {
     this.router.onSameUrlNavigation = 'ignore';
     this.collectionTreeOptions = this.configService.appConfig.collectionTreeOptions;
     this.playerOption = { showContentRating: true };
@@ -147,6 +152,17 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy, AfterViewIn
         this.isConnected = isConnected;
       });
     }
+  }
+
+  openWebview() {
+    // let siteUrl = 'https://fr.giveawayoftheday.com'; //https://collabgeo.nic.in/collabGeo
+    let siteUrl = 'https://collabgeo.nic.in/collabGeo';
+    localStorage.setItem('siteUrl',siteUrl);
+
+    this.modalRef = this.modalService.show(WebviewComponent)
+    this.modalRef.setClass('modal-webview');
+    // this.modalRef.content.portalUrl = siteUrl;
+
   }
 
   initLayout() {

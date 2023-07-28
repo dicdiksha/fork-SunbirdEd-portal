@@ -3,7 +3,7 @@
 <!--CC-Player Content Header -->
   <div [ngClass]="layoutConfiguration ? 'sb-back-actionbar' : 'sb-bg-white cc-player__btn-back'" class="relative position mt-0" [ngClass]="{'header-block': isFullScreenView}">
     <div class="ui container py-0 px-0 d-flex flex-ai-center">
-      <div class="w-100 d-flex flex-ai-center flex-w-wrap flex-jc-space-between" *ngIf="contentData">
+      <div class="w-100 d-flex flex-ai-center flex-jc-space-between" *ngIf="contentData">
         <div class="d-flex flex-ai-center">
           <button type="button" (click)="goBack()" [ngClass]="layoutConfiguration ? 'sb-btn-primary sb-btn-round' : 'sb-btn-link sb-btn-link-primary sb-left-icon-btn px-0'" class="sb-btn sb-btn-normal"
           tabindex="0" attr.aria-label="{{resourceService?.frmelmnts?.btn?.back}}">
@@ -23,7 +23,18 @@
           </div>
         </div>
       </div>
-        <div class="d-flex flex-ai-end flex-w-wrap content-header__buttons ml-auto">
+        <div class="d-flex flex-ai-end content-header__buttons ml-auto">
+
+          <a *ngIf="contentData?.subject == 'Mathematics' && (
+          contentData?.gradeLevel.includes('Class 5') ||
+          contentData?.gradeLevel.includes('Class 6') || 
+          contentData?.gradeLevel.includes('Class 7') || 
+          contentData?.gradeLevel.includes('Class 8') ||
+          contentData?.gradeLevel.includes('Class 9'))
+          " (click)="openWebview()" tabindex="0" class="sb-btn sb-btn-normal sb-btn-outline-primary mr-8">
+            Use Geometry Tool
+          </a>
+          
           <a href="javascript:void(0)" tabindex="0" (click)="onShareLink();sharelinkModal=true;" class="sb-btn sb-btn-normal sb-btn-outline-primary mr-8">
               <i class="blue share alternate icon"></i>
               {{resourceService?.frmelmnts?.lbl?.share}}
