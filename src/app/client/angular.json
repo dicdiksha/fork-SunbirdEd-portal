@@ -248,8 +248,7 @@
               "browserTarget": "src:build:production"
             },
             "staging": {
-              "host": "abc.dikshalocal.in",
-              "port": 3000
+              "browserTarget": "src:build:staging"
             }
           }
         },

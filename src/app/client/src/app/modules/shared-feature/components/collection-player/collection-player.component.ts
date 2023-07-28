@@ -155,13 +155,11 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   openWebview() {
-    // let siteUrl = 'https://fr.giveawayoftheday.com'; //https://collabgeo.nic.in/collabGeo
     let siteUrl = 'https://collabgeo.nic.in/collabGeo';
     localStorage.setItem('siteUrl',siteUrl);
 
     this.modalRef = this.modalService.show(WebviewComponent)
     this.modalRef.setClass('modal-webview');
-    // this.modalRef.content.portalUrl = siteUrl;
 
   }
 
