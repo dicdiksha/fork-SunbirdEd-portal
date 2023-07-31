@@ -19,7 +19,7 @@ import { TocCardType, PlatformType } from '@project-sunbird/common-consumption';
 import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
 import { ContentManagerService } from '../../../public/module/offline/services';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { WebviewComponent } from '../../webview/webview.component';
+import { ContentModalComponent } from '../../content-modal/content-modal.component';
 
 @Component({
   selector: 'app-collection-player',
@@ -158,7 +158,7 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy, AfterViewIn
     let siteUrl = 'https://collabgeo.nic.in/collabGeo';
     localStorage.setItem('siteUrl',siteUrl);
 
-    this.modalRef = this.modalService.show(WebviewComponent)
+    this.modalRef = this.modalService.show(ContentModalComponent)
     this.modalRef.setClass('modal-webview');
 
   }

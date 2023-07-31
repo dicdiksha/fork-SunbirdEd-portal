@@ -3,11 +3,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
-  selector: 'app-webview',
-  templateUrl: './webview.component.html',
-  styleUrls: ['./webview.component.scss']
+  selector: 'app-content-modal',
+  templateUrl: './content-modal.component.html',
+  styleUrls: ['./content-modal.component.scss']
 })
-export class WebviewComponent implements OnInit {
+export class ContentModalComponent implements OnInit {
   
   // @Input() portalUrl: any;
   sanatizedUrl: any;

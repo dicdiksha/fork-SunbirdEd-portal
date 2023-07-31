@@ -1,4 +1,8 @@
 node_modules
+src/app/node_modules
+src/app/client/node_modules
+src/app/libs/sb_telemetry_util/node_modules
+src/app/helpers/environmentVariablesHelper.js
 dist-cdn
 app_dist
 metadata.json

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WebviewComponent } from './webview.component';
+import { ContentModalComponent } from './content-modal.component';
 
-describe('WebviewComponent', () => {
-  let component: WebviewComponent;
-  let fixture: ComponentFixture<WebviewComponent>;
+describe('ContentModalComponent', () => {
+  let component: ContentModalComponent;
+  let fixture: ComponentFixture<ContentModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WebviewComponent ]
+      declarations: [ ContentModalComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WebviewComponent);
+    fixture = TestBed.createComponent(ContentModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

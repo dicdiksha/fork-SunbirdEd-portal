@@ -14,7 +14,7 @@ import { Subject, of, throwError } from 'rxjs';
 import { PublicPlayerService, ComponentCanDeactivate } from '@sunbird/public';
 import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { WebviewComponent } from '../../webview/webview.component';
+import { ContentModalComponent } from '../../content-modal/content-modal.component';
 
 @Component({
   selector: 'app-content-player',
@@ -108,7 +108,7 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
     let siteUrl = 'https://collabgeo.nic.in/collabGeo';
     localStorage.setItem('siteUrl',siteUrl);
 
-    this.modalRef = this.modalService.show(WebviewComponent)
+    this.modalRef = this.modalService.show(ContentModalComponent)
     this.modalRef.setClass('modal-webview');
 
   }
