@@ -1,32 +1,36 @@
-import { SlickModule } from 'ngx-slick';
-import { ExploreNewRoutingModule } from './explore-new-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExploreContentComponent, ExploreCurriculumCoursesComponent} from './components';
 import { TelemetryModule } from '@sunbird/telemetry';
 import { CoreModule } from '@sunbird/core';
 import { SharedModule } from '@sunbird/shared';
 import { NgInviewModule } from 'angular-inport';
-import {SharedFeatureModule} from '@sunbird/shared-feature';
-import { SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule, SuiProgressModule,
-  SuiRatingModule, SuiCollapseModule, SuiDimmerModule } from 'ng2-semantic-ui-v9';
+import { ExplorePageNewRoutingModule } from './explore-page-new-routing.module';
+import { SharedFeatureModule } from '@sunbird/shared-feature';
+import {
+  SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule, SuiProgressModule,
+  SuiRatingModule, SuiCollapseModule, SuiDimmerModule
+} from 'ng2-semantic-ui-v9';
 import { WebExtensionModule } from '@project-sunbird/web-extensions';
 import { CommonConsumptionModule } from '@project-sunbird/common-consumption';
 import { ContentSearchModule } from '@sunbird/content-search';
+import { SlickModule } from 'ngx-slick';
+import { ExplorePageComponent } from './components';
+import { ContentSectionModule } from 'content-section-v11';
+import {ObservationModule} from '../observation/observation.module';
 
 @NgModule({
+  declarations: [ExplorePageComponent],
   imports: [
+    ExplorePageNewRoutingModule,
     CommonModule,
     TelemetryModule,
     CoreModule,
     SharedModule,
     NgInviewModule,
-    ExploreNewRoutingModule,
     SharedFeatureModule,
     SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule, SuiProgressModule,
     SuiRatingModule, SuiCollapseModule, SuiDimmerModule, WebExtensionModule,
-    CommonConsumptionModule, ContentSearchModule, SlickModule
-  ],
-  declarations: [ ExploreContentComponent, ExploreCurriculumCoursesComponent]
+    CommonConsumptionModule, ContentSearchModule, SlickModule, ContentSectionModule, ObservationModule
+  ]
 })
-export class ExploreNewModule { }
+export class ExplorePageNewModule { }

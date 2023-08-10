@@ -4,15 +4,15 @@ import { ExploreContentComponent, ExploreCurriculumCoursesComponent } from './co
 import { ViewAllComponent } from '@sunbird/content-search';
 const routes: Routes = [
   {
-    path: '', loadChildren: () => import('../../../explore-page/explore-page.module').then(m => m.ExplorePageModule)
+    path: '', loadChildren: () => import('../../../explore-page-new/explore-page-new.module').then(m => m.ExplorePageNewModule)
   },
   {
     path: 'view-all/:section/:pageNumber', component: ViewAllComponent,
     data: {
       telemetry: {
-        env: 'explore', pageid: 'view-all', type: 'view', subtype: 'paginate'
+        env: 'explore-new', pageid: 'view-all', type: 'view', subtype: 'paginate'
       },
-      filterType: 'explore',
+      filterType: 'explore-new',
       softConstraints: { badgeAssertions: 98, board: 99, channel: 100 },
       applyMode: true
     }
@@ -20,7 +20,7 @@ const routes: Routes = [
   {
     path: ':pageNumber', component: ExploreContentComponent, data: {
       telemetry: {
-        env: 'explore', pageid: 'explore-search', type: 'view', subtype: 'paginate'
+        env: 'explore-new', pageid: 'explore-search', type: 'view', subtype: 'paginate'
       },
       softConstraints: { badgeAssertions: 98, channel: 100 }
     }

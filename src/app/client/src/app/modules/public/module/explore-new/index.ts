@@ -1,2 +1,2 @@
 export * from './components';
-export * from './explore-new.module';
+export * from './explore.module';
