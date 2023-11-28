@@ -212,6 +212,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.setUserPreferences();
         this.subscription$ = this.activatedRoute.queryParams.subscribe(queryParams => {
         this.selectedTab = queryParams.selectedTab;
+        console.log(this.selectedTab);
         this.showTargetedCategory = false;
         this.getFormConfigs();
         });
@@ -452,6 +453,8 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (!this.isUserLoggedIn() && get(this.selectedFilters, 'channel') && get(this.selectedFilters, 'channel.length') > 0) {
                         request.channelId = this.selectedFilters['channel'];
                     }
+                     request.fields.push("me_averageRating", "me_totalPlaySessionCount", "me_totalRatingsCount");
+
                     const option = this.searchService.getSearchRequest(request, get(filters, 'primaryCategory'));
                         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
                         _.filter(Object.keys(params),filterValue => { 
@@ -467,13 +470,17 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (this.userService.loggedIn) {
                         option.filters['visibility'] = option.filters['channel'] = [];
                     }
+                    // option.fields.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingCount");
+                    // option.fecet.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingCount");
                     return this.searchService.contentSearch(option)
                         .pipe(
                             map((response) => {
+                                console.log("-------- responce " , response);
                                 const { subject: selectedSubjects = [] } = (this.selectedFilters || {}) as { subject: [] };
                                 this._facets$.next(request.facets ?
                                     this.utilService.processCourseFacetData(_.get(response, 'result'), _.get(request, 'facets')) : {});
                                 this.searchResponse = get(response, 'result.content');
+                               
                                 if (_.has(response, 'result.QuestionSet')) {
                                  this.searchResponse = _.merge(this.searchResponse, _.get(response, 'result.QuestionSet'));
                                 }
@@ -574,6 +581,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     return find(userProfileSubjects, subject => toLower(subject) === toLower(name));
                                 });
                                 this.apiContentList = [...userSubjects, ...notUserSubjects];
+                                console.log("-----------api content list data" , this.apiContentList);
                                 if (this.apiContentList !== undefined && !this.apiContentList.length) {
                                     return;
                                 }
