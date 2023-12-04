@@ -121,6 +121,10 @@
         </div>
 
         <div class="certified-course__btn py-8" *ngIf="enrolledCourse && progress===0 && !viewDashboard">
+          <button class="sb-btn sb-btn-secondary sb-btn-normal ml-auto textbook__addbtn" tabindex="0"
+          (click)="redirectToDeetya();">Launch Course</button>
+        </div>
+        <div class="certified-course__btn py-8" *ngIf="enrolledCourse && progress===0 && !viewDashboard">
           <button class="sb-btn sb-btn-secondary sb-btn-normal ml-auto textbook__addbtn" [disabled]="showResumeCourse"
             tabindex="0"
             (click)="resumeCourse(true); this.logTelemetry('course-start', courseHierarchy)">{{resourceService?.frmelmnts?.lbl?.startLearning}}</button>
