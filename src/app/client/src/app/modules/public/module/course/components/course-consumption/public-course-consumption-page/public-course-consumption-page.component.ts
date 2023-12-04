@@ -300,4 +300,8 @@ export class PublicCourseConsumptionPageComponent implements OnInit, OnDestroy {
     this.unsubscribe.next();
     this.unsubscribe.complete();
   }
+
+  redirectToDeetya(){
+    window.open("https://university.deetya.org/deetya/deekashuser.php?firstname=Deeksha&lastname=Teacher&email=deeksha.t@ncert.in","_blank");
+  }
 }
