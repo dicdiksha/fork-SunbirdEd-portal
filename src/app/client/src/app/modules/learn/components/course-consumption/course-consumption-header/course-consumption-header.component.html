@@ -93,7 +93,7 @@
           {{resourceService?.frmelmnts?.lbl?.AddtoGroup}}</button>
       </div>
 
-      <div *ngIf="isDesktopApp && enrolledCourse && !viewDashboard" class="d-flex py-8">
+      <div *ngIf="isDesktopApp && enrolledCourse && !viewDashboard" class="a py-8">
         <button type="button" class="sb-btn sb-btn-outline-primary sb-btn-normal mr-8"
           *ngIf="isConnected && (checkStatus('DOWNLOADED')) && showUpdate" tabindex="0"
           (click)="updateCollection(courseHierarchy)">{{resourceService?.frmelmnts?.btn?.update}}</button>
@@ -120,14 +120,16 @@
             (click)="showJoinModal(true); this.logTelemetry(courseHierarchy?.primaryCategory.toLowerCase() === 'course' ? 'join-course' : 'join', courseHierarchy)">{{resourceService?.frmelmnts?.btn?.enroll}}</button>
         </div>
 
-        <div class="certified-course__btn py-8" *ngIf="enrolledCourse && progress===0 && !viewDashboard">
-          <button class="sb-btn sb-btn-secondary sb-btn-normal ml-auto textbook__addbtn" tabindex="0"
-          (click)="redirectToDeetya();">Launch Course</button>
-        </div>
-        <div class="certified-course__btn py-8" *ngIf="enrolledCourse && progress===0 && !viewDashboard">
-          <button class="sb-btn sb-btn-secondary sb-btn-normal ml-auto textbook__addbtn" [disabled]="showResumeCourse"
-            tabindex="0"
-            (click)="resumeCourse(true); this.logTelemetry('course-start', courseHierarchy)">{{resourceService?.frmelmnts?.lbl?.startLearning}}</button>
+        <div class="d-flex">
+          <div class="certified-course__btn py-8 mx-8" *ngIf="enrolledCourse && progress<100 && !viewDashboard">
+            <button class="sb-btn sb-btn-secondary sb-btn-normal ml-auto textbook__addbtn" tabindex="0"
+            (click)="redirectToDeetya();">Launch Course</button>
+          </div>
+          <div class="certified-course__btn py-8" *ngIf="enrolledCourse && progress===0 && !viewDashboard">
+            <button class="sb-btn sb-btn-secondary sb-btn-normal ml-auto textbook__addbtn" [disabled]="showResumeCourse"
+              tabindex="0"
+              (click)="resumeCourse(true); this.logTelemetry('course-start', courseHierarchy)">{{resourceService?.frmelmnts?.lbl?.startLearning}}</button>
+          </div>
         </div>
 
         <!-- <div class="certified-course__btn py-8" *ngIf="enrolledCourse && progress>0 && progress<100 && !viewDashboard">
