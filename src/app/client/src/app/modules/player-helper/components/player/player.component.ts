@@ -68,7 +68,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   contentId: string;
   collectionId:string;
 
-  currentPage: any;
+  currentPage: any=1;
   totalPage: any;
   currentPageType: any
 
@@ -377,7 +377,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   }
 
   eventHandler(event) {
-    this.currentPage = event.edata.currentPage;
+    this.currentPage = event.edata.currentPage ?? 1;
     this.totalPage = event.edata.totalPages;
     this.currentPageType = event.edata.type;
 
@@ -427,7 +427,9 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     const contentId = _.get(eventCopy, 'detail.telemetryData.object.id');
     // this.contentId = contentId;
     if (eid && (eid === 'START' || eid === 'END') && contentId === _.get(this.playerConfig, 'metadata.identifier')) {
-      this.showRatingPopup(eventCopy);
+      setTimeout(() => {
+        this.showRatingPopup(eventCopy);
+      }, 1400);
       if (this.contentProgressEvents$) {
         this.contentProgressEvents$.next(eventCopy);
       }
@@ -461,12 +463,14 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
       contentProgress = CsContentProgressCalculator.calculate(playerSummary, contentMimeType);
     }
 
-    if (event.detail.telemetryData.eid === 'END' && contentProgress === 100 && this.currentPageType === "END" && this.currentPage === this.totalPage) {
-        this.contentRatingModal = !this.isFullScreenView;
+    if (event.detail.telemetryData.eid === 'END' && contentProgress === 100 && this.currentPageType === "END") {
+      if(this.currentPage  && this.currentPage === this.totalPage){  
+      this.contentRatingModal = !this.isFullScreenView;
         this.showRatingModalAfterClose = true;
         if (this.modal) {
           this.modal.showContentRatingModal = true;
         }
+      }
     }
     
 
