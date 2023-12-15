@@ -69,8 +69,8 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   collectionId:string;
 
   currentPage: any=1;
-  totalPage: any;
-  currentPageType: any
+  totalPage: any=1;
+  currentPageType: any;
 
   /**
  * Dom element reference of contentRatingModal
@@ -377,9 +377,9 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   }
 
   eventHandler(event) {
-    this.currentPage = event.edata.currentPage ?? 1;
-    this.totalPage = event.edata.totalPages;
-    this.currentPageType = event.edata.type;
+    this.currentPage = event?.edata?.currentPage ?? 1;
+    this.totalPage = event?.edata?.totalPages ?? 1;
+    this.currentPageType = event?.edata?.type ?? 'START';
 
     if (event.eid === 'END') {
       const metaDataconfig = event.metaData;
