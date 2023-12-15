@@ -14770,11 +14770,18 @@ ion-popover-view.fit ion-content {
     transform: translate(-50%, -50%);
 }
 
-.gc-menu-btn {
+/* .gc-menu-btn {
     float: right;
     width: 20%;
     margin-top: 6%;
     margin-right: -24%;
+} */
+
+.gc-menu-btn {
+    float: right;
+    width: 15%;
+    margin-top: 1%;
+    margin-right: -38%;
 }
 
 .gc-menu a.gc-menu-btn {
@@ -14890,9 +14897,14 @@ ion-popover-view.fit ion-content {
     margin-top: 40%;
 }
 
-.gc-menu-btn.old_menu img.icon {
+/* .gc-menu-btn.old_menu img.icon {
     margin-top: 0;
     width: 20%;
+} */
+
+.gc-menu-btn.old_menu img.icon {
+    margin-top: 0;
+    width: 10%;
 }
 
 .gc-menu-btn img.icon.nav-top {
