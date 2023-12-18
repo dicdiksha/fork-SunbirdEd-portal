@@ -30,8 +30,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     Publisher: _.get(this.resourceService, 'frmelmnts.lbl.publisher'), Board: _.get(this.resourceService, 'frmelmnts.lbl.boards')
   };
   public boards: any[] = [];
-  public ratings: any[] = [{name: '1'},{name: '2'},{name: '3'},{name: '4'},{name: '5'}];
-   
   filterChangeEvent = new Subject();
   @Input() isOpen;
   @Input() defaultFilters = {};
@@ -91,13 +89,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       labelText: _.get(this.resourceService, 'frmelmnts.lbl.publishedUserType'),
       placeholderText: 'Select User Type',
       multiple: true
-    },
-    {
-      category: 'me_averageRating',
-      type: 'dropdown',
-      labelText:'Ratings',// _.get(this.resourceService, 'frmelmnts.lbl.publishedUserType'),
-      placeholderText: 'Select Rating',
-      multiple: true
     }
   ]));
 
@@ -108,9 +99,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     private cacheService: CacheService, private utilService: UtilService) { }
 
   get filterData() {
-    if (!_.includes(_.get(this.pageData, 'metaData.filters'), "me_averageRating")) {
-      _.get(this.pageData, 'metaData.filters').push("me_averageRating");
-    }
     return _.get(this.pageData, 'metaData.filters') || ['medium', 'gradeLevel', 'board', 'channel', 'subject', 'audience', 'publisher', 'se_subjects', 'se_boards', 'se_gradeLevels', 'se_mediums'];
   }
   public getChannelId(index) {
@@ -169,11 +157,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         console.error('Error while fetching filters');
       });
 
-      const meAverageRatingQueryParam = _.get(this.activatedRoute.snapshot.queryParams, 'me_averageRating');
-      const meAverageRatingDefault = _.get(this.defaultFilters, 'me_averageRating', []);
-      const meAverageRatingSelected = meAverageRatingQueryParam || meAverageRatingDefault;
-      this.selectedFilters['me_averageRating'] = [...meAverageRatingSelected.map(rating => this.ratings.indexOf({ name: rating }) + 1)];
-  
     if (!_.get(this.activatedRoute, 'snapshot.queryParams["board"]')) {
       const queryParams = { ...this.defaultFilters, selectedTab: _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook' };
       this.router.navigate([], { queryParams, relativeTo: this.activatedRoute });
@@ -206,14 +189,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       );
   }
   private handleFilterChange() {
-      return this.filterChangeEvent.pipe(
+    return this.filterChangeEvent
+      .pipe(
         debounceTime(1000),
         tap(({ type, event }) => {
-          console.log('Filter type:', type);
-          console.log('Event:', event);
-          if (type === 'me_averageRating') {
-            this.selectedFilters['me_averageRating'] = event.map(rating => this.ratings.indexOf(rating) + 1);
-          }
           if (_.has(event, 'data.index')) {
             const index = _.get(event, 'data.index');
             const selectedIndices = _.get(this.selectedFilters, type) || [];
@@ -272,10 +251,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     } else {
       this.selectedFilters[type] = updatedValues;
     }
-    console.log('this.selectedFilters',this.selectedFilters)
   }
   private getIndicesFromDefaultFilters({ type }) {
-    console.log('12.', this.selectedFilters)
     const defaultValues = _.get(this.defaultFilters, type) || [];
     let indices = [];
     if (_.get(defaultValues, 'length')) {
@@ -287,15 +264,11 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     }
     return indices.length ? indices : [];
   }
-  
   private updateFiltersList({ filters }: { filters: Record<string, any[]> }) {
-    console.log('13.', this.selectedFilters,filters)
     this.selectedFilters = {};
     this.selectedNgModels = {};
     this.allValues = {};
-    this.allValues['me_averageRating'] = this.ratings;
     _.forEach(filters, (filterValues: { name: any }[], filterKey: string) => {
-      console.log('filterKey',filterKey)
       if (filterKey === 'board') {
         const boardName = filterValues.find((board) => board.name === 'CBSE');
         boardName && (boardName.name = 'CBSE/NCERT');
@@ -318,10 +291,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         }
       }
     });
-   // this.selectedFilters['me_averageRating'] = this.getIndicesFromDefaultFilters({ type: 'me_averageRating' });
   }
   private updateRoute(resetFilters?: boolean) {
-    console.log('14.', this.selectedFilters)
     const selectedTab = _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook';
     this.router.navigate([], {
       queryParams: resetFilters ? { ...this.defaultFilters, selectedTab } : _.omit(this.getSelectedFilter() || {}, ['audienceSearchFilterValue']),
@@ -335,7 +306,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.boardChange$.next(_.get(data, 'selectedOption'));
   }
   private getSelectedFilter() {
-    console.log('15.', this.selectedFilters)
     const filters = _.mapValues(this.selectedFilters, (value, key) => {
       return _.compact(_.map(value, index => _.has(this.allValues, [key, index]) ? this.allValues[key][index] : null));
     });
@@ -351,12 +321,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         return audience ? _.get(audience, 'searchFilter') : null;
       })));
     }
-    if (_.has(this.selectedFilters, 'me_averageRating')) {
-      filters['me_averageRating'] = this.selectedNgModels['me_averageRating'] || [];
-    }
     filters['board'] = _.get(this.selectedBoard, 'selectedOption') ? [this.selectedBoard.selectedOption] : [];
     filters['selectedTab'] = _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook';
-    //console.log('3. filters',filters)
     return filters;
   }
   private emitFilterChangeEvent(skipUrlUpdate = false) {
@@ -367,7 +333,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     }
   }
   public getInteractEdata() {
-    console.log('16.', this.selectedFilters)
     return {
       id: 'reset-filter',
       type: 'click',
@@ -417,8 +382,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   private getFacets() {
     return this.facets$.pipe(tap(filters => {
-      this.filters = { ...this.filters, ...this.sortFilters({ filters }) };
-      this.filters = { ...this.filters,"me_averageRating":this.ratings};
       filters = this.filters = { ...this.filters, ...this.sortFilters({ filters }) };
       const categoryMapping = Object.entries(this.contentSearchService.getCategoriesMapping);
       filters = _.mapKeys(filters, (value, filterKey) => {

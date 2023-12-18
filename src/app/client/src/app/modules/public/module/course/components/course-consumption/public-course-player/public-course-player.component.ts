@@ -219,7 +219,4 @@ export class PublicCoursePlayerComponent implements OnInit, OnDestroy, AfterView
     };
     this.telemetryService.interact(interactData);
   }
-  testData(item){
-   console.log('item=>',JSON.stringify(item));
-  }
 }

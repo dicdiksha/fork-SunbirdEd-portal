@@ -95,19 +95,6 @@
                       </ng-template>
                     </section>
                   </div>
-                  <div>
-                    <div *ngIf="item?.children?.length">
-                      <div *ngFor="let child of item?.children">
-                         <span>{{testData(child)}}</span> 
-                        <span class="dot-divider" *ngIf="child?.me_averageRating"></span>
-                        <span class="mr-8" *ngIf="child?.me_averageRating">{{child?.me_averageRating || '0'}}</span>
-                        <span *ngIf="child?.me_averageRating"><i class="icon star outline" attr.aria-label="{{resourceService.frmelmnts?.lbl?.arialabelCourserating}}"></i></span>
-                        <span class="mr-8" *ngIf="child?.me_totalRatingsCount">{{roundNumber(child?.me_totalRatingsCount) || '0'}}</span>
-                        <!-- <span *ngIf="child?.me_totalPlaySessionCount"><i class="icon eye outline" attr.aria-label="{{resourceService.frmelmnts?.lbl?.arialabelCourserating}}"></i></span>
-                        <span *ngIf="child?.me_totalPlaySessionCount">{{getContentPlaySessionCount(child?.me_totalPlaySessionCount)?.sum || '0' }}</span> -->
-                      </div>
-                    </div>
-                </div>
                 </sb-accordion-body>
               </sb-accordion-item>
             </sb-accordion>
