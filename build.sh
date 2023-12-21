@@ -23,7 +23,7 @@ commit_hash=$(git rev-parse --short HEAD)
 #nvm install $NODE_VERSION # same is used in client and server
 
 cd src/app
-mkdir -p app_dist/dist/ # this folder should be created prior server and client build
+mkdir -p app_dist/ # this folder should be created prior server and client build
 rm -rf dist-cdn # remove cdn dist folder
 
 # function to run client build for docker image
