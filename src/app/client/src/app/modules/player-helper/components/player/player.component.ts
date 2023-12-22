@@ -466,7 +466,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     if (event.detail.telemetryData.eid === 'END' && contentProgress === 100 && this.currentPageType === "END") {
       if(this.currentPage  && this.currentPage === this.totalPage){  
     // fix - to show content rating modal on full screen view
-    //  this.contentRatingModal = !this.isFullScreenView;
+      this.contentRatingModal = true;
         this.showRatingModalAfterClose = true;
         if (this.modal) {
           this.modal.showContentRatingModal = true;
