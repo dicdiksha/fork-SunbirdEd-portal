@@ -452,7 +452,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (!this.isUserLoggedIn() && get(this.selectedFilters, 'channel') && get(this.selectedFilters, 'channel.length') > 0) {
                         request.channelId = this.selectedFilters['channel'];
                     }
-                    request.fields.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingCount");
+                    request.fields.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
                     const option = this.searchService.getSearchRequest(request, get(filters, 'primaryCategory'));
                         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
                         _.filter(Object.keys(params),filterValue => { 
@@ -468,11 +468,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (this.userService.loggedIn) {
                         option.filters['visibility'] = option.filters['channel'] = [];
                     }
-                    option.facets.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingCount");
+                    option.facets.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
                     return this.searchService.contentSearch(option)
                         .pipe(
                             map((response) => {
-                                console.log("response----",response);
                                 const { subject: selectedSubjects = [] } = (this.selectedFilters || {}) as { subject: [] };
                                 this._facets$.next(request.facets ?
                                     this.utilService.processCourseFacetData(_.get(response, 'result'), _.get(request, 'facets')) : {});
