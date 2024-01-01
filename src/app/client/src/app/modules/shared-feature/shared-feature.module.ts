@@ -18,7 +18,6 @@ import { GlobalConsentPiiComponent } from './components/global-consent-pii/globa
 import { CsModule } from '@project-sunbird/client-services';
 import { CsLibInitializerService } from '../../service/CsLibInitializer/cs-lib-initializer.service';
 import { PlayerHelperModule } from '@sunbird/player-helper';
-// import { CommonConsumptionModule } from '@dicdikshaorg/common-consumption';
 import { CommonConsumptionModule } from '@dicdikshaorg/common-consumption';
 import { CommonFormElementsModule } from '@dictrigyn/common-form-elements';
 import { LocationModule } from '../../plugins/location';
