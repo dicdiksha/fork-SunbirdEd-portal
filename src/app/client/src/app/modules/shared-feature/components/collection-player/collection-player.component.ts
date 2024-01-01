@@ -15,7 +15,6 @@ import * as TreeModel from 'tree-model';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupControlService } from '../../../../service/popup-control.service';
 import { PublicPlayerService } from '@sunbird/public';
-// import { TocCardType, PlatformType } from '@dicdikshaorg/common-consumption';
 import { TocCardType, PlatformType } from '@dicdikshaorg/common-consumption';
 import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
 import { ContentManagerService } from '../../../public/module/offline/services';
