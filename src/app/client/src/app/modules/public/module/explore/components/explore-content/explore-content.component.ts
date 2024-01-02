@@ -119,6 +119,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     });
     this.checkForBack();
     this.moveToTop();
+    console.log("0 ngOnInit contentList", this.contentList);
   }
   goback() {
     if (this.navigationhelperService['_history'].length > 1) {
@@ -301,10 +302,13 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
         //this.contentList = sections;
         if(get(data, 'result.content') && get(data, 'result.QuestionSet')){
           this.contentList = _.concat(get(data, 'result.content'), get(data, 'result.QuestionSet'));
+          console.log("01 contentList", this.contentList);
         } else if(get(data, 'result.content')){
           this.contentList = get(data, 'result.content');
+          console.log("02 contentList", this.contentList);
         } else {
           this.contentList = get(data, 'result.QuestionSet');
+          console.log("03 contentList", this.contentList);
         }
         this.addHoverData();
           const channelFacet = _.find(_.get(data, 'result.facets') || [], facet => _.get(facet, 'name') === 'channel');
@@ -343,6 +347,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
   }
   addHoverData() {
     this.contentList = this.utilService.addHoverData(this.contentList, true);  
+    console.log("04 contentList", this.contentList);
   }
   moveToTop() {
     window.scroll({
@@ -416,6 +421,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       if (_.get(this.contentList, 'length') ) {
         if (this.isDesktopApp) {
           this.addHoverData();
+          console.log("05 contentList", this.contentList);
         }
         this.facets = this.searchService.updateFacetsData(this.facets);
       }
@@ -442,6 +448,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   updateCardData(downloadListdata) {
+    console.log("07 contentList", this.contentList);
     _.each(this.contentList, (contents) => {
       this.publicPlayerService.updateDownloadStatus(downloadListdata, contents);
     });

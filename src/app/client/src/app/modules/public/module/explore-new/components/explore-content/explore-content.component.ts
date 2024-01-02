@@ -120,6 +120,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     });
     this.checkForBack();
     this.moveToTop();
+    console.log("ngOnInit contentList", this.contentList);
   }
   goback() {
     if (this.navigationhelperService['_history'].length > 1) {
@@ -825,10 +826,13 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
         //this.contentList = sections;
         if(get(data, 'result.content') && get(data, 'result.QuestionSet')){
           this.contentList = _.concat(get(data, 'result.content'), get(data, 'result.QuestionSet'));
+          console.log("1 contentList", this.contentList);
         } else if(get(data, 'result.content')){
           this.contentList = get(data, 'result.content');
+          console.log("2 contentList", this.contentList);
         } else {
           this.contentList = get(data, 'result.QuestionSet');
+          console.log("3 contentList", this.contentList);
         }
         this.addHoverData();
           const channelFacet = _.find(_.get(data, 'result.facets') || [], facet => _.get(facet, 'name') === 'channel');
@@ -855,6 +859,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
           this.configService.appConfig.SEARCH.PAGE_LIMIT);
         this.totalCount = data.result.count;
         this.setNoResultMessage();
+        console.log("4 contentList", this.contentList);
       }, err => {
         this.showLoader = false;
         this.contentList = [];
@@ -866,7 +871,8 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       });
   }
   addHoverData() {
-    this.contentList = this.utilService.addHoverData(this.contentList, true);  
+    this.contentList = this.utilService.addHoverData(this.contentList, true); 
+    console.log("5 contentList", this.contentList); 
   }
   moveToTop() {
     window.scroll({
@@ -940,6 +946,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       if (_.get(this.contentList, 'length') ) {
         if (this.isDesktopApp) {
           this.addHoverData();
+          console.log("6 contentList", this.contentList);
         }
         this.facets = this.searchService.updateFacetsData(this.facets);
       }
