@@ -448,6 +448,7 @@ async ngOnInit() {
     }
 
     private fetchContents() {
+        const fieldsToAdd = ['me_averageRating', 'me_totalRatingsCount', 'me_totalPlaySessionCount'];
         return this.fetchContents$
             .pipe(
                 skipWhile(data => data === undefined || data === null),
@@ -491,7 +492,11 @@ async ngOnInit() {
                     if (!this.isUserLoggedIn() && get(this.selectedFilters, 'channel') && get(this.selectedFilters, 'channel.length') > 0) {
                         request.channelId = this.selectedFilters['channel'];
                     }
-                    //request.fields.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
+                    fieldsToAdd.forEach(field => {
+                        if (!request.fields.includes(field)) {
+                            request.fields.push(field);
+                        }
+                    });
                     const option = this.searchService.getSearchRequest(request, get(filters, 'primaryCategory'));
                         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
                         _.filter(Object.keys(params),filterValue => { 
@@ -507,7 +512,11 @@ async ngOnInit() {
                     if (this.userService.loggedIn) {
                         option.filters['visibility'] = option.filters['channel'] = [];
                     }
-                    //option.facets.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
+                    fieldsToAdd.forEach(field => {
+                        if (!option.facets.includes(field)) {
+                            option.facets.push(field);
+                        }
+                    });
                     return this.searchService.contentSearch(option)
                         .pipe(
                             map((response) => {
