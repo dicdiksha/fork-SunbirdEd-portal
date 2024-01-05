@@ -221,6 +221,8 @@ export class SbFormLocationSelectionDelegate {
         userId: _.get(this.userService, 'userid'),
         profileLocation: locationDetails,
         profileUserTypes,
+        gender: _.get(formValue, 'gender'),
+        email: _.get(formValue, 'email'),
         ...(_.get(formValue, 'name') ? { firstName: _.get(formValue, 'name') } : {} )
       };
 
@@ -297,6 +299,97 @@ export class SbFormLocationSelectionDelegate {
       this.guestUserDetails = await this.userService.getGuestUser().toPromise();
     }
 
+    const gender_email = [{
+      "code": "gender",
+      "type": "select",
+      "templateOptions": {
+          "labelHtml": {
+              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
+              "values": {
+                  "$0": "Gender"
+              }
+          },
+          "hidden": false,
+          "placeHolder": "Select Gender",
+          "multiple": false,
+          "options": [
+              {
+                  "label": "Male",
+                  "value": "MALE"
+              },
+              {
+                  "label": "Female",
+                  "value": "FEMALE"
+              }
+          ]
+      },
+      "validations": [
+          {
+              "type": "required"
+          }
+      ]
+  },
+  {
+      "code": "email",
+      "type": "input",
+      "templateOptions": {
+          "labelHtml": {
+              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
+              "values": {
+                  "$0": "Email"
+              }
+          },
+          "hidden": false,
+          "placeHolder": "Enter Email",
+          "multiple": false
+      },
+      "validations": [
+          {
+              "type": "required"
+          }
+      ]
+  },];
+    tempLocationFormConfig.push({
+      "code": "gender",
+      "type": "select",
+      "templateOptions": {
+          "labelHtml": {
+              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
+              "values": {
+                  "$0": "Gender"
+              }
+          },
+          "hidden": false,
+          "placeHolder": "Select Gender",
+          "multiple": false,
+          "options": [
+              {
+                  "label": "Male",
+                  "value": "MALE"
+              },
+              {
+                  "label": "Female",
+                  "value": "FEMALE"
+              }
+          ]
+      },
+  },
+  {
+      "code": "email",
+      "type": "input",
+      "templateOptions": {
+          "labelHtml": {
+              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
+              "values": {
+                  "$0": "Email"
+              }
+          },
+          "hidden": false,
+          "placeHolder": "Enter Email",
+          "multiple": false
+      },
+    });
+
     if (!showModal) {
       tempLocationFormConfig.splice(_.findIndex(tempLocationFormConfig, (e) => {
         return e.code === 'name';
@@ -310,6 +403,30 @@ export class SbFormLocationSelectionDelegate {
         } else if (this.guestUserDetails) {
           config.templateOptions.hidden = false;
           config.default = (_.get(this.guestUserDetails, 'formatedName') || 'Guest');
+        } else {
+          config.validations = [];
+        }
+      }
+
+      if (config.code === 'gender') {
+        if (this.userService.loggedIn) {
+          config.templateOptions.hidden = false;
+          config.default = (_.get(this.userService.userProfile, 'gender') || '') || null;
+        } else if (this.guestUserDetails) {
+          config.templateOptions.hidden = false;
+          config.default = (_.get(this.guestUserDetails, 'gender') || 'Guest');
+        } else {
+          config.validations = [];
+        }
+      }
+
+      if (config.code === 'email') {
+        if (this.userService.loggedIn) {
+          config.templateOptions.hidden = false;
+          config.default = (_.get(this.userService.userProfile, 'email') || '') || null;
+        } else if (this.guestUserDetails) {
+          config.templateOptions.hidden = false;
+          config.default = (_.get(this.guestUserDetails, 'email') || 'Guest');
         } else {
           config.validations = [];
         }
