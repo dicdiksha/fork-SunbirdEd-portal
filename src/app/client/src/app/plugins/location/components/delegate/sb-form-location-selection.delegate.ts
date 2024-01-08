@@ -197,6 +197,7 @@ export class SbFormLocationSelectionDelegate {
     }
 
     if (this.shouldUserProfileLocationUpdate && this.userService.loggedIn) {
+      console.log("Logged in user...");
       const formValue = this.formGroup.value;
       const profileUserTypes = [];
       let userType;
@@ -217,6 +218,7 @@ export class SbFormLocationSelectionDelegate {
       } else {
         profileUserTypes.push({ type: formValue.persona });
       }
+      console.log("updateUserLocation--- this.userService---",this.userService);
       const payload: any = {
         userId: _.get(this.userService, 'userid'),
         profileLocation: locationDetails,
@@ -299,97 +301,6 @@ export class SbFormLocationSelectionDelegate {
       this.guestUserDetails = await this.userService.getGuestUser().toPromise();
     }
 
-    const gender_email = [{
-      "code": "gender",
-      "type": "select",
-      "templateOptions": {
-          "labelHtml": {
-              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
-              "values": {
-                  "$0": "Gender"
-              }
-          },
-          "hidden": false,
-          "placeHolder": "Select Gender",
-          "multiple": false,
-          "options": [
-              {
-                  "label": "Male",
-                  "value": "MALE"
-              },
-              {
-                  "label": "Female",
-                  "value": "FEMALE"
-              }
-          ]
-      },
-      "validations": [
-          {
-              "type": "required"
-          }
-      ]
-  },
-  {
-      "code": "email",
-      "type": "input",
-      "templateOptions": {
-          "labelHtml": {
-              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
-              "values": {
-                  "$0": "Email"
-              }
-          },
-          "hidden": false,
-          "placeHolder": "Enter Email",
-          "multiple": false
-      },
-      "validations": [
-          {
-              "type": "required"
-          }
-      ]
-  },];
-    tempLocationFormConfig.push({
-      "code": "gender",
-      "type": "select",
-      "templateOptions": {
-          "labelHtml": {
-              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
-              "values": {
-                  "$0": "Gender"
-              }
-          },
-          "hidden": false,
-          "placeHolder": "Select Gender",
-          "multiple": false,
-          "options": [
-              {
-                  "label": "Male",
-                  "value": "MALE"
-              },
-              {
-                  "label": "Female",
-                  "value": "FEMALE"
-              }
-          ]
-      },
-  },
-  {
-      "code": "email",
-      "type": "input",
-      "templateOptions": {
-          "labelHtml": {
-              "contents": "<span>$0&nbsp;<span class=\"required-asterisk\">*</span></span>",
-              "values": {
-                  "$0": "Email"
-              }
-          },
-          "hidden": false,
-          "placeHolder": "Enter Email",
-          "multiple": false
-      },
-    });
-
     if (!showModal) {
       tempLocationFormConfig.splice(_.findIndex(tempLocationFormConfig, (e) => {
         return e.code === 'name';
@@ -413,7 +324,7 @@ export class SbFormLocationSelectionDelegate {
           config.templateOptions.hidden = false;
           config.default = (_.get(this.userService.userProfile, 'gender') || '') || null;
         } else if (this.guestUserDetails) {
-          config.templateOptions.hidden = false;
+          config.templateOptions.hidden = true;
           config.default = (_.get(this.guestUserDetails, 'gender') || 'Guest');
         } else {
           config.validations = [];
@@ -425,7 +336,7 @@ export class SbFormLocationSelectionDelegate {
           config.templateOptions.hidden = false;
           config.default = (_.get(this.userService.userProfile, 'email') || '') || null;
         } else if (this.guestUserDetails) {
-          config.templateOptions.hidden = false;
+          config.templateOptions.hidden = true;
           config.default = (_.get(this.guestUserDetails, 'email') || 'Guest');
         } else {
           config.validations = [];
