@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import * as _ from 'lodash-es';
-import { LibraryFiltersLayout } from '@dicdikshaorg/common-consumption';
+import { LibraryFiltersLayout } from '@project-sunbird/common-consumption';
 import { ResourceService, LayoutService, UtilService } from '@sunbird/shared';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, merge, of, zip, BehaviorSubject, defer } from 'rxjs';
@@ -30,6 +30,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     Publisher: _.get(this.resourceService, 'frmelmnts.lbl.publisher'), Board: _.get(this.resourceService, 'frmelmnts.lbl.boards')
   };
   public boards: any[] = [];
+  public ratings: any[] = [{name: '1'},{name: '2'},{name: '3'},{name: '4'},{name: '5'}];
+   
   filterChangeEvent = new Subject();
   @Input() isOpen;
   @Input() defaultFilters = {};
@@ -89,6 +91,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       labelText: _.get(this.resourceService, 'frmelmnts.lbl.publishedUserType'),
       placeholderText: 'Select User Type',
       multiple: true
+    },
+    {
+      category: 'me_averageRating_search',
+      type: 'dropdown',
+      labelText:'Ratings',// _.get(this.resourceService, 'frmelmnts.lbl.publishedUserType'),
+      placeholderText: 'Select Rating',
+      multiple: true
     }
   ]));
 
@@ -99,6 +108,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     private cacheService: CacheService, private utilService: UtilService) { }
 
   get filterData() {
+    if (!_.includes(_.get(this.pageData, 'metaData.filters'), "me_averageRating_search")) {
+      _.get(this.pageData, 'metaData.filters').push("me_averageRating_search");
+    }
     return _.get(this.pageData, 'metaData.filters') || ['medium', 'gradeLevel', 'board', 'channel', 'subject', 'audience', 'publisher', 'se_subjects', 'se_boards', 'se_gradeLevels', 'se_mediums'];
   }
   public getChannelId(index) {
@@ -145,7 +157,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           let boardName = _.get(queryParams, 'board[0]') || _.get(this.boards, '[0]');
           boardName = boardName === 'CBSE/NCERT' ? 'CBSE' : boardName;
           return zip(this.getFramework({ boardName }), this.getAudienceTypeFormConfig())
-            .pipe(map(([filters, audienceTypeFilter]: [object, object]) => ({ ...filters, audience: audienceTypeFilter })));
+            .pipe(map(([filters, audienceTypeFilter]: [object, object]) => ({ ...filters, audience: audienceTypeFilter,"me_averageRating_search":this.ratings })));
         })
       );
   }
@@ -156,9 +168,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       .subscribe(null, error => {
         console.error('Error while fetching filters');
       });
-
+      //console.log('selected filters', this.selectedFilters)
+      //this.defaultFilters["me_averageRating_search"] = ['4'];
     if (!_.get(this.activatedRoute, 'snapshot.queryParams["board"]')) {
-      const queryParams = { ...this.defaultFilters, selectedTab: _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook' };
+      const queryParams = { ...this.defaultFilters, selectedTab: _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'home' };
       this.router.navigate([], { queryParams, relativeTo: this.activatedRoute });
     }
   }
@@ -182,6 +195,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           filters = _.pick(filters || {}, this.filterData);
           this.filters = filters = this.sortFilters({ filters });
           this.updateBoardList();
+          console.log('calling 1')
           this.updateFiltersList({ filters: _.omit(filters, 'board') });
           this.emitFilterChangeEvent(true);
           this.hardRefreshFilter();
@@ -189,10 +203,16 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       );
   }
   private handleFilterChange() {
-    return this.filterChangeEvent
-      .pipe(
+      return this.filterChangeEvent.pipe(
         debounceTime(1000),
         tap(({ type, event }) => {
+          //console.log('Filter type:', type);
+          //console.log('Event:', event);
+
+          if (type === 'me_averageRating_search') {
+            this.selectedFilters['me_averageRating_search'] = event.map(rating => rating);
+          }
+          
           if (_.has(event, 'data.index')) {
             const index = _.get(event, 'data.index');
             const selectedIndices = _.get(this.selectedFilters, type) || [];
@@ -251,8 +271,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     } else {
       this.selectedFilters[type] = updatedValues;
     }
+    //console.log('this.selectedFilters',this.selectedFilters)
   }
   private getIndicesFromDefaultFilters({ type }) {
+   // console.log('12.', this.selectedFilters)
     const defaultValues = _.get(this.defaultFilters, type) || [];
     let indices = [];
     if (_.get(defaultValues, 'length')) {
@@ -264,11 +286,16 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     }
     return indices.length ? indices : [];
   }
+  
   private updateFiltersList({ filters }: { filters: Record<string, any[]> }) {
+    //console.log('13.', this.selectedFilters,filters)
     this.selectedFilters = {};
     this.selectedNgModels = {};
     this.allValues = {};
+
+   // this.allValues['me_averageRating_search'] = this.ratings;
     _.forEach(filters, (filterValues: { name: any }[], filterKey: string) => {
+    //  console.log('filterKey',filterKey)
       if (filterKey === 'board') {
         const boardName = filterValues.find((board) => board.name === 'CBSE');
         boardName && (boardName.name = 'CBSE/NCERT');
@@ -291,8 +318,15 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         }
       }
     });
+    console.log('allvalues',this.allValues);
+    console.log('filterFormTemplateConfig',this.filterFormTemplateConfig);
+    console.log('defaultFilters',this.defaultFilters);
+    //this.defaultFilters = [];//this.selectedFilters["me_averageRating_search"];
+    console.log('this.selectedFilters',this.selectedFilters);
+   // this.selectedFilters['me_averageRating_search'] = this.getIndicesFromDefaultFilters({ type: 'me_averageRating_search' });
   }
   private updateRoute(resetFilters?: boolean) {
+    //console.log('14.', this.selectedFilters)
     const selectedTab = _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook';
     this.router.navigate([], {
       queryParams: resetFilters ? { ...this.defaultFilters, selectedTab } : _.omit(this.getSelectedFilter() || {}, ['audienceSearchFilterValue']),
@@ -306,6 +340,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.boardChange$.next(_.get(data, 'selectedOption'));
   }
   private getSelectedFilter() {
+   // console.log('15.', this.selectedFilters)
     const filters = _.mapValues(this.selectedFilters, (value, key) => {
       return _.compact(_.map(value, index => _.has(this.allValues, [key, index]) ? this.allValues[key][index] : null));
     });
@@ -321,8 +356,12 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         return audience ? _.get(audience, 'searchFilter') : null;
       })));
     }
+    if (_.has(this.selectedFilters, 'me_averageRating_search')) {
+      filters['me_averageRating_search'] = this.selectedNgModels['me_averageRating_search'] || [];
+    }
     filters['board'] = _.get(this.selectedBoard, 'selectedOption') ? [this.selectedBoard.selectedOption] : [];
     filters['selectedTab'] = _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook';
+    //console.log('3. filters',filters)
     return filters;
   }
   private emitFilterChangeEvent(skipUrlUpdate = false) {
@@ -333,6 +372,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     }
   }
   public getInteractEdata() {
+   // console.log('16.', this.selectedFilters)
     return {
       id: 'reset-filter',
       type: 'click',
@@ -382,12 +422,17 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   private getFacets() {
     return this.facets$.pipe(tap(filters => {
+      this.filters = { ...this.filters, ...this.sortFilters({ filters }) };
+      console.log('before',this.filters)
+      this.filters = { ...this.filters,"me_averageRating_search":this.ratings};
+      console.log('after',this.filters)
       filters = this.filters = { ...this.filters, ...this.sortFilters({ filters }) };
       const categoryMapping = Object.entries(this.contentSearchService.getCategoriesMapping);
       filters = _.mapKeys(filters, (value, filterKey) => {
         const [key = null] = categoryMapping.find(([category, mappedValue]) => mappedValue === filterKey) || [];
         return key || filterKey;
       });
+      console.log('calling 2.')
       this.updateFiltersList({ filters });
       this.hardRefreshFilter();
     }));

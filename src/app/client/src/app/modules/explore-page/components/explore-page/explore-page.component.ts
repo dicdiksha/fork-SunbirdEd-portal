@@ -441,6 +441,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     } else {
                         _reqFilters = this.contentSearchService.mapCategories({ filters: { ...this.selectedFilters, ...filters } });
                     }
+
                     const request = {
                       filters: _reqFilters,
                         fields,
@@ -467,7 +468,12 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
                                     param[filterValue][0] = "CBSE";                                
                                 }
-                                option.filters[filterValue] = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
+                                if(filterValue==="me_averageRating_search"){
+                                    option.filters["me_averageRating"] = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
+                                    delete option.filters['me_averageRating_search'];
+                                }else{
+                                    option.filters[filterValue] = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
+                                }
                             }
                         });
                     if (this.userService.loggedIn) {
@@ -478,6 +484,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                             option.facets.push(field);
                         }
                     });
+                    console.log('options..',option)
                     return this.searchService.contentSearch(option)
                         .pipe(
                             map((response) => {
