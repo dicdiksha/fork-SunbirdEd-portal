@@ -88,6 +88,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     primaryBanner = [];
     secondaryBanner = [];
     Categorytheme:any;
+    selectedBoard:any;
     get slideConfig() {
         return cloneDeep(this.configService.appConfig.LibraryCourses.slideConfig);
     }
@@ -223,24 +224,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             );
         }
-
-        const config = {};
-        const urlQuery = new URLSearchParams(window.location.search);
-        urlQuery.forEach((e, k) => {
-            if (config[k] && config[k].length) {
-                config[k].push(e)
-            } else {
-                config[k] = []
-                config[k].push(e);
-            }
-        })
-
-        const guestUserDetails = localStorage.getItem('guestUserDetails') ? JSON.parse(localStorage.getItem('guestUserDetails')) : "";
-        guestUserDetails.framework.board = config['board']
-        guestUserDetails.framework.gradeLevel = config['gradeLevel']
-        guestUserDetails.framework.medium = config['medium']
-        guestUserDetails.framework.selectedTab = config['selectedTab']
-        localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
         // new code end here
 
         this.isDesktopApp = this.utilService.isDesktopApp;
@@ -281,6 +264,26 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.contentDownloadStatus = contentDownloadStatus;
             this.addHoverData();
         });
+
+        // new code for selected BMC and set guestUserDetails local storage
+        const config = {};
+        const urlQuery = new URLSearchParams(window.location.search);
+        urlQuery.forEach((e, k) => {
+            if (config[k] && config[k].length) {
+                config[k].push(e)
+            } else {
+                config[k] = []
+                config[k].push(e);
+            }
+        })
+        const guestUserDetails = localStorage.getItem('guestUserDetails') ? JSON.parse(localStorage.getItem('guestUserDetails')) : "";
+        guestUserDetails.framework.board = config['board']
+        guestUserDetails.framework.gradeLevel = config['gradeLevel']
+        guestUserDetails.framework.medium = config['medium']
+        guestUserDetails.framework.selectedTab = config['selectedTab']
+        localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+        this.selectedBoard = JSON.parse(localStorage.getItem('guestUserDetails')).framework.board; 
+        // new code end here
     }
 
     public fetchEnrolledCoursesSection() {
@@ -736,6 +739,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         setTimeout(() => {
             this.setTelemetryData();
         });
+        
     }
 
     ngOnDestroy() {
