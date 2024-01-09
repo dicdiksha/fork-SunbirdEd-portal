@@ -308,7 +308,7 @@ envVariables.PORTAL_CASSANDRA_URLS = (env.sunbird_cassandra_urls && env.sunbird_
   ? env.sunbird_cassandra_urls.split(',') : ['localhost']
 
 envVariables.GOOGLE_TEST_EMAILS = (env.google_test_emails && env.google_test_emails !== '')
-  ? env.google_test_emails.split(',') : ['dikshatestuser1@gmail.com', 'dikshatestuser2@gmail.com']
+  ? env.google_test_emails.split(',') : ['dikshatestuser1@gmail.com', 'dikshatestuser2@gmail.com', 'jan9testdiksha@gmail.com', 'jantest60@gmail.com', 'userfirst191@gmail.com', 'usersecond191@gmail.com', 'kakisn12d@gmail.com']
 
 // Path to dev config file
 const devConfig = __dirname + '/devConfig.js';
