@@ -88,7 +88,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     primaryBanner = [];
     secondaryBanner = [];
     Categorytheme:any;
-    selectedBoard:any;
     get slideConfig() {
         return cloneDeep(this.configService.appConfig.LibraryCourses.slideConfig);
     }
@@ -208,11 +207,17 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             }));
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         // new code for selected BMC and set guestUserDetails local storage
         const pathname = window.location.pathname.split('/')[1];
-        const tenant = tenantList[pathname];
+        const searchParams = window.location.search;
+        let urlQueryParams = new URLSearchParams(searchParams);
+        let medium = urlQueryParams.get("medium");
+        let id = urlQueryParams.get("id");
+        let board = urlQueryParams.get("board")
+        const tenant = tenantList[pathname] ?? tenantList[board];
         if (tenant) {
+            console.log("inside tenant redirect===",tenant)
             const queryParams: Params = { board: tenant };
             this.router.navigate(
                 [],
@@ -220,9 +225,11 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     relativeTo: this.activatedRoute,
                     queryParams,
                     queryParamsHandling: 'merge', // remove to replace all query params by provided
-                    skipLocationChange: true
+                    skipLocationChange: false
                 }
             );
+            const delay = ms => new Promise(res => setTimeout(res, ms));
+            await delay(100);
         }
         // new code end here
 
@@ -265,10 +272,11 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.addHoverData();
         });
 
+        
         // new code for selected BMC and set guestUserDetails local storage
         const config = {};
-        const urlQuery = new URLSearchParams(window.location.search);
-        urlQuery.forEach((e, k) => {
+        urlQueryParams = new URLSearchParams(window.location.search);
+        urlQueryParams.forEach((e, k) => {
             if (config[k] && config[k].length) {
                 config[k].push(e)
             } else {
@@ -276,13 +284,13 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 config[k].push(e);
             }
         })
-        const guestUserDetails = localStorage.getItem('guestUserDetails') ? JSON.parse(localStorage.getItem('guestUserDetails')) : "";
-        guestUserDetails.framework.board = config['board']
-        guestUserDetails.framework.gradeLevel = config['gradeLevel']
-        guestUserDetails.framework.medium = config['medium']
-        guestUserDetails.framework.selectedTab = config['selectedTab']
+
+        const guestUserDetails =  JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+        guestUserDetails.framework.board = (config['board'] == "CBSE/NCERT") ? 'CBSE': config['board'];
+        guestUserDetails.framework.gradeLevel = config['gradeLevel'];
+        guestUserDetails.framework.medium = config['medium'];
+        guestUserDetails.framework.selectedTab = config['selectedTab'];
         localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
-        this.selectedBoard = JSON.parse(localStorage.getItem('guestUserDetails')).framework.board; 
         // new code end here
     }
 
