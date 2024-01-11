@@ -281,11 +281,13 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         })
         const guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+        if(guestUserDetails){
         guestUserDetails.framework.board = config['board']
         guestUserDetails.framework.gradeLevel = config['gradeLevel']
         guestUserDetails.framework.medium = config['medium']
         guestUserDetails.framework.selectedTab = config['selectedTab']
         localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+        }
 
         // new code end here
     }
