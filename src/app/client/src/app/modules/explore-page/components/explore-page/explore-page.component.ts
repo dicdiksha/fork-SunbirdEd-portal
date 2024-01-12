@@ -468,9 +468,19 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
                                     param[filterValue][0] = "CBSE";                                
                                 }
-                                if(filterValue==="me_averageRating_search"){
-                                    option.filters["me_averageRating"] = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
-                                    delete option.filters['me_averageRating_search'];
+                                if(filterValue==="me_averagerating_search"){
+                                    const currentRatingFilter = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
+                                    let ratings = [];
+                                    if(currentRatingFilter && currentRatingFilter.length>0){
+                                        let x=5;
+                                        let item = parseInt(currentRatingFilter[0].replace(' * & above',''));
+                                        while(x>=item){
+                                            ratings.push(x--);
+                                        }
+                                    }
+                                    option.filters["me_averageRating"] = ratings;
+                                    console.log(option.filters["me_averageRating"])
+                                    delete option.filters['me_averagerating_search'];
                                 }else{
                                     option.filters[filterValue] = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
                                 }
