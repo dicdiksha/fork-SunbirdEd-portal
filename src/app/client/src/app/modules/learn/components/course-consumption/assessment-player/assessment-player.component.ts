@@ -151,7 +151,12 @@ export class AssessmentPlayerComponent implements OnInit, OnDestroy, ComponentCa
           }
         }
       }
+      console.log("code reverted test", navigationExtras);
       this.router.navigate(['/learn/course/play', _.get(collectionUnit, 'identifier')], navigationExtras);
+      // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      //   console.log('the application is being called successfully');
+      //   this.router.navigate(['/learn/course/play', _.get(collectionUnit, 'identifier')], navigationExtras);
+      // });
   }
 
   ngOnInit() {
@@ -237,6 +242,7 @@ export class AssessmentPlayerComponent implements OnInit, OnDestroy, ComponentCa
               const module = this.courseConsumptionService.setPreviousAndNextModule(this.parentCourse, this.collectionId);
               this.nextModule = _.get(module, 'next');
               this.prevModule = _.get(module, 'prev');
+              console.log("next module", this.nextModule, "Previous Module", this.prevModule);
               this.getCourseCompletionStatus();
               this.layoutService.updateSelectedContentType.emit(data.courseHierarchy.contentType);
               if (!this.isParentCourse && data.courseHierarchy.children) {
