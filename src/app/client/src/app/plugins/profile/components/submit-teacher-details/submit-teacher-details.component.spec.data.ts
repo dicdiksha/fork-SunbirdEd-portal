@@ -1,4 +1,4 @@
-import { FieldConfigInputType } from '@dictrigyn/common-form-elements';
+import { FieldConfigInputType } from 'dicdiksha-common-form-elements';
 
 export const mockRes = {
   orgSearch: {

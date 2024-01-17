@@ -20,7 +20,7 @@ import {CommonConsumptionModule} from '@dicdikshaorg/common-consumption';
 import { CertificateDirectivesModule } from 'sb-svg2pdf';
 import { CsModule } from '@project-sunbird/client-services';
 import { CsLibInitializerService } from '../../service/CsLibInitializer/cs-lib-initializer.service';
-import { CommonFormElementsModule } from '@dictrigyn/common-form-elements';
+import { CommonFormElementsModule } from 'dicdiksha-common-form-elements';
 import {LocationModule} from '../location';
 import { MatTooltipModule } from '@angular/material/tooltip';
 

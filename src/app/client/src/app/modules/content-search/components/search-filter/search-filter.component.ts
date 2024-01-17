@@ -30,10 +30,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     Publisher: _.get(this.resourceService, 'frmelmnts.lbl.publisher'), Board: _.get(this.resourceService, 'frmelmnts.lbl.boards')
   };
   public boards: any[] = [];
-  public ratings: any[] = [{name: '1 * & above'},
-                           {name: '2 * & above'},
-                           {name: '3 * & above'},
-                           {name: '4 * & above'}];
+  public ratings: any[] = [{name: '1'},
+                           {name: '2'},
+                           {name: '3'},
+                           {name: '4'}];
    
   filterChangeEvent = new Subject();
   @Input() isOpen;

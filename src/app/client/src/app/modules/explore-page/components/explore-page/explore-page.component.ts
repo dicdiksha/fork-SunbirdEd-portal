@@ -473,12 +473,13 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     let ratings = [];
                                     if(currentRatingFilter && currentRatingFilter.length>0){
                                         let x=5;
-                                        let item = parseInt(currentRatingFilter[0].replace(' * & above',''));
+                                        let item = parseInt(currentRatingFilter[0]);
                                         while(x>=item){
                                             ratings.push(x--);
                                         }
+                                        option.filters["me_averageRating"] = ratings;
                                     }
-                                    option.filters["me_averageRating"] = ratings;
+                                    
                                     console.log(option.filters["me_averageRating"])
                                     delete option.filters['me_averagerating_search'];
                                 }else{
