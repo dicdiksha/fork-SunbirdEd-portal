@@ -125,16 +125,15 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
       this.router.navigate([this.exploreNcert ? '/exploren/1' : data.loggedInUserRoute.route],
         { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
     } else {
-      console.log('params.board[0]',params.board[0])
-      if((params.board && params.board[0] && params.board[0] == 'CBSE')){
+      if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
         !data.isLoginMandatory ?
         this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
           { queryParams: { ...params,board: 'CBSE/NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
-      } else if((params.board && params.board[0] && params.board[0] == 'ncert')){
+      } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
         !data.isLoginMandatory ?
         this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
           { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
-      } else if(params.board && params.board[0]){
+      } else if(params.board && params.board[0] && params.board[0] != undefined){
         !data.isLoginMandatory ?
         this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
           { queryParams: { ...params,board: params.board[0],selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
