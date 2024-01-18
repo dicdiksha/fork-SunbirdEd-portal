@@ -505,7 +505,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     const option = this.searchService.getSearchRequest(request, get(filters, 'primaryCategory'));
                         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
                         _.filter(Object.keys(params),filterValue => { 
-                            if (((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
+                            if (_.get(currentPageData, 'metaData.filters') != undefined && ((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
                                 let param = {};
                                 param[filterValue] = (typeof (params[filterValue]) === "string") ? params[filterValue].split(',') : params[filterValue];
                                 if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
