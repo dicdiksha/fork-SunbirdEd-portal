@@ -16,7 +16,6 @@ import * as _ from 'lodash-es';
 import { CacheService } from 'ng2-cache-service';
 import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
-// import { frameworkList } from '../../../content-search/components/search-data';
 @Component({
     selector: 'app-explore-page-component',
     templateUrl: './explore-page.component.html',
@@ -209,27 +208,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
  async ngOnInit() {
-        // new code for selected BMC and set guestUserDetails local storage
-        // const pathname = window.location.pathname.split('/')[1];
-        // const searchParams = window.location.search;
-        // let urlQuery = new URLSearchParams(searchParams);
-        // const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
-        // if (tenant) {
-        //     const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'] };
-        //     this.router.navigate(
-        //         [],
-        //         {
-        //             relativeTo: this.activatedRoute,
-        //             queryParams,
-        //             queryParamsHandling: 'merge', // remove to replace all query params by provided
-        //             skipLocationChange: true
-        //         }
-        //     );
-        //     const delay = ms => new Promise(res => setTimeout(res, ms));
-        //     await delay(100);
-        // }
-        // new code end here
-
         this.isDesktopApp = this.utilService.isDesktopApp;
         this.setUserPreferences();
         this.subscription$ = this.activatedRoute.queryParams.subscribe(queryParams => {
@@ -268,28 +246,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.contentDownloadStatus = contentDownloadStatus;
             this.addHoverData();
         });
-
-        // new code for selected BMC and set guestUserDetails local storage
-        // const config = {};
-        // urlQuery = new URLSearchParams(window.location.search);
-        // urlQuery.forEach((e, k) => {
-        //     if (config[k] && config[k].length) {
-        //         config[k].push(e)
-        //     } else {
-        //         config[k] = []
-        //         config[k].push(e);
-        //     }
-        // })
-        // const guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
-        // if(guestUserDetails){
-        // guestUserDetails.framework.board = config['board']
-        // guestUserDetails.framework.gradeLevel = config['gradeLevel']
-        // guestUserDetails.framework.medium = config['medium']
-        // guestUserDetails.framework.selectedTab = config['selectedTab']
-        // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
-        // }
-
-        // new code end here
     }
 
     public fetchEnrolledCoursesSection() {
