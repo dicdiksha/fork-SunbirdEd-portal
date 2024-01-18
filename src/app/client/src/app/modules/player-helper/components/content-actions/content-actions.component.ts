@@ -69,6 +69,10 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
       this.collectionId = params.collectionId;
     });
     this.actionButtons = _.cloneDeep(actionButtons);
+    if(this.contentData.mimeType === 'video/mp4') {
+      this.actionButtons[this.actionButtons.findIndex(x => x.name == 'fullscreen')].disabled = true;
+      this.actionButtons[this.actionButtons.findIndex(x => x.name == 'fullscreen')].showSeperator = false;
+    }
     this.fullScreenActionButtons = _.cloneDeep(fullScreenActionButtons);
     _.find(this.actionButtons, (button) => {
       button.disabled = (button.label === 'Fullscreen') ? (isVideoMimetype || this.deviceDetectorService.isMobile() ||
@@ -91,6 +95,10 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
   }
   enableDisableactionButtons() {
     if (!this.isFullScreen) {
+      if(this.contentData.mimeType === 'video/mp4') {
+        this.actionButtons[this.actionButtons.findIndex(x => x.name == 'fullscreen')].disabled = true;
+        this.actionButtons[this.actionButtons.findIndex(x => x.name == 'fullscreen')].showSeperator = false;
+      }
       _.forEach(this.actionButtons, data => {
         if (data.name === 'fullscreen') {
           data.isInActive = false;

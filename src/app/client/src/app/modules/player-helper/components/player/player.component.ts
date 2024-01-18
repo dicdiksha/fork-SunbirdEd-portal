@@ -388,8 +388,8 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   }
 
   eventHandler(event) {
-    this.currentPage = event.edata.currentPage;
-    this.totalPage = event.edata.totalPages;
+    this.currentPage = event.edata.currentPage ?? 1;
+    this.totalPage = event.edata.totalPages ?? 1;
     this.currentPageType = event.edata.type;
 
     if (event.eid === 'END') {
