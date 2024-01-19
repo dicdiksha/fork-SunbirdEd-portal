@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TelemetryService } from '@sunbird/telemetry';
-
+import { frameworkList } from '../../../content-search/components/search-data';
 
 @Component({
   selector: 'app-content-type',
@@ -84,6 +84,9 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     this.generateTelemetry(data.contentType);
     let userPreference;
     let params;
+    const pathname = window.location.pathname.split('/')[1];
+    let urlQuery = new URLSearchParams(window.location.search);
+    const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
     try {
       if (this.userService.loggedIn) {
         userPreference = { framework: this.userService.defaultFrameworkFilters };
@@ -92,6 +95,12 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
         const guestUserDetails = localStorage.getItem('guestUserDetails');
         if (guestUserDetails) {
           userPreference = JSON.parse(guestUserDetails);
+          userPreference.framework['selectedTab'] = [data.contentType];
+          if(tenant){
+          userPreference.framework['board'] = [tenant.name];
+          userPreference.framework['id'] = [tenant.identifier];
+          }
+          localStorage.setItem('guestUserDetails',JSON.stringify(userPreference));
           params = _.cloneDeep(_.get(userPreference, 'framework'));
         }
       }
@@ -115,9 +124,23 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
       this.router.navigate([this.exploreNcert ? '/exploren/1': data.loggedInUserRoute.route],
         { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
     } else {
-      !data.isLoginMandatory ?
-        this.router.navigate([this.exploreNcert ? '/exploren/1': data.anonumousUserRoute.route],
-          { queryParams: { ...params, selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren': data.loggedInUserRoute.route;
+      if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
+        !data.isLoginMandatory ?
+        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+          { queryParams: { ...params,board: 'CBSE/NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+      } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
+        !data.isLoginMandatory ?
+        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+          { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+      } else if(params.board && params.board[0] && params.board[0] != undefined){
+        !data.isLoginMandatory ?
+        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+          { queryParams: { ...params,board: params.board[0],selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+      } else {
+        !data.isLoginMandatory ?
+        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+          { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+      }
     }
   }
 
