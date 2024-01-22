@@ -239,18 +239,6 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
         targetItem.isEnabled = true;
       } 
 
-        "goToBasePath": "/",
-        "isOnlineOnly": true
-      };
-      data.push(newContentType);
-      // to show/hide about tab
-      const [, pathSegment] = window.location.pathname.split('/');
-      const targetItem = data.find(item => item.index === 10);
-      targetItem.isEnabled = false;
-      if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
-        targetItem.isEnabled = true;
-      } 
-
       this.processFormData(data);
       this.updateForm();
       this.setContentTypeOnUrlChange();
