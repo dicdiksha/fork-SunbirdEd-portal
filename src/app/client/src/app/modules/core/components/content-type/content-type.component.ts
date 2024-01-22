@@ -231,18 +231,6 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
       contentType: 'global'
     };
     this.formService.getFormConfig(formServiceInputParams).subscribe((data: any) => {
-      let newContentType =  {
-        "index": 10,
-        "title": "frmelmnts.btn.about",
-        "desc": "frmelmnts.btn.about",
-        "menuType": "Content",
-        "contentType": "About",
-        "isEnabled": true,
-        "default": false,
-        "goToBasePath": "/",
-        "isOnlineOnly": true
-      };
-      data.push(newContentType);
       // to show/hide about tab
       const [, pathSegment] = window.location.pathname.split('/');
       const targetItem = data.find(item => item.index === 10);
