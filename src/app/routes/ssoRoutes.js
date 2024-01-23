@@ -306,7 +306,8 @@ module.exports = (app) => {
   app.get('/v1/sso/error/redirect', async (req, res) => {
     logger.info({msg: '/v1/sso/error/redirect called'});
     const redirect_uri = encodeURIComponent(`https://${req.get('host')}/resources?auth_callback=1`);
-    const redirectUrl = `/auth/realms/sunbird/protocol/openid-connect/auth?client_id=portal&redirect_uri=${redirect_uri}&scope=openid&response_type=code&version=2&error_message=` + req.query.error_message;
+    // const redirectUrl = `/auth/realms/sunbird/protocol/openid-connect/auth?client_id=portal&redirect_uri=${redirect_uri}&scope=openid&response_type=code&version=2&error_message=` + req.query.error_message;
+    const redirectUrl = `/auth/realms/sunbird/protocol/openid-connect/auth?client_id=portal&redirect_uri=${redirect_uri}&scope=openid&response_type=code&version=2`;
     res.redirect(redirectUrl); // should go to error page
   })
 
