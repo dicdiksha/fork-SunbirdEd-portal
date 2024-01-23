@@ -124,23 +124,30 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     if (this.userService.loggedIn) {
       this.router.navigate([this.exploreNcert ? '/exploren/1' : data.loggedInUserRoute.route],
         { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
+        if(pathname && params.selectedTab[0] === 'About') {
+            this.router.navigate(['/'+pathname+'/']);
+        }
     } else {
-      if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
-        !data.isLoginMandatory ?
-        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
-          { queryParams: { ...params,board: 'CBSE/NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
-      } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
-        !data.isLoginMandatory ?
-        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
-          { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
-      } else if(params.board && params.board[0] && params.board[0] != undefined){
-        !data.isLoginMandatory ?
-        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
-          { queryParams: { ...params,board: params.board[0],selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+      if(pathname && params.selectedTab[0] === 'About') {
+        this.router.navigate(['/'+pathname+'/']);
       } else {
-        !data.isLoginMandatory ?
-        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
-          { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,board: 'CBSE/NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        } else if(params.board && params.board[0] && params.board[0] != undefined){
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,board: params.board[0],selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        } else {
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        }
       }
     }
   }
@@ -224,6 +231,14 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
       contentType: 'global'
     };
     this.formService.getFormConfig(formServiceInputParams).subscribe((data: any) => {
+      // to show/hide about tab
+      const [, pathSegment] = window.location.pathname.split('/');
+      const targetItem = data.find(item => item.index === 10);
+      targetItem.isEnabled = false;
+      if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
+        targetItem.isEnabled = true;
+      } 
+
       this.processFormData(data);
       this.updateForm();
       this.setContentTypeOnUrlChange();
