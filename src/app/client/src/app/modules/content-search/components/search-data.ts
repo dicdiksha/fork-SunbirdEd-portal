@@ -2,74 +2,59 @@ export const tenantList = { "CBSE": "CBSE/NCERT", "CBSE/NCERT": "CBSE", "cbse": 
 export const frameworkList = {
     "an": {
         "name": "UT (Andaman and Nicobar Islands)",
-        "identifier": "an_k-12",
-        "tenantPageExist": false
-        
+        "identifier": "an_k-12"
     },
     "ar": {
         "name": "State (Arunachal Pradesh)",
-        "identifier": "ar_k-12",
-        "tenantPageExist": false
+        "identifier": "ar_k-12"
     },
     "apekx": {
         "name": "State (Andhra Pradesh)",
-        "identifier": "ap_k-12_1",
-        "tenantPageExist": true
+        "identifier": "ap_k-12_1"
     },
     "as": {
         "name": "State (Assam)",
-        "identifier": "as_k-12",
-        "tenantPageExist": true
+        "identifier": "as_k-12"
     },
     "br": {
         "name": "State (Bihar)",
-        "identifier": "br_k-12",
-        "tenantPageExist": true
+        "identifier": "br_k-12"
     },
     "cg": {
         "name": "State (Chhattisgarh)",
-        "identifier": "cg_k-12",
-        "tenantPageExist": true
+        "identifier": "cg_k-12"
     },
     "ch": {
         "name": "State (Chandigarh)",
-        "identifier": "ch_k-12",
-        "tenantPageExist": false
+        "identifier": "ch_k-12"
     },
     "ga": {
         "name": "State (Goa)",
-        "identifier": "ga_k-12",
-        "tenantPageExist": true
+        "identifier": "ga_k-12"
     },
     "gj": {
         "name": "State (Gujarat)",
-        "identifier": "gj_k-12",
-        "tenantPageExist": true
+        "identifier": "gj_k-12"
     },
     "hp": {
         "name": "State (Himachal Pradesh)",
-        "identifier": "hp_k-12",
-        "tenantPageExist": false
+        "identifier": "hp_k-12"
     },
     "hr": {
         "name": "State (Haryana)",
-        "identifier": "hr_k-12",
-        "tenantPageExist": true
+        "identifier": "hr_k-12"
     },
     "jh": {
         "name": "State (Jharkhand)",
-        "identifier": "jh_k-12",
-        "tenantPageExist": true
+        "identifier": "jh_k-12"
     },
     "jk": {
         "name": "State (Jammu And Kashmir)",
-        "identifier": "jk_k-12",
-        "tenantPageExist": true
+        "identifier": "jk_k-12"
     },
     "ka": {
         "name": "State (Karnataka)",
-        "identifier": "ka_k-12",
-        "tenantPageExist": true
+        "identifier": "ka_k-12"
     },
     "kl": {
         "name": "State (Kerala)",
@@ -83,118 +68,95 @@ export const frameworkList = {
     },
     "mitra": {
         "name": "State (Maharashtra)",
-        "identifier": "mh_k-12_1",
-        "tenantPageExist": true
+        "identifier": "mh_k-12_1"
     },
     "ml": {
         "name": "State (Meghalaya)",
-        "identifier": "ml_k-12",
-        "tenantPageExist": true
+        "identifier": "ml_k-12"
     },
     "mn": {
         "name": "State (Manipur)",
-        "identifier": "mn_k-12",
-        "tenantPageExist": true
+        "identifier": "mn_k-12"
     },
     "mp": {
         "name": "State (Madhya Pradesh)",
-        "identifier": "mp_k-12",
-        "tenantPageExist": true
+        "identifier": "mp_k-12"
     },
     "mz": {
         "name": "State (Mizoram)",
-        "identifier": "mz_k-12",
-        "tenantPageExist": true
+        "identifier": "mz_k-12"
     },
     "nl": {
         "name": "State (Nagaland)",
-        "identifier": "nl_k-12",
-        "tenantPageExist": true
+        "identifier": "nl_k-12"
     },
     "od": {
         "name": "State (Odisha)",
-        "identifier": "od_k-12",
-        "tenantPageExist": true
+        "identifier": "od_k-12"
     },
     "pb": {
         "name": "State (Punjab)",
-        "identifier": "pb_k-12",
-        "tenantPageExist": true
+        "identifier": "pb_k-12"
     },
     "py": {
         "name": "UT (Puducherry)",
-        "identifier": "py_k-12",
-        "tenantPageExist": false
+        "identifier": "py_k-12"
     },
     "rj": {
         "name": "State (Rajasthan)",
-        "identifier": "rj_k-12",
-        "tenantPageExist": true
+        "identifier": "rj_k-12"
     },
     "sk": {
         "name": "State (Sikkim)",
-        "identifier": "sk_k-12_1",
-        "tenantPageExist": true
+        "identifier": "sk_k-12_1"
     },
     "tn": {
         "name": "State (Tamil Nadu)",
-        "identifier": "tn_k-12_5",
-        "tenantPageExist": true
+        "identifier": "tn_k-12_5"
     },
     "tp": {
         "name": "State (Tripura)",
-        "identifier": "tp_k-12",
-        "tenantPageExist": false
+        "identifier": "tp_k-12"
     },
     "ts": {
         "name": "State (Telangana)",
-        "identifier": "ts_k-12",
-        "tenantPageExist": true
+        "identifier": "ts_k-12"
     },
     "uk": {
         "name": "State (Uttarakhand)",
-        "identifier": "uk_k-12",
-        "tenantPageExist": false
+        "identifier": "uk_k-12"
     },
     "up": {
         "name": "State (Uttar Pradesh)",
-        "identifier": "up_k-12",
-        "tenantPageExist": true
+        "identifier": "up_k-12"
     },
     "DD": {
         "name": "UT (DNH and DD)",
-        "identifier": "dd_k-12",
-        "tenantPageExist": false
+        "identifier": "dd_k-12"
     },
     "ld": {
         "name": "UT (Ladakh)",
-        "identifier": "ld_k-12",
-        "tenantPageExist": false
+        "identifier": "ld_k-12"
     },
     "dl": {
         "name": "State (Delhi)",
-        "identifier": "dl_k-12_1",
-        "tenantPageExist": true
+        "identifier": "dl_k-12_1"
     },
     "nios": {
         "name": "NIOS",
-        "identifier": "nios_fw",
-        "tenantPageExist": true
+        "identifier": "nios_fw"
     },
     "NIOS": {
         "name": "NIOS",
-        "identifier": "nios_fw",
-        "tenantPageExist": true
+        "identifier": "nios_fw"
     },
     "cbse": {
         "name": "CBSE",
-        "identifier": "ncert_k-12",
-        "tenantPageExist": true
+        "identifier": "ncert_k-12"
     },
     "CBSE": {
         "name": "CBSE",
-        "identifier": "ncert_k-12",
-        "tenantPageExist": true
+        "identifier": "ncert_k-12"
     },
     "ncert": {
         "name": "NCERT",

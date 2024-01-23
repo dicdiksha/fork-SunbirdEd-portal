@@ -453,7 +453,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (!this.isUserLoggedIn() && get(this.selectedFilters, 'channel') && get(this.selectedFilters, 'channel.length') > 0) {
                         request.channelId = this.selectedFilters['channel'];
                     }
-                    request.fields.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
+                    //request.fields.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
                     const option = this.searchService.getSearchRequest(request, get(filters, 'primaryCategory'));
                         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
                         _.filter(Object.keys(params),filterValue => { 
@@ -469,7 +469,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (this.userService.loggedIn) {
                         option.filters['visibility'] = option.filters['channel'] = [];
                     }
-                    option.facets.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
+                    //option.facets.push("me_averageRating", "me_totalPlaySessionCount" , "me_totalRatingsCount");
                     return this.searchService.contentSearch(option)
                         .pipe(
                             map((response) => {
@@ -1197,6 +1197,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.toasterService.warning(_.get(this.resourceService, 'messages.emsg.m0012'));
             });
         }
+        this.setAboutTab();
         // this.setUserPreferences();
         // this.fetchContents$.next(this._currentPageData);
     }
