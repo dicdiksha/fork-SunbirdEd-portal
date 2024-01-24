@@ -1,11 +1,12 @@
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormService, UserService } from '@sunbird/core';
 import * as _ from 'lodash-es';
-import { LayoutService, ResourceService, UtilService, IUserData, NavigationHelperService} from '@sunbird/shared';
+import { LayoutService, ResourceService, UtilService, IUserData, NavigationHelperService } from '@sunbird/shared';
 import { Router, ActivatedRoute } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TelemetryService } from '@sunbird/telemetry';
+import { frameworkList } from '../../../content-search/components/search-data';
 
 
 @Component({
@@ -84,6 +85,9 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     this.generateTelemetry(data.contentType);
     let userPreference;
     let params;
+    const pathname = window.location.pathname.split('/')[1];
+    let urlQuery = new URLSearchParams(window.location.search);
+    const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
     try {
       if (this.userService.loggedIn) {
         userPreference = { framework: this.userService.defaultFrameworkFilters };
@@ -92,6 +96,12 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
         const guestUserDetails = localStorage.getItem('guestUserDetails');
         if (guestUserDetails) {
           userPreference = JSON.parse(guestUserDetails);
+          userPreference.framework['selectedTab'] = [data.contentType];
+          if(tenant){
+          userPreference.framework['board'] = [tenant.name];
+          userPreference.framework['id'] = [tenant.identifier];
+          }
+          localStorage.setItem('guestUserDetails',JSON.stringify(userPreference));
           params = _.cloneDeep(_.get(userPreference, 'framework'));
         }
       }
@@ -103,7 +113,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
 
     // All and myDownloads Tab should not carry any filters from other tabs / user can apply fresh filters
     if(this.exploreNcert) {
-      params = _.omit(params, ['board', 'medium', 'gradeLevel', 'subject', 'se_boards', 'se_mediums', 'se_gradeLevels', 'se_subjects']);  
+      params = _.omit(params, ['board', 'medium', 'gradeLevel', 'subject', 'se_boards', 'se_mediums', 'se_gradeLevels', 'se_subjects']);
     } else {
       if (data.contentType === 'mydownloads' || data.contentType === 'all') {
         params = _.omit(params, ['board', 'medium', 'gradeLevel', 'subject', 'se_boards', 'se_mediums', 'se_gradeLevels', 'se_subjects']);
@@ -112,12 +122,33 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     console.log("User preference in params check after", params)
     console.log("Full data", data);
     if (this.userService.loggedIn) {
-      this.router.navigate([this.exploreNcert ? '/exploren/1': data.loggedInUserRoute.route],
+      this.router.navigate([this.exploreNcert ? '/exploren/1' : data.loggedInUserRoute.route],
         { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
+        if(pathname && params.selectedTab[0] === 'About') {
+            this.router.navigate(['/'+pathname+'/']);
+        }
     } else {
-      !data.isLoginMandatory ?
-        this.router.navigate([this.exploreNcert ? '/exploren/1': data.anonumousUserRoute.route],
-          { queryParams: { ...params, selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren': data.loggedInUserRoute.route;
+      if(pathname && params.selectedTab[0] === 'About') {
+        this.router.navigate(['/'+pathname+'/']);
+      } else {
+        if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,board: 'CBSE/NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        } else if(params.board && params.board[0] && params.board[0] != undefined){
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,board: params.board[0],selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        } else {
+          !data.isLoginMandatory ?
+          this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+            { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        }
+      }
     }
   }
 
@@ -152,7 +183,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
       if (this.userService.loggedIn) {
         this.userService.userData$.pipe(takeUntil(this.unsubscribe$)).subscribe((profileData: IUserData) => {
           if (_.get(profileData, 'userProfile.profileUserType.type')) {
-          this.userType = profileData.userProfile['profileUserType']['type'];
+            this.userType = profileData.userProfile['profileUserType']['type'];
           }
           this.makeFormChange();
         });
@@ -161,10 +192,10 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
         if (user) {
           this.userType = user;
           this.makeFormChange();
-        }else{
+        } else {
           this.utilService.currentRole.pipe(takeUntil(this.unsubscribe$)).subscribe((res) => {
-          this.userType = res;
-          this.makeFormChange();
+            this.userType = res;
+            this.makeFormChange();
           });
         }
       }
@@ -200,6 +231,14 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
       contentType: 'global'
     };
     this.formService.getFormConfig(formServiceInputParams).subscribe((data: any) => {
+      // to show/hide about tab
+      const [, pathSegment] = window.location.pathname.split('/');
+      const targetItem = data.find(item => item.index === 10);
+      targetItem.isEnabled = false;
+      if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
+        targetItem.isEnabled = true;
+      } 
+
       this.processFormData(data);
       this.updateForm();
       this.setContentTypeOnUrlChange();
