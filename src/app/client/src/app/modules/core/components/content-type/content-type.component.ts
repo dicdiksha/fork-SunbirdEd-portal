@@ -124,12 +124,12 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     if (this.userService.loggedIn) {
       this.router.navigate([this.exploreNcert ? '/exploren/1' : data.loggedInUserRoute.route],
         { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
-        if(pathname && params.selectedTab[0] === 'About') {
-            this.router.navigate(['/'+pathname+'/']);
+        if(pathname && data.contentType === "About") {
+            window.open('/'+pathname,'_self');
         }
     } else {
-      if(pathname && params.selectedTab[0] === 'About') {
-        this.router.navigate(['/'+pathname+'/']);
+      if(pathname && data.contentType === "About") {
+        window.open('/'+pathname,'_self');
       } else {
         if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
           !data.isLoginMandatory ?
