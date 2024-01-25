@@ -2,8 +2,8 @@
 
   <!--Header-->
   <div mat-dialog-title class="mb-0">
-    <div class="title" role="heading" aria-level="2" appTelemetryShare [TelemetryShareEdata]="telemetryShare">
-      {{resourceService?.frmelmnts?.lbl?.share}}
+    <div class="title linkLabel" role="heading" aria-level="2" appTelemetryShare [TelemetryShareEdata]="telemetryShare">
+      {{resourceService?.frmelmnts?.lbl?.sharewith}}
     </div>
     <button aria-label="close dialog" mat-dialog-close class="close-btn"></button>
   </div>
@@ -12,17 +12,22 @@
   <!--Content-->
   <mat-dialog-content>
     <div class="sb-mat__modal__content">
-      <p class="mb-8" attr.aria-label="{{resourceService?.frmelmnts?.lbl?.arialabelShare}}">
-        {{resourceService?.frmelmnts?.lbl?.sharelink}}
+
+      <button class="ui basic share-btn" (click)="render1();" >
+        <span class="google-classroom"><img src="../../../../../assets/images/googleclassroom.png" alt= "download image"></span> Google Classroom 
+      </button>
+
+      <p class="mb-8 linkLabel" attr.aria-label="{{resourceService?.frmelmnts?.lbl?.arialabelShare}}">
+        {{resourceService?.frmelmnts?.lbl?.copylink}}
       </p>
       <div class="ui action input fluid" id="buttonPopUp" suiPopup [popupPlacement]="position" popupTrigger="manual"
         popupText="{{resourceService?.frmelmnts?.lbl?.linkCopied}}" #popup="suiPopup">
         <input type="text" id="copyLinkData" name="title" readonly [(ngModel)]="shareLink" aria-label="copy link data"
           class="sb-form-control" />
-        <button class="ui basic primary button" tabindex="0" (click)="copyLink(popup)" appTelemetryInteract
+        <button class="ui basic link-btn" tabindex="0" (click)="copyLink(popup)" appTelemetryInteract
           [telemetryInteractEdata]="telemetryInteractEdata" [telemetryInteractObject]="telemetryShareData[0]"
           #copyLinkButton>
-          {{resourceService?.frmelmnts?.btn?.copyLink}}
+          {{resourceService?.frmelmnts?.btn?.copy}}
         </button>
       </div>
     </div>
