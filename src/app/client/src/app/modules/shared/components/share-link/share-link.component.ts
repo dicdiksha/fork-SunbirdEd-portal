@@ -86,6 +86,6 @@ export class ShareLinkComponent implements OnInit {
   }
 
   render1() {
-    window.open("https://classroom.google.com/share?url=http://google.com","_blank");
+    window.open("https://classroom.google.com/share?url="+this.shareLink,"_blank");
   }
 }
