@@ -85,7 +85,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     this.generateTelemetry(data.contentType);
     let userPreference;
     let params;
-    const pathname = window.location.pathname.split('/')[1];
+    const pathname = this.userService._slug;
     let urlQuery = new URLSearchParams(window.location.search);
     const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
     try {
@@ -232,7 +232,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     };
     this.formService.getFormConfig(formServiceInputParams).subscribe((data: any) => {
       // to show/hide about tab
-      const [, pathSegment] = window.location.pathname.split('/');
+      const pathSegment = this.userService._slug;
       const targetItem = data.find(item => item.index === 10);
       targetItem.isEnabled = false;
       if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
