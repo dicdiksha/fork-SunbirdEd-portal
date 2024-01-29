@@ -224,7 +224,7 @@ export class SbFormLocationSelectionDelegate {
         profileLocation: locationDetails,
         profileUserTypes,
         gender: _.get(formValue, 'gender'),
-        email: _.get(formValue, 'email'),
+        email: '',
         ...(_.get(formValue, 'name') ? { firstName: _.get(formValue, 'name') } : {} )
       };
 
