@@ -86,8 +86,6 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     let userPreference;
     let params;
     const pathname = this.userService._slug;
-    let urlQuery = new URLSearchParams(window.location.search);
-    const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
     try {
       if (this.userService.loggedIn) {
         userPreference = { framework: this.userService.defaultFrameworkFilters };
@@ -96,17 +94,9 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
         const guestUserDetails = localStorage.getItem('guestUserDetails');
         if (guestUserDetails) {
           userPreference = JSON.parse(guestUserDetails);
-          userPreference.framework['selectedTab'] = [data.contentType];
-          if(tenant){
-          userPreference.framework['board'] = [tenant.name];
-          userPreference.framework['id'] = [tenant.identifier];
-          }
-          localStorage.setItem('guestUserDetails',JSON.stringify(userPreference));
           params = _.cloneDeep(_.get(userPreference, 'framework'));
         }
       }
-      console.log("User preference in params check before", params)
-      if(this.exploreNcert) params = {};
     } catch (error) {
       return null;
     }
@@ -152,6 +142,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
       }
     }
   }
+
 
   setSelectedContentType(url, queryParams, pathParams) {
     if (url.indexOf('play') >= 0) {
