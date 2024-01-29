@@ -122,11 +122,12 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     console.log("User preference in params check after", params)
     console.log("Full data", data);
     if (this.userService.loggedIn) {
-      this.router.navigate([this.exploreNcert ? '/exploren/1' : data.loggedInUserRoute.route],
-        { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
-        if(pathname && data.contentType === "About") {
-            window.open('/'+pathname,'_self');
-        }
+      if(pathname && data.contentType === "About") {
+        window.open('/'+pathname,'_self');
+      } else {
+        this.router.navigate([this.exploreNcert ? '/exploren/1' : data.loggedInUserRoute.route],
+          { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
+      }        
     } else {
       if(pathname && data.contentType === "About") {
         window.open('/'+pathname,'_self');
