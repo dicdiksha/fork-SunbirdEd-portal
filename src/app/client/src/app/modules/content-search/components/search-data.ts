@@ -205,5 +205,10 @@ export const frameworkList = {
         "name": "IGOT-Health",
         "identifier": "igot_health",
         "tenantPageExist": false
+    },
+    "CBSE/NCERT": {
+        "name": "CBSE",
+        "identifier": "ncert_k-12",
+        "tenantPageExist": true
     }
 }
