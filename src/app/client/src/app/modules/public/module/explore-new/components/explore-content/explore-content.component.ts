@@ -754,7 +754,9 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
         filters.contentType = filters.contentType || _.get(form, 'search.filters.contentType');
       }
     });
-    const softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
+    let softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
+    softConstraints = this.queryParams.selectedTab==="all" ? {} : softConstraints;
+
     if (this.queryParams.key) {
       delete softConstraints['board'];
     }
