@@ -16,6 +16,8 @@ import * as _ from 'lodash-es';
 import { CacheService } from 'ng2-cache-service';
 import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
+import { frameworkList } from './../../../content-search/components/search-data';
+
 @Component({
     selector: 'app-explore-page-component',
     templateUrl: './explore-page.component.html',
@@ -207,7 +209,29 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             }));
     }
 
- async ngOnInit() {
+    async ngOnInit() {
+        const pathname = window.location.pathname.split('/')[1];
+        const searchParams = window.location.search;
+        let urlQuery = new URLSearchParams(searchParams);
+        const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
+        if (tenant) {
+        const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:'textbook' };
+            this.router.navigate(
+                [],
+                {
+                    relativeTo: this.activatedRoute,
+                    queryParams,
+                    queryParamsHandling: 'merge', // remove to replace all query params by provided
+                    skipLocationChange: false
+                }
+            );
+            
+            const delay = ms => new Promise(res => setTimeout(res, ms));
+            await delay(100);
+        }
+
+        
+
         this.isDesktopApp = this.utilService.isDesktopApp;
         this.setUserPreferences();
         this.subscription$ = this.activatedRoute.queryParams.subscribe(queryParams => {
@@ -232,6 +256,26 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             }),
             switchMap(this.fetchEnrolledCoursesSection.bind(this))
         );
+        
+        const config = {};
+         urlQuery = new URLSearchParams(window.location.search);
+         urlQuery.forEach((e, k) => {
+             if (config[k] && config[k].length) {
+                 config[k].push(e)
+             } else {
+                 config[k] = []
+                 config[k].push(e);
+             }
+         })
+         const guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+         if(guestUserDetails){
+         guestUserDetails.framework.board = config['board']
+         guestUserDetails.framework.gradeLevel = config['gradeLevel']
+         guestUserDetails.framework.medium = config['medium']
+         guestUserDetails.framework.selectedTab = config['selectedTab']
+         localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+        }
+
 
         this.subscription$ = merge(concat(this.fetchChannelData(), enrolledSection$), this.initLayout(), this.fetchContents())
             .pipe(
@@ -461,7 +505,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     const option = this.searchService.getSearchRequest(request, get(filters, 'primaryCategory'));
                         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
                         _.filter(Object.keys(params),filterValue => { 
-                            if (_.get(currentPageData, 'metaData.filters') != undefined && ((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
+                            if (_.get(currentPageData, 'metaData.filters') && _.get(currentPageData, 'metaData.filters')!=undefined && ((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
                                 let param = {};
                                 param[filterValue] = (typeof (params[filterValue]) === "string") ? params[filterValue].split(',') : params[filterValue];
                                 if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
@@ -1174,6 +1218,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getSelectedTab () {
+        this.setUserPreferences();
         return get(this.activatedRoute, 'snapshot.queryParams.selectedTab');
     }
 
