@@ -42,14 +42,18 @@ module.exports = (app) => {
       errType = 'VERIFY_TOKEN';
       verifyToken(jwtPayload);
       errType = 'USER_FETCH_API';
+      console.log("jwtPayload", jwtPayload, "req", req)
       userDetails = await fetchUserWithExternalId(jwtPayload, req);
+      console.log("userDetails", userDetails)
       if (_.get(req,'cookies.redirectPath')){
         res.cookie ('userDetails', JSON.stringify(encrypt(userDetails.userName, externalKey)), {secure: true, sameSite: 'strict'} );
       }
       req.session.userDetails = userDetails;
+      console.log("reached this line ---> 52");
       logger.info({msg: "userDetails fetched" + userDetails});
       if(!_.isEmpty(userDetails) && (userDetails.phone || userDetails.email)) {
         redirectUrl = successUrl + getEncyptedQueryParams({userName: userDetails.userName});
+        console.log("redirectUrl", redirectUrl);
         logger.info({
           msg: 'sso session create v2 api, successfully redirected to success page',
           additionalInfo: {
@@ -83,7 +87,9 @@ module.exports = (app) => {
           }
         })
       }
+      console.log("getting error type.......>>>>> ",errType);
     } catch (error) {
+      console.log("getting catch error------>>>>", error);
       redirectUrl = `${errorUrl}?error_message=` + getErrorMessage(error, errType);
       logger.error({
         msg: 'sso session create v2 api failed',
@@ -96,6 +102,7 @@ module.exports = (app) => {
           redirectUrl: redirectUrl
         }
       })
+      console.log("all data in catch block----->>>",{errType, jwtPayload, query: req.query, userDetails, redirectUrl})
       logErrorEvent(req, errType, error);
     } finally {
       res.redirect(redirectUrl || errorUrl);
@@ -514,6 +521,7 @@ const handleProfileUpdateError = (error) => {
 }
 
 const getErrorMessage = (error, errorType) => {
+  console.log("getErrorMessage", {error, errorType});
   if(_.get(error, 'params.err') === 'USER_ACCOUNT_BLOCKED') {
     return 'User account is blocked. Please contact admin';
   } else if (['VERIFY_SIGNATURE', 'PAYLOAD_DATA_MISSING', 'VERIFY_TOKEN'].includes(errorType) ) {

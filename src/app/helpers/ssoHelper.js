@@ -42,6 +42,7 @@ const keycloakTrampolineDesktop = getKeyCloakClient({
   }
 })
 const verifySignature = async (token) => {
+  console.log("verifySignature token", token)
   let options = {
     method: 'GET',
     forever: true,
@@ -52,8 +53,11 @@ const verifySignature = async (token) => {
       authorization: 'Bearer ' + token
     }
   }
+  console.log("options", options)
+
   const echoRes = await request(options);
   if (echoRes !== 'test') {
+    console.log("echoRes not verified -- test", echoRes)
     // TODO: To be removed in future relase
     console.log('SsoHelper: verifySignature -echoRes', echoRes);
     throw new Error('INVALID_SIGNATURE');
@@ -61,6 +65,7 @@ const verifySignature = async (token) => {
   return true
 }
 const verifyToken = (token) => {
+  console.log("token", token);
   let timeInSeconds = Date.now();
   let date1 = new Date(0);
   let date2 = new Date(0);
@@ -68,19 +73,23 @@ const verifyToken = (token) => {
   let iat = date1.getTime();
   date2.setUTCSeconds(token.exp);
   let exp = date2.getTime();
+  console.log("exp", exp);
   if (isDate(iat) && !(iat < timeInSeconds)) {
+    console.log("isDate(iat) && !(iat < timeInSeconds) satified")
     logger.info({
       msg: 'ssoHelper:verifyToken: TOKEN_IAT_FUTURE',
       additionalInfo: {iat: iat, timeInSeconds: timeInSeconds}
     });
     throw new Error('TOKEN_IAT_FUTURE');
   } else if (isDate(exp) && !(exp > timeInSeconds)) {
+    console.log("isDate(exp) && !(exp > timeInSeconds) satified")
     logger.info({
       msg: 'ssoHelper:verifyToken: TOKEN_EXPIRED',
       additionalInfo: {iat: iat, timeInSeconds: timeInSeconds, exp: exp}
     });
     throw new Error('TOKEN_EXPIRED');
   } else if (!token.sub) {
+    console.log("!token.sub", token?.sub)
     logger.info({
       msg: 'ssoHelper:verifyToken: USER_ID_NOT_PRESENT',
       additionalInfo: {iat: iat, timeInSeconds: timeInSeconds, sub: token.sub}
