@@ -84,4 +84,8 @@ export class ShareLinkComponent implements OnInit {
     $('#copyLinkData').select();
     document.execCommand('copy');
   }
+
+  render1() {
+    window.open("https://classroom.google.com/share?url="+this.shareLink,"_blank");
+  }
 }
