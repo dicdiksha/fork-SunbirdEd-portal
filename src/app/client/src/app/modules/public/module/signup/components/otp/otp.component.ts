@@ -178,7 +178,7 @@ export class OtpComponent implements OnInit {
   }
 
   createUser(data?: any) {
-    console.log("this.startingForm---",this.startingForm);
+    console.log("this.startingForm---",JSON.stringify(this.startingForm));
     let identifier = '';
     const createRequest = {
       params: {
@@ -229,7 +229,7 @@ export class OtpComponent implements OnInit {
       // const userTypes = [{ type: 'teacher' }];
       const locationInfo: any = {
           profileLocation: locationDetails,
-          profileUserTypes: userTypes,
+          userTypes ,
           firstName: createRequest.request.firstName
       };
     createRequest.request['location'] = locationInfo;      
