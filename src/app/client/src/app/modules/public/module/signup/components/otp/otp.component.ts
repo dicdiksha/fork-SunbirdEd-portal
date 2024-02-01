@@ -178,6 +178,7 @@ export class OtpComponent implements OnInit {
   }
 
   createUser(data?: any) {
+    console.log("this.startingForm---",this.startingForm);
     let identifier = '';
     const createRequest = {
       params: {
@@ -207,7 +208,25 @@ export class OtpComponent implements OnInit {
         }
         return acc;
       }, []);
-      const userTypes = [{ type: 'teacher' }];
+      const userTypes=[];
+      let userType;
+      if (_.get(this.startingForm, 'onboardingInfo.children.persona.subPersona.length')) {
+        if (typeof _.get(this.startingForm, 'onboardingInfo.children.persona.subPersona') === 'string') {
+          userType = {
+            type: this.startingForm.persona,
+            subType: _.get(this.startingForm, 'onboardingInfo.children.persona.subPersona')
+          };
+          userTypes.push(userType);
+        } else if (Array.isArray(_.get(this.startingForm, 'onboardingInfo.children.persona.subPersona'))) {
+          this.startingForm.children.persona.subPersona.forEach(element => {
+            userTypes.push({type: this.startingForm.persona, subType: element});
+          });
+          userType = userTypes[0];
+        }
+      } else {
+        userTypes.push({ type: this.startingForm.persona });
+      }
+      // const userTypes = [{ type: 'teacher' }];
       const locationInfo: any = {
           profileLocation: locationDetails,
           profileUserTypes: userTypes,
