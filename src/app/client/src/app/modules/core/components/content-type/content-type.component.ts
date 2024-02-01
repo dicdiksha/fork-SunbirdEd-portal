@@ -129,7 +129,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
         } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
           !data.isLoginMandatory ?
           this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
-            { queryParams: { ...params,selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+            { queryParams: { ...params,board: 'NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
         } else if(params.board && params.board[0] && params.board[0] != undefined){
           !data.isLoginMandatory ?
           this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
