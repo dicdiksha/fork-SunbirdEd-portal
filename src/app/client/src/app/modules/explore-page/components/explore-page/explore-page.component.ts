@@ -213,9 +213,11 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const pathname = window.location.pathname.split('/')[1];
         const searchParams = window.location.search;
         let urlQuery = new URLSearchParams(searchParams);
-        const tenant = (frameworkList[pathname] ?? frameworkList[urlQuery.get("board")]) ?? {"name": "CBSE/NCERT","identifier": "ncert_k-12","tenantPageExist": true}
-        if (tenant) {
-        const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:'textbook' };
+        if(pathname != 'explore') {
+        const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
+            if (tenant) {
+            const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:'home' };
+            console.log("queryParams===",queryParams)
             this.router.navigate(
                 [],
                 {
@@ -225,10 +227,25 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     skipLocationChange: false
                 }
             );
-            
-            const delay = ms => new Promise(res => setTimeout(res, ms));
-            await delay(100);
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+                if(guestUserDetails && Object.keys(guestUserDetails).length){
+                    console.log('inside')
+                    guestUserDetails.framework.board = [queryParams.board];
+                    guestUserDetails.framework.id = queryParams.id;
+                    localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+                }
+            }
+        } else {
+            this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+            if(guestUserDetails && Object.keys(guestUserDetails).length){
+                guestUserDetails.framework.board = ['CBSE'];
+                guestUserDetails.framework.id = 'ncert_k-12';
+                localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+            }
         }
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        await delay(100);
 
         
 
@@ -257,24 +274,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             switchMap(this.fetchEnrolledCoursesSection.bind(this))
         );
         
-        const config = {};
-         urlQuery = new URLSearchParams(window.location.search);
-         urlQuery.forEach((e, k) => {
-             if (config[k] && config[k].length) {
-                 config[k].push(e)
-             } else {
-                 config[k] = []
-                 config[k].push(e);
-             }
-         })
-         const guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
-         if(guestUserDetails){
-         guestUserDetails.framework.board = config['board']
-         guestUserDetails.framework.gradeLevel = config['gradeLevel']
-         guestUserDetails.framework.medium = config['medium']
-         guestUserDetails.framework.selectedTab = config['selectedTab']
-         localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
-        }
 
 
         this.subscription$ = merge(concat(this.fetchChannelData(), enrolledSection$), this.initLayout(), this.fetchContents())

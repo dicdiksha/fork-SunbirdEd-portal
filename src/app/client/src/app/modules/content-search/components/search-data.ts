@@ -192,7 +192,7 @@ export const frameworkList = {
         "tenantPageExist": true
     },
     "ncert": {
-        "name": "CBSE",
+        "name": "NCERT",
         "identifier": "ncert_k-12",
         "tenantPageExist": true
     },
