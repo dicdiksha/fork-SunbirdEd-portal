@@ -207,10 +207,28 @@ export class OtpComponent implements OnInit {
         }
         return acc;
       }, []);
-      const userTypes = [{ type: 'teacher' }];
+      const profileUserTypes=[];
+      let userType;
+      if (_.get(this.startingForm, 'onboardingInfo.children.persona.subPersona.length')) {
+        if (typeof _.get(this.startingForm, 'onboardingInfo.children.persona.subPersona') === 'string') {
+          userType = {
+            type: this.startingForm.onboardingInfo.persona,
+            subType: _.get(this.startingForm, 'onboardingInfo.children.persona.subPersona')
+          };
+          profileUserTypes.push(userType);
+        } else if (Array.isArray(_.get(this.startingForm, 'onboardingInfo.children.persona.subPersona'))) {
+          this.startingForm.onboardingInfo.children.persona.subPersona.forEach(element => {
+            profileUserTypes.push({type: this.startingForm.onboardingInfo.persona, subType: element});
+          });
+          userType = profileUserTypes[0];
+        }
+      } else {
+        profileUserTypes.push({ type: this.startingForm.onboardingInfo.persona });
+      }      
+      // const userTypes = [{ type: 'teacher' }];
       const locationInfo: any = {
           profileLocation: locationDetails,
-          profileUserTypes: userTypes,
+          profileUserTypes,
           firstName: createRequest.request.firstName
       };
     createRequest.request['location'] = locationInfo;      
