@@ -178,7 +178,6 @@ export class OtpComponent implements OnInit {
   }
 
   createUser(data?: any) {
-    console.log("this.startingForm---",JSON.stringify(this.startingForm));
     let identifier = '';
     const createRequest = {
       params: {
@@ -208,28 +207,28 @@ export class OtpComponent implements OnInit {
         }
         return acc;
       }, []);
-      const userTypes=[];
+      const profileUserTypes=[];
       let userType;
       if (_.get(this.startingForm, 'onboardingInfo.children.persona.subPersona.length')) {
         if (typeof _.get(this.startingForm, 'onboardingInfo.children.persona.subPersona') === 'string') {
           userType = {
-            type: this.startingForm.persona,
+            type: this.startingForm.onboardingInfo.persona,
             subType: _.get(this.startingForm, 'onboardingInfo.children.persona.subPersona')
           };
-          userTypes.push(userType);
+          profileUserTypes.push(userType);
         } else if (Array.isArray(_.get(this.startingForm, 'onboardingInfo.children.persona.subPersona'))) {
-          this.startingForm.children.persona.subPersona.forEach(element => {
-            userTypes.push({type: this.startingForm.persona, subType: element});
+          this.startingForm.onboardingInfo.children.persona.subPersona.forEach(element => {
+            profileUserTypes.push({type: this.startingForm.onboardingInfo.persona, subType: element});
           });
-          userType = userTypes[0];
+          userType = profileUserTypes[0];
         }
       } else {
-        userTypes.push({ type: this.startingForm.persona });
-      }
+        profileUserTypes.push({ type: this.startingForm.onboardingInfo.persona });
+      }      
       // const userTypes = [{ type: 'teacher' }];
       const locationInfo: any = {
           profileLocation: locationDetails,
-          userTypes ,
+          profileUserTypes,
           firstName: createRequest.request.firstName
       };
     createRequest.request['location'] = locationInfo;      
