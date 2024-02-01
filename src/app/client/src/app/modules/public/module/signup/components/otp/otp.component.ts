@@ -228,7 +228,7 @@ export class OtpComponent implements OnInit {
       // const userTypes = [{ type: 'teacher' }];
       const locationInfo: any = {
           profileLocation: locationDetails,
-          profileUserTypes ,
+          profileUserTypes,
           firstName: createRequest.request.firstName
       };
     createRequest.request['location'] = locationInfo;      
