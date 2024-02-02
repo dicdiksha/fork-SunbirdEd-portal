@@ -272,16 +272,10 @@ export class OtpComponent implements OnInit {
    */
   redirectToSignPage() {
     const reqQuery = this.activatedRoute.snapshot.queryParams;
-    
-    let dynamicKey = Math.random().toString(36).substring(2, 15);
-    let messageValue = this.mode === 'phone' ? this.resourceService.frmelmnts.lbl.createUserSuccessWithPhone :
-    this.resourceService.frmelmnts.lbl.createUserSuccessWithEmail;
-    let final_value = `${dynamicKey} value${messageValue} second ${dynamicKey}`;
-    let encodedValue = btoa(final_value);
-
     const queryObj = _.pick(reqQuery,
       ['client_id', 'redirect_uri', 'scope', 'state', 'response_type', 'version']);
-    queryObj['success_message'] = encodedValue;
+    queryObj['success_message'] = this.mode === 'phone' ? this.resourceService.frmelmnts.lbl.createUserSuccessWithPhone :
+      this.resourceService.frmelmnts.lbl.createUserSuccessWithEmail;
     const query = Object.keys(queryObj).map((key) => {
       return encodeURIComponent(key) + '=' + encodeURIComponent(queryObj[key]);
     }).join('&');
