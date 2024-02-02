@@ -118,6 +118,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isDesktopApp = this.utilService.isDesktopApp;
 
     this.activatedRoute.queryParams.subscribe((params) => {
+      console.log("112388 ngOnInit param ",params);
       if (params['showEditUserDetailsPopup']) {
         this.showEditUserDetailsPopup = true;
       }
@@ -140,6 +141,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const role: string = (!this.userProfile.profileUserType.type ||
           (this.userProfile.profileUserType.type && this.userProfile.profileUserType.type === 'OTHER')) ? '' : this.userProfile.profileUserType.type;
         this.userLocation = this.getUserLocation(this.userProfile);
+        console.log("112388 ngOnInit userLocation ",this.userLocation);
         this.getPersonaConfig(role).then((val) => {
           this.persona = val;
         });
@@ -401,7 +403,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateProfile(data) {
+    console.log("112388 updateProfile ",data);
     this.profileService.updateProfile({ framework: data }).subscribe(res => {
+      console.log("112388 updateProfile Res ",res);
       this.userProfile.framework = data;
       this.toasterService.success(this.resourceService.messages.smsg.m0046);
       this.profileModal && this.profileModal.deny();
@@ -623,12 +627,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getUserLocation(profile: any) {
+    console.log("112388 Profile Page ",profile);
    const userLocation = {};
     if (profile && profile.userLocations && profile.userLocations.length) {
         profile.userLocations.forEach((d) => {
             userLocation[d.type] = d;
         });
     }
+    console.log("112388 userLocation ",userLocation);
     return userLocation;
 }
 
