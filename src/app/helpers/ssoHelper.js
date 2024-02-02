@@ -42,6 +42,7 @@ const keycloakTrampolineDesktop = getKeyCloakClient({
   }
 })
 const verifySignature = async (token) => {
+  logger.info("verifySignature token--->>>>>>>>>>>>>>>>>", token)
   let options = {
     method: 'GET',
     forever: true,
@@ -52,15 +53,17 @@ const verifySignature = async (token) => {
       authorization: 'Bearer ' + token
     }
   }
+  logger.info("options --->>>>>>>>>>>>>>>>>", options)
   const echoRes = await request(options);
   if (echoRes !== 'test') {
+    logger.info("echoRes not verified -- test", echoRes)
     // TODO: To be removed in future relase
-    console.log('SsoHelper: verifySignature -echoRes', echoRes);
     throw new Error('INVALID_SIGNATURE');
   }
   return true
 }
 const verifyToken = (token) => {
+  logger.info("token--->>>>>>>>>>>>>>>>>", token);
   let timeInSeconds = Date.now();
   let date1 = new Date(0);
   let date2 = new Date(0);
@@ -68,19 +71,27 @@ const verifyToken = (token) => {
   let iat = date1.getTime();
   date2.setUTCSeconds(token.exp);
   let exp = date2.getTime();
+  logger.info("exp---->>>>>>>>>>>>>>>>>>>>>>", exp);
+  logger.info("timeInSeconds---->>>>>>>>>>>>>>>>>>>>>>", timeInSeconds);
+  logger.info("!(exp > timeInSeconds)---->>>>>>>>>>>>>>>>>>", !(exp > timeInSeconds));
+  logger.info("isDate(exp)---->>>>>>>>>>>>>>>>>>", isDate(exp));
+  logger.info("isDate(iat) && !(iat < timeInSeconds)----->>>>>>>>>>>>>>", isDate(iat) && !(iat < timeInSeconds))
   if (isDate(iat) && !(iat < timeInSeconds)) {
+    logger.info("isDate(iat) && !(iat < timeInSeconds) satisfied")
     logger.info({
       msg: 'ssoHelper:verifyToken: TOKEN_IAT_FUTURE',
       additionalInfo: {iat: iat, timeInSeconds: timeInSeconds}
     });
     throw new Error('TOKEN_IAT_FUTURE');
-  } else if (isDate(exp) && !(exp > timeInSeconds)) {
+  } else if (!isDate(exp)) {
+    logger.info("isDate(exp) && !(exp > timeInSeconds) satisfied")
     logger.info({
       msg: 'ssoHelper:verifyToken: TOKEN_EXPIRED',
       additionalInfo: {iat: iat, timeInSeconds: timeInSeconds, exp: exp}
     });
     throw new Error('TOKEN_EXPIRED');
   } else if (!token.sub) {
+    logger.info("!token.sub---->>>>>>>>>>>", token?.sub)
     logger.info({
       msg: 'ssoHelper:verifyToken: USER_ID_NOT_PRESENT',
       additionalInfo: {iat: iat, timeInSeconds: timeInSeconds, sub: token.sub}

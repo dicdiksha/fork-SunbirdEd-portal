@@ -83,7 +83,9 @@ module.exports = (app) => {
           }
         })
       }
+      logger.error("getting error type.......>>>>> ",errType);
     } catch (error) {
+      logger.error("getting catch error------>>>>", error);
       redirectUrl = `${errorUrl}?error_message=` + getErrorMessage(error, errType);
       logger.error({
         msg: 'sso session create v2 api failed',
@@ -96,6 +98,7 @@ module.exports = (app) => {
           redirectUrl: redirectUrl
         }
       })
+      logger.error("all data in catch block----->>>",{errType, jwtPayload, query: req.query, userDetails, redirectUrl})
       logErrorEvent(req, errType, error);
     } finally {
       res.redirect(redirectUrl || errorUrl);
@@ -517,7 +520,7 @@ const getErrorMessage = (error, errorType) => {
   if(_.get(error, 'params.err') === 'USER_ACCOUNT_BLOCKED') {
     return 'User account is blocked. Please contact admin';
   } else if (['VERIFY_SIGNATURE', 'PAYLOAD_DATA_MISSING', 'VERIFY_TOKEN'].includes(errorType) ) {
-    return 'Your account could not be signed in to DIKSHA due to invalid credentials provided. Please try again with valid credentials.';
+    return 'Test --->>> Your account could not be signed in to DIKSHA due to invalid credentials provided. Please try again with valid credentials.';
   } else if (error === 'SCHOOL_ID_NOT_REGISTERED') {
     return 'Login failed. Details received from your State seem to be invalid. Contact your State administration for more details';
   } else {
