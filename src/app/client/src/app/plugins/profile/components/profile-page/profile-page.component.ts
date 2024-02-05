@@ -120,7 +120,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.activatedRoute.queryParams.subscribe((params) => {
       console.log("112388 ngOnInit param ",params);
       if (params['showEditUserDetailsPopup']) {
-        this.showEditUserDetailsPopup = true;
+        //this.showEditUserDetailsPopup = true;
+        this.showEditUserDetailsPopup = false;
       }
       });
 
