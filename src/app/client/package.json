@@ -54,7 +54,7 @@
     "@angular/router": "^11.2.14",
     "@dicdikshaorg/chatbot-client": "^3.0.3",
     "@dicdikshaorg/common-consumption": "^4.12.6",
-    "@dicdikshaorg/common-form-elements": "^5.1.7",
+    "@dicdikshaorg/common-form-elements": "^5.1.8",
     "@dictrigyn/pdf-player": "^0.0.6",
     "@ngx-translate/core": "12.0.0",
     "@ngx-translate/http-loader": "^5.0.0",
