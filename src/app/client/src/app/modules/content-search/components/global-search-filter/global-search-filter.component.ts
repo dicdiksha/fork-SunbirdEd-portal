@@ -96,11 +96,10 @@ export class GlobalSearchFilterComponent implements OnInit, OnChanges, OnDestroy
 
         return {
           facet: f.name,
-          type: 'dropdown',
+          type: 'pills',
           labelText: f.name === 'se_boards' ? _.get(this.resourceService, 'frmelmnts.lbl.boardsFilter') : f.label || f.name,
           placeholderText: `${this.resourceService.frmelmnts.lbl.Select} ${f.label || f.name}`,
-          multiple: true,
-          autocomplete: true
+          multiple: true
         };
       });
       this.resourceService.languageSelected$.pipe(takeUntil(this.unsubscribe$)).subscribe((languageData) => {
