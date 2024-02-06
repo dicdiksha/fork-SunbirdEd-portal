@@ -232,7 +232,12 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
         filters.contentType = filters.contentType || _.get(form, 'search.filters.contentType');
       }
     });
-    const softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
+    //const softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
+    // Openforgeid 133157 remove softConstraints for ALL tab
+    let softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
+    
+    softConstraints = this.userService.slug && this.queryParams.selectedTab==="all" ? {} : softConstraints;
+
     if (this.queryParams.key) {
       delete softConstraints['board'];
     }
