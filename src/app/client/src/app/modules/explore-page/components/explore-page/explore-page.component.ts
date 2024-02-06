@@ -236,12 +236,13 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
         } else {
-            this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+            
             let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
             if(guestUserDetails && Object.keys(guestUserDetails).length){
                 guestUserDetails.framework.board = ['CBSE'];
                 guestUserDetails.framework.id = 'ncert_k-12';
                 localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+                this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
             }
         }
         const delay = ms => new Promise(res => setTimeout(res, ms));
