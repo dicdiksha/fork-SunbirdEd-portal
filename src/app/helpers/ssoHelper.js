@@ -53,9 +53,10 @@ const verifySignature = async (token) => {
     }
   }
   const echoRes = await request(options);
+  logger.info("echoRes", echoRes);
   if (echoRes !== 'test') {
     // TODO: To be removed in future relase
-    console.log('SsoHelper: verifySignature -echoRes', echoRes);
+    logger.info('SsoHelper: verifySignature -echoRes', echoRes);
     throw new Error('INVALID_SIGNATURE');
   }
   return true
@@ -65,9 +66,16 @@ const verifyToken = (token) => {
   let date1 = new Date(0);
   let date2 = new Date(0);
   date1.setUTCSeconds(token.iat);
-  let iat = date1.getTime();
+  // let iat = date1.getTime();
+  let iat = isNaN(date1.getTime()) ? Date.parse(token.iat) : date1.getTime();
   date2.setUTCSeconds(token.exp);
-  let exp = date2.getTime();
+  // let exp = date2.getTime();
+  let exp = isNaN(date2.getTime()) ? Date.parse(token.exp) : date2.getTime();
+  logger.info("exp---->>>>>>>>>>>>>>>>>>>>>>", exp);
+  logger.info("timeInSeconds---->>>>>>>>>>>>>>>>>>>>>>", timeInSeconds);
+  logger.info("!(exp > timeInSeconds)---->>>>>>>>>>>>>>>>>>", !(exp > timeInSeconds));
+  logger.info("isDate(exp)---->>>>>>>>>>>>>>>>>>", isDate(exp));
+  logger.info("isDate(iat) && !(iat < timeInSeconds)----->>>>>>>>>>>>>>", isDate(iat) && !(iat < timeInSeconds))
   if (isDate(iat) && !(iat < timeInSeconds)) {
     logger.info({
       msg: 'ssoHelper:verifyToken: TOKEN_IAT_FUTURE',
