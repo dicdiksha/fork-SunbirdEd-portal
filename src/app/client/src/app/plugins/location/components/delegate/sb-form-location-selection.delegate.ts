@@ -104,14 +104,18 @@ export class SbFormLocationSelectionDelegate {
       this.shouldDeviceProfileLocationUpdate = true;
       this.shouldUserProfileLocationUpdate = true;
       let anchor = document.querySelector('.item--about') as HTMLElement;
-      let pathSegment
+      let pathSegment;
       if( this.userService.guestUserProfile.framework.board){
-        pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === this.userService.guestUserProfile.framework.board[0]);
+        let board = this.userService.guestUserProfile.framework.board[0];
+        if(board==="CBSE/NCERT"){
+            board="CBSE";
+        }
+        pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
       }
       if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
         anchor.style.display = 'block';
       }
-      else{
+      else {
         anchor.style.display = 'none';
       }
     }

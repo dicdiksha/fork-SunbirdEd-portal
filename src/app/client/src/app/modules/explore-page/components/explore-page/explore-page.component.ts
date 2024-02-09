@@ -1139,7 +1139,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.userPreference = response;
                 });
             }
-            this.setAboutTab();
+                 this.setAboutTab();
         } catch (error) {
             return null;
         }
@@ -1395,7 +1395,11 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         let anchor = document.querySelector('.item--about') as HTMLElement;
         let pathSegment;
         if( this.userPreference.framework.board){
-          pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === this.userPreference.framework.board[0]);
+            let board = this.userPreference.framework.board[0];
+            if(board==="CBSE/NCERT"){
+                board="CBSE";
+            }
+          pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
         }
         if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
           anchor.style.display = 'block';
