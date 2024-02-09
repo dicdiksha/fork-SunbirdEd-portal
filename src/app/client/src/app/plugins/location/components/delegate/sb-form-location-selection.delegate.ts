@@ -113,7 +113,7 @@ export class SbFormLocationSelectionDelegate {
         pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
       }
       if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
-        anchor.style.display = 'block';
+        anchor.style.removeProperty('display');
       }
       else {
         anchor.style.display = 'none';
