@@ -18,8 +18,10 @@ export class ProfileService {
       url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
       data: data
     };
+    console.log("112388 profile service options ",options);
     return this.learnerService.patch(options).pipe(map(
       (res: ServerResponse) => {
+        console.log("112388 profile service timeout ",this.configService.appConfig.timeOutConfig.setTime);
         setTimeout(() => {
           this.userService.getUserProfile();
         }, this.configService.appConfig.timeOutConfig.setTime);

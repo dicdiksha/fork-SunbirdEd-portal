@@ -186,12 +186,14 @@ export class UserService {
       url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userid}`,
       param: this.config.urlConFig.params.userReadParam
     };
+    console.log("112388 User service option ",option);
     this.learnerService.getWithHeaders(option).subscribe(
       (data: ServerResponse) => {
         if (data.ts) {
           // data.ts is taken from header and not from api response ts, and format in IST
           this.timeDiff = data.ts;
         }
+        console.log("112388 user service set user profile ",data);
         this.setUserProfile(data);
       },
       (err: ServerResponse) => {
