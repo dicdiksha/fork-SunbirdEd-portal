@@ -214,9 +214,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const searchParams = window.location.search;
         let urlQuery = new URLSearchParams(searchParams);
         if(pathname != 'explore') {
+            const selectedTab = urlQuery.get("selectedTab") != undefined || urlQuery.get("selectedTab") != null ? urlQuery.get("selectedTab") : 'home';
         const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
             if (tenant) {
-            const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:'home' };
+                const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
             console.log("queryParams===",queryParams)
             this.router.navigate(
                 [],
