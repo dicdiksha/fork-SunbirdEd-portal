@@ -16,7 +16,7 @@ import * as _ from 'lodash-es';
 import { CacheService } from 'ng2-cache-service';
 import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
-import { frameworkList } from './../../../content-search/components/search-data';
+import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
 
 @Component({
     selector: 'app-explore-page-component',
@@ -1139,6 +1139,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.userPreference = response;
                 });
             }
+            this.setAboutTab();
         } catch (error) {
             return null;
         }
@@ -1251,6 +1252,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.toasterService.warning(_.get(this.resourceService, 'messages.emsg.m0012'));
             });
         }
+        this.setAboutTab();
         // this.setUserPreferences();
         // this.fetchContents$.next(this._currentPageData);
     }
@@ -1386,6 +1388,20 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     subject: _.get(_filter, 'subject')
                 };
             }
+        }
+    }
+
+    setAboutTab(){
+        let anchor = document.querySelector('.item--about') as HTMLElement;
+        let pathSegment;
+        if( this.userPreference.framework.board){
+          pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === this.userPreference.framework.board[0]);
+        }
+        if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
+          anchor.style.display = 'block';
+        }
+        else{
+          anchor.style.display = 'none';
         }
     }
 }
