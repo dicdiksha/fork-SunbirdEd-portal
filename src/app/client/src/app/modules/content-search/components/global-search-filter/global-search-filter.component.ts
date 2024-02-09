@@ -19,6 +19,7 @@ import { LibraryFiltersLayout } from '@dicdikshaorg/common-consumption';
 import { UserService } from '@sunbird/core';
 import { IFacetFilterFieldTemplateConfig } from '@dicdikshaorg/common-form-elements';
 import { CacheService } from 'ng2-cache-service';
+import { frameworkList } from '../search-data';
 
 @Component({
   selector: 'app-global-search-filter',
@@ -26,6 +27,7 @@ import { CacheService } from 'ng2-cache-service';
   styleUrls: ['./global-search-filter.component.scss']
 })
 export class GlobalSearchFilterComponent implements OnInit, OnChanges, OnDestroy {
+  selectedBoard: string = "";
   @Input() facets;
   @Input() queryParamsToOmit;
   @Input() supportedFilterAttributes = ['se_boards', 'se_mediums', 'se_gradeLevels', 'se_subjects', 'primaryCategory', 'mediaType', 'additionalCategories', 'channel'];
@@ -81,7 +83,18 @@ export class GlobalSearchFilterComponent implements OnInit, OnChanges, OnDestroy
           return 1;
         }
         return -1;
-      }).map((f) => {
+      }).filter(f => {
+        const pathSegment = this.userService._slug;
+        if(pathSegment && f.name === 'se_boards')
+        {
+          this.selectedBoard = frameworkList[pathSegment].name;
+          return false;
+        }
+        else {
+          return f;
+        }
+      })
+      .map((f) => {
         if (f.name === 'mediaType') {
           f.values = f.mimeTypeList.map((m) => ({name: m}));
 
