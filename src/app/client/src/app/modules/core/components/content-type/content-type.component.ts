@@ -85,7 +85,6 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     this.generateTelemetry(data.contentType);
     let userPreference;
     let params;
-    const pathname = this.userService._slug;
     try {
       if (this.userService.loggedIn) {
         userPreference = { framework: this.userService.defaultFrameworkFilters };
@@ -100,7 +99,21 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     } catch (error) {
       return null;
     }
-
+    let pathname = this.userService._slug;
+    if( pathname && pathname==="dikshacustodian" && this.userService._userProfile.framework.board){
+      let board = this.userService._userProfile.framework.board[0];
+      if(board==="CBSE/NCERT"){
+          board="CBSE";
+      }
+      pathname = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
+    }
+    else if( !pathname && userPreference.framework.board){
+      let board = userPreference.framework.board[0];
+      if(board==="CBSE/NCERT"){
+          board="CBSE";
+      }
+      pathname = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
+    }
     // All and myDownloads Tab should not carry any filters from other tabs / user can apply fresh filters
     if(this.exploreNcert) {
       params = _.omit(params, ['board', 'medium', 'gradeLevel', 'subject', 'se_boards', 'se_mediums', 'se_gradeLevels', 'se_subjects']);
@@ -224,12 +237,13 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     };
     this.formService.getFormConfig(formServiceInputParams).subscribe((data: any) => {
       // to show/hide about tab
-      const pathSegment = this.userService._slug;
-      const targetItem = data.find(item => item.index === 10);
-      targetItem.isEnabled = false;
-      if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
-        targetItem.isEnabled = true;
-      } 
+
+      // const pathSegment = this.userService._slug;
+      // const targetItem = data.find(item => item.index === 10);
+      // targetItem.isEnabled = false;
+      // if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
+      //   targetItem.isEnabled = true;
+      // } 
 
       this.processFormData(data);
       this.updateForm();
