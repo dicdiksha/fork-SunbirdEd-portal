@@ -100,7 +100,21 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     } catch (error) {
       return null;
     }
-
+    let pathname = this.userService._slug;
+    if( pathname && pathname==="dikshacustodian" && this.userService._userProfile.framework.board){
+      let board = this.userService._userProfile.framework.board[0];
+      if(board==="CBSE/NCERT"){
+          board="CBSE";
+      }
+      pathname = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
+    }
+    else if( !pathname && userPreference.framework.board){
+      let board = userPreference.framework.board[0];
+      if(board==="CBSE/NCERT"){
+          board="CBSE";
+      }
+      pathname = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
+    }
     // All and myDownloads Tab should not carry any filters from other tabs / user can apply fresh filters
     if(this.exploreNcert) {
       params = _.omit(params, ['board', 'medium', 'gradeLevel', 'subject', 'se_boards', 'se_mediums', 'se_gradeLevels', 'se_subjects']);  

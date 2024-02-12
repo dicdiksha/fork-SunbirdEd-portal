@@ -12,6 +12,7 @@ import {UserService} from '../../../../modules/core/services/user/user.service';
 import {DeviceRegisterService} from '../../../../modules/core/services/device-register/device-register.service';
 import {FormService} from '../../../../modules/core/services/form/form.service';
 import { OrgDetailsService } from '@sunbird/core';
+import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
 
 type UseCase = 'SIGNEDIN_GUEST' | 'SIGNEDIN' | 'GUEST';
 
@@ -102,6 +103,21 @@ export class SbFormLocationSelectionDelegate {
     if (value['children'] && value['children']['persona']) {
       this.shouldDeviceProfileLocationUpdate = true;
       this.shouldUserProfileLocationUpdate = true;
+      let anchor = document.querySelector('.item--about') as HTMLElement;
+      let pathSegment;
+      if( this.userService.guestUserProfile.framework.board){
+        let board = this.userService.guestUserProfile.framework.board[0];
+        if(board==="CBSE/NCERT"){
+            board="CBSE";
+        }
+        pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
+      }
+      if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
+        anchor.style.removeProperty('display');
+      }
+      else {
+        anchor.style.display = 'none';
+      }
     }
   }
 
