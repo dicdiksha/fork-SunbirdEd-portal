@@ -743,7 +743,12 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     filters.mimeType = filters.mimeType || _.get(mimeType, 'values');
     _.forEach(_filters, (el, key) => {
       if (key !== 'primaryCategory' && key !== 'mimeType' && !_.has(filters, key)) {
-        filters[key] = el;
+        //removed visibility Parent specifi to ncert ALL tab only
+        if( key==="visibility" && this.queryParams.selectedTab==="all" ){
+          filters[key] = el.filter(item => item !== "Parent");
+        }else{
+          filters[key] = el;
+        }
       }
     });
 
