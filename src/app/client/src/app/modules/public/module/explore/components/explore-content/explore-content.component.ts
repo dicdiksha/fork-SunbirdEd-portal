@@ -12,7 +12,7 @@ import { takeUntil, map, mergeMap, first, debounceTime, tap, delay } from 'rxjs/
 import { CacheService } from 'ng2-cache-service';
 import { ContentManagerService } from '../../../offline/services';
 import {omit, groupBy, get, uniqBy, toLower, find, map as _map, forEach, each} from 'lodash-es';
-
+import { frameworkList } from './../../../../../content-search/components/search-data';
 @Component({
   templateUrl: './explore-content.component.html',
   styleUrls: ['./explore-content.component.scss']
@@ -203,6 +203,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     return result;
   }
   private fetchContents() {
+    const pathname = window.location.pathname.split('/')[1];
     const selectedMediaType = _.isArray(_.get(this.queryParams, 'mediaType')) ? _.get(this.queryParams, 'mediaType')[0] :
       _.get(this.queryParams, 'mediaType');
     const mimeType = _.find(_.get(this.allTabData, 'search.filters.mimeType'), (o) => {
@@ -285,6 +286,11 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
     if (cbseNcertExists) {
       option.filters.se_boards = ['CBSE'];
+    } else {
+      if(pathname != 'explore' && this.queryParams.selectedTab ==="all"){
+        option.filters.se_boards =  [ frameworkList[pathname]['name']];
+      }
+
     }
     this.searchService.contentSearch(option)
       .pipe(
@@ -368,6 +374,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
         this.toasterService.error(this.resourceService.messages.fmsg.m0051);
       });
   }
+
   addHoverData() {
     this.contentList = this.utilService.addHoverData(this.contentList, true);  
   }

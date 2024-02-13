@@ -6,7 +6,7 @@ import {
     ResourceService, ToasterService, ConfigService, NavigationHelperService, LayoutService, COLUMN_TYPE, UtilService,
     OfflineCardService, BrowserCacheTtlService, IUserData, GenericResourceService
 } from '@sunbird/shared';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { cloneDeep, get, find, map as _map, pick, omit, groupBy, sortBy, replace, uniqBy, forEach, has, uniq, flatten, each, isNumber, toString, partition, toLower, includes } from 'lodash-es';
 import { IInteractEventEdata, IImpressionEventInput, TelemetryService } from '@sunbird/telemetry';
 import { map, tap, switchMap, skipWhile, takeUntil, catchError, startWith } from 'rxjs/operators';
@@ -16,7 +16,7 @@ import * as _ from 'lodash-es';
 import { CacheService } from 'ng2-cache-service';
 import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
-
+import { frameworkList } from '../../../content-search/components/search-data';
 @Component({
     selector: 'app-explore-page-component',
     templateUrl: './explore-page.component.html',
@@ -77,7 +77,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     selectedFacet: { facet: any; value: any; };
     showEdit = false;
     isFilterEnabled = true;
-    defaultTab = 'Textbook';
+    defaultTab = 'Home';
     userProfile: any;
     targetedCategory: any = [];
     subscription: any;
@@ -151,7 +151,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     private _addFiltersInTheQueryParams(updatedFilters = {}) {
         this.getCurrentPageData();
         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
-        const queryParams = { ...this.defaultFilters, selectedTab: _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook', ...updatedFilters, ...params };
+        const queryParams = { ...this.defaultFilters, selectedTab: _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'home', ...updatedFilters, ...params };
         this.router.navigate([], { queryParams, relativeTo: this.activatedRoute });
     }
 
@@ -207,7 +207,45 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             }));
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        const pathname = window.location.pathname.split('/')[1];
+        const searchParams = window.location.search;
+        let urlQuery = new URLSearchParams(searchParams);
+        if(pathname != 'explore') {
+            const selectedTab = urlQuery.get("selectedTab") != undefined || urlQuery.get("selectedTab") != null ? urlQuery.get("selectedTab") : 'home';
+        const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
+            if (tenant) {
+            const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+            this.router.navigate(
+                [],
+                {
+                    relativeTo: this.activatedRoute,
+                    queryParams,
+                    queryParamsHandling: 'merge', // remove to replace all query params by provided
+                    skipLocationChange: false
+                }
+            );
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+                if(guestUserDetails && Object.keys(guestUserDetails).length){
+                    console.log('inside')
+                    guestUserDetails.framework.board = [queryParams.board];
+                    guestUserDetails.framework.id = queryParams.id;
+                    localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+                }
+            }
+        } else {
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+            if(guestUserDetails && Object.keys(guestUserDetails).length){
+                // guestUserDetails.framework.board = ['CBSE'];
+                // guestUserDetails.framework.id = 'ncert_k-12';
+                // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+            } else {
+                this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+            }
+        }
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        await delay(100);
+
         this.isDesktopApp = this.utilService.isDesktopApp;
         this.setUserPreferences();
         this.subscription$ = this.activatedRoute.queryParams.subscribe(queryParams => {
@@ -347,7 +385,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public getCurrentPageData() {
-        return this.getPageData(get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'textbook');
+        return this.getPageData(get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || _.get(this.defaultTab, 'contentType') || 'home');
     }
 
     public getFilters({ filters, status }) {
@@ -455,7 +493,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     const option = this.searchService.getSearchRequest(request, get(filters, 'primaryCategory'));
                         const params = _.get(this.activatedRoute, 'snapshot.queryParams');
                         _.filter(Object.keys(params),filterValue => { 
-                            if (((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
+                            if (_.get(currentPageData, 'metaData.filters') && _.get(currentPageData, 'metaData.filters')!=undefined && ((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
                                 let param = {};
                                 param[filterValue] = (typeof (params[filterValue]) === "string") ? params[filterValue].split(',') : params[filterValue];
                                 if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
@@ -1081,6 +1119,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.userPreference = response;
                 });
             }
+            this.setAboutTab();
         } catch (error) {
             return null;
         }
@@ -1161,6 +1200,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     getSelectedTab () {
+        this.setUserPreferences();
         return get(this.activatedRoute, 'snapshot.queryParams.selectedTab');
     }
 
@@ -1192,6 +1232,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.toasterService.warning(_.get(this.resourceService, 'messages.emsg.m0012'));
             });
         }
+        this.setAboutTab();
         // this.setUserPreferences();
         // this.fetchContents$.next(this._currentPageData);
     }
@@ -1329,4 +1370,23 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         }
     }
+
+    setAboutTab(){
+        let anchor = document.querySelector('.item--about') as HTMLElement;
+        let pathSegment;
+        if( this.userPreference.framework.board){
+            let board = this.userPreference.framework.board[0];
+            if(board==="CBSE/NCERT"){
+                board="CBSE";
+            }
+          pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
+        }
+        if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
+          anchor.style.removeProperty('display');
+        }
+        else{
+          anchor.style.display = 'none';
+        }
+    }
+
 }
