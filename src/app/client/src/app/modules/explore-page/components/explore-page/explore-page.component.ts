@@ -1082,7 +1082,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.userPreference = response;
                 });
             }
-                 this.setAboutTab();
+            this.setAboutTab();
         } catch (error) {
             return null;
         }
@@ -1194,7 +1194,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.toasterService.warning(_.get(this.resourceService, 'messages.emsg.m0012'));
             });
         }
-        this.setAboutTab();
         // this.setUserPreferences();
         // this.fetchContents$.next(this._currentPageData);
     }
@@ -1350,4 +1349,5 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
           anchor.style.display = 'none';
         }
     }
+
 }
