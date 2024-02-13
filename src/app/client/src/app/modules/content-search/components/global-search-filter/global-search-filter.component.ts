@@ -85,7 +85,7 @@ export class GlobalSearchFilterComponent implements OnInit, OnChanges, OnDestroy
         return -1;
       }).filter(f => {
         const pathSegment = this.userService._slug;
-        if(pathSegment && f.name === 'se_boards')
+        if(pathSegment && f.name === 'se_boards' && frameworkList[pathSegment])
         {
           this.selectedBoard = frameworkList[pathSegment].name;
           return false;
