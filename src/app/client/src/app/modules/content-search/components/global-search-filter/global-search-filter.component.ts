@@ -17,15 +17,16 @@ import { Subject } from 'rxjs';
 import { debounceTime, map, takeUntil, filter } from 'rxjs/operators';
 import { LibraryFiltersLayout } from '@project-sunbird/common-consumption';
 import { UserService } from '@sunbird/core';
-import { IFacetFilterFieldTemplateConfig } from '@dictrigyn/common-form-elements';
+import { IFacetFilterFieldTemplateConfig } from '@dicdikshaorg/common-form-elements';
 import { CacheService } from 'ng2-cache-service';
-
+import { frameworkList } from '../search-data';
 @Component({
   selector: 'app-global-search-filter',
   templateUrl: './global-search-filter.component.html',
   styleUrls: ['./global-search-filter.component.scss']
 })
 export class GlobalSearchFilterComponent implements OnInit, OnChanges, OnDestroy {
+  selectedBoard: string = "";
   @Input() facets;
   @Input() queryParamsToOmit;
   @Input() supportedFilterAttributes = ['se_boards', 'se_mediums', 'se_gradeLevels', 'se_subjects', 'primaryCategory', 'mediaType', 'additionalCategories', 'channel'];
@@ -81,7 +82,19 @@ export class GlobalSearchFilterComponent implements OnInit, OnChanges, OnDestroy
           return 1;
         }
         return -1;
-      }).map((f) => {
+      })
+      .filter(f => {
+        const pathSegment = this.userService._slug;
+        if(pathSegment && f.name === 'se_boards' && frameworkList[pathSegment])
+        {
+          this.selectedBoard = frameworkList[pathSegment].name;
+          return false;
+        }
+        else {
+          return f;
+        }
+      })
+      .map((f) => {
         if (f.name === 'mediaType') {
           f.values = f.mimeTypeList.map((m) => ({name: m}));
 
@@ -99,8 +112,7 @@ export class GlobalSearchFilterComponent implements OnInit, OnChanges, OnDestroy
           type: 'dropdown',
           labelText: f.name === 'se_boards' ? _.get(this.resourceService, 'frmelmnts.lbl.boardsFilter') : f.label || f.name,
           placeholderText: `${this.resourceService.frmelmnts.lbl.Select} ${f.label || f.name}`,
-          multiple: true,
-          autocomplete: true
+          multiple: true
         };
       });
       this.resourceService.languageSelected$.pipe(takeUntil(this.unsubscribe$)).subscribe((languageData) => {
