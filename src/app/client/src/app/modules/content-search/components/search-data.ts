@@ -76,6 +76,11 @@ export const frameworkList = {
         "identifier": "kl_k-12",
         "tenantPageExist": false
     },
+    "lk": {
+        "name": "UT (Lakshadweep)",
+        "identifier": "lk_k-12",
+        "tenantPageExist": false
+    },
     "mitra": {
         "name": "State (Maharashtra)",
         "identifier": "mh_k-12_1",
@@ -199,7 +204,7 @@ export const frameworkList = {
     "CISCE": {
         "name": "CISCE",
         "identifier": "cisce_k-12",
-        "tenantPageExist": true
+        "tenantPageExist": false
     },
     "IGOT-Health": {
         "name": "IGOT-Health",
