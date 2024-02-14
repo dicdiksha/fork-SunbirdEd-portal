@@ -12,6 +12,7 @@ import { get } from 'lodash-es';
 export class SelectOrgComponent implements OnInit, AfterViewInit {
   public selectedOrg: any;
   public orgList: Array<any>;
+  public tempOrgList: Array<any>;
   public errorUrl = '/sso/sign-in/error';
   public telemetryImpression;
   public tenantInfo: any = {};
@@ -30,8 +31,10 @@ export class SelectOrgComponent implements OnInit, AfterViewInit {
     this.setTelemetryData();
     this.setRedirectUriCookie();
 
-    this.getSsoOrgList().subscribe(formData => this.orgList = formData,
+    let itemsToRemoveForSSO = ["State Tamil Nandu", "State Himachal Pradesh", "State Gujarat"];
+    this.getSsoOrgList().subscribe(formData => this.tempOrgList = formData,
       error => console.log('no org configured in form')); // show toaster message
+    this.orgList = this.tempOrgList.filter(item => !itemsToRemoveForSSO.includes(item.name));
   }
   private setTenantInfo() {
     this.tenantService.tenantData$.pipe(first()).subscribe(data => {
