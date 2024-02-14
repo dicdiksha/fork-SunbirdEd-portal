@@ -31,7 +31,7 @@ export class SelectOrgComponent implements OnInit, AfterViewInit {
     this.setTelemetryData();
     this.setRedirectUriCookie();
 
-    let itemsToRemoveForSSO = ["State Tamil Nandu", "State Himachal Pradesh", "State Gujarat"];
+    let itemsToRemoveForSSO = ["State Tamil Nadu", "State Himachal Pradesh", "State Gujarat"];
     this.getSsoOrgList().subscribe(formData => this.tempOrgList = formData,
       error => console.log('no org configured in form')); // show toaster message
     this.orgList = this.tempOrgList.filter(item => !itemsToRemoveForSSO.includes(item.name));
