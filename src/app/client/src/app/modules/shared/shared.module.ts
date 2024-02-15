@@ -48,7 +48,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MaterialModule } from './modules/material/material.module';
 // import {MatAutocompleteModule} from '@angular/material/autocomplete';
-
+import { RatingModule } from 'ng-starrating';
 
 @NgModule({
   imports: [
@@ -59,7 +59,7 @@ import { MaterialModule } from './modules/material/material.module';
     TelemetryModule,
     TranslateModule.forChild(),
     MatTooltipModule, MatTabsModule, MatDialogModule,
-    MatAutocompleteModule, MatFormFieldModule, MatInputModule,
+    MatAutocompleteModule, MatFormFieldModule, MatInputModule,RatingModule,
     MatChipsModule, MatIconModule, MatSelectModule, MatListModule, MatButtonModule, MatCheckboxModule, MaterialModule
   ],
   declarations: [AppLoaderComponent, DateFormatPipe,
@@ -73,7 +73,7 @@ import { MaterialModule } from './modules/material/material.module';
     AutocompletePipe, MaterialAutoCompleteComponent, TransposeTermsPipe
   ],
   exports: [AppLoaderComponent, DateFormatPipe, TranslateModule,
-    BatchCardComponent, NoResultComponent, CardComponent, CardCreationComponent, FilterPipe,
+    BatchCardComponent, NoResultComponent, CardComponent, CardCreationComponent, FilterPipe,RatingModule,
     OfflineApplicationDownloadComponent, HighlightTextDirective, FullPageModalComponent, AccountMergeModalComponent, SortByPipe,
     ConfirmPopupComponent, SelectOptionGroupComponent, AppLandingSectionComponent,
     ShareLinkComponent, BrowserCompatibilityComponent, QrCodeModalComponent, CdnprefixPipe, InterpolatePipe, RedirectComponent,
