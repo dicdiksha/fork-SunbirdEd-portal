@@ -41,6 +41,8 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
   mimeType: string;
   subscription;
   isDesktopApp;
+  fullRatingArray = [];
+  halfRating : boolean = false;
   telemetryEventSubscription$: EventEmitter<object>;
 
   constructor(
@@ -58,6 +60,13 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit() {
+    if(this.contentData?.me_averageRating){
+      const fullRating = Math.floor(this.contentData?.me_averageRating);
+      if(fullRating){
+        this.fullRatingArray = Array.from({ length: fullRating }, (_, index) => index + 1);
+      }
+      this.halfRating = this.contentData?.me_averageRating % 1 !== 0;
+    }
     this.enableDisableactionButtons();
     this.isDesktopApp = this.utilService.isDesktopApp;
     // Replacing cbse/ncert value with cbse
@@ -129,6 +138,7 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
     this.contentPrintable();
     if (this.isDesktopApp && _.get(changes, 'contentData') && !_.get(changes, 'contentData.firstChange')) {
        this.contentData = _.get(changes, 'contentData.currentValue');
+       this.contentData.me_averageRating = 3.5;
         this.contentManagerService.contentDownloadStatus$.pipe(takeUntil(this.unsubscribe$)).subscribe( contentDownloadStatus => {
           this.contentDownloadStatus = contentDownloadStatus;
           if (this.contentData &&
@@ -379,7 +389,7 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
 
   getContentPlaySessionCount(playSessionCountString: string): any {
     try {
-      const parsedData = JSON.parse(playSessionCountString);
+      const parsedData = typeof playSessionCountString === "string" ? JSON.parse(playSessionCountString) : playSessionCountString;
       if (parsedData.portal && parsedData.app) {
         return {
           sum: this.roundNumber(parsedData.portal + parsedData.app)
