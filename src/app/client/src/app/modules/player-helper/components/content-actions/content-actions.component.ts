@@ -60,13 +60,7 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if(this.contentData?.me_averageRating){
-      const fullRating = Math.floor(this.contentData?.me_averageRating);
-      if(fullRating){
-        this.fullRatingArray = Array.from({ length: fullRating }, (_, index) => index + 1);
-      }
-      this.halfRating = this.contentData?.me_averageRating % 1 !== 0;
-    }
+    
     this.enableDisableactionButtons();
     this.isDesktopApp = this.utilService.isDesktopApp;
     // Replacing cbse/ncert value with cbse
@@ -134,6 +128,13 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
       }
   }
   ngOnChanges(changes: SimpleChanges) {
+    if(this.contentData?.me_averageRating){
+      const fullRating = Math.floor(this.contentData?.me_averageRating);
+      if(fullRating){
+        this.fullRatingArray = Array.from({ length: fullRating }, (_, index) => index + 1);
+      }
+      this.halfRating = (this.contentData?.me_averageRating) % 1 !== 0;
+    }
     this.enableDisableactionButtons();
     this.contentPrintable();
     if (this.isDesktopApp && _.get(changes, 'contentData') && !_.get(changes, 'contentData.firstChange')) {

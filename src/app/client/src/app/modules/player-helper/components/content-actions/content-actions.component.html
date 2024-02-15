@@ -5,12 +5,12 @@
     </div>
     <div class="content-video__player__title__subtitle fsmall mt-4">
       <span class="mr-4" *ngIf="contentData?.me_averageRating">{{contentData?.me_averageRating || '0'}}</span>
-      <span *ngFor="let item of fullRatingArray" class="star-rating"><img src="assets/images/fullstar.png"></span><span class="star-rating" *ngIf="halfRating"><img src="assets/images/halfstar.png"></span>
-      <span class="px-2" *ngIf="contentData?.me_averageRating"> | Rated By </span>
+      <div *ngIf="contentData?.me_averageRating"><span *ngFor="let item of fullRatingArray" class="star-rating"><img src="assets/images/fullstar.png"></span><span class="star-rating" *ngIf="halfRating"><img src="assets/images/halfstar.png"></span></div>
+      <span class="px-2" *ngIf="contentData?.me_totalRatingsCount"> | Rated By </span>
       <span class="mr-8" *ngIf="contentData?.me_totalRatingsCount"> {{roundNumber(contentData?.me_totalRatingsCount) || '0'}} |</span>
       <span *ngIf="contentData?.me_totalPlaySessionCount">{{getContentPlaySessionCount(contentData?.me_totalPlaySessionCount)?.sum || '0' }}
       </span>
-      <span class="mr-8 px-2">  Total Views</span>
+      <span *ngIf="contentData?.me_totalPlaySessionCount" class="mr-8 px-2">  Total Views</span>
     </div>
   </div>
 
