@@ -49,7 +49,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MaterialModule } from './modules/material/material.module';
 // import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
-
 @NgModule({
   imports: [
     CommonModule,
