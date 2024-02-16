@@ -41,6 +41,8 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
   mimeType: string;
   subscription;
   isDesktopApp;
+  fullRatingArray = [];
+  halfRating : boolean = false;
   telemetryEventSubscription$: EventEmitter<object>;
 
   constructor(
@@ -58,6 +60,7 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit() {
+    
     this.enableDisableactionButtons();
     this.isDesktopApp = this.utilService.isDesktopApp;
     // Replacing cbse/ncert value with cbse
@@ -125,6 +128,13 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
       }
   }
   ngOnChanges(changes: SimpleChanges) {
+    if(this.contentData?.me_averageRating){
+      const fullRating = Math.floor(this.contentData?.me_averageRating);
+      if(fullRating){
+        this.fullRatingArray = Array.from({ length: fullRating }, (_, index) => index + 1);
+      }
+      this.halfRating = (this.contentData?.me_averageRating) % 1 !== 0;
+    }
     this.enableDisableactionButtons();
     this.contentPrintable();
     if (this.isDesktopApp && _.get(changes, 'contentData') && !_.get(changes, 'contentData.firstChange')) {
@@ -375,6 +385,38 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
     }, err => {
       this.toasterService.error(this.resourceService.messages.etmsg.desktop.deleteContentErrorMessage);
     });
+  }
+
+  getContentPlaySessionCount(playSessionCountString: string): any {
+    try {
+      const parsedData = typeof playSessionCountString === "string" ? JSON.parse(playSessionCountString) : playSessionCountString;
+      if (parsedData.portal && parsedData.app) {
+        return {
+          sum: this.roundNumber(parsedData.portal + parsedData.app)
+        };
+      } else {
+        return { sum: this.roundNumber(parsedData.portal || parsedData.app || 0)};
+      }
+    } catch (e) {
+      console.error('Error parsing play session count JSON', e);
+      return { sum: 0 }
+    }
+  }
+
+  roundNumber(value: number):any{
+    try{
+      if (value >= 1000) {
+        const suffixes = ["", "K", "M", "B", "T"];
+        const suffixNum = Math.floor(("" + value).length / 3);
+        const shortValue = parseFloat((value / Math.pow(1000, suffixNum)).toFixed(2));
+        return shortValue + suffixes[suffixNum];
+      }
+      return value.toString();
+    }
+    catch(e){
+      console.error('Error while rounding number for :', value, e)
+      return 0;
+    }
   }
 
 }

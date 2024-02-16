@@ -1,1 +1,30 @@
 @use 'components/video' as *;
+
+::ng-deep .content-video {
+    &__player {
+   
+ 
+      &__title {
+ 
+        &__subtitle {
+            align-items: center;
+            font-size: .75rem;
+            color: #fff !important;
+            background-color: #005A9E;
+            display: inline-flex;
+            width: max-content;
+            padding: 3px 10px;
+            border-radius:5px;
+         
+          i {
+            color: #fff !important;
+          }
+          span.star-rating {
+            margin-top: -4px;
+         }
+        }
+      }
+ 
+   
+    }
+  }
