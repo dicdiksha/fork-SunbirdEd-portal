@@ -8,10 +8,12 @@
       <ng-container *ngIf="contentData?.me_averageRating">
         <span *ngFor="let item of fullRatingArray" class="star-rating"><img src="assets/images/fullstar.png"></span>
         <span class="star-rating" *ngIf="halfRating"><img src="assets/images/halfstar.png"></span>
+         <span class="px-2">|</span>
       </ng-container>
-      <span class="px-2" *ngIf="contentData?.me_totalRatingsCount">| Rated By </span>
-      <span class="mr-4" *ngIf="contentData?.me_totalRatingsCount">{{roundNumber(contentData?.me_totalRatingsCount) || '0'}}</span>
-      <span *ngIf="contentData?.me_totalPlaySessionCount">| {{getContentPlaySessionCount(contentData?.me_totalPlaySessionCount)?.sum || '0' }}
+      <span *ngIf="contentData?.me_totalRatingsCount"> Rated By </span>
+      <span *ngIf="contentData?.me_totalRatingsCount">{{roundNumber(contentData?.me_totalRatingsCount) || '0'}} 
+        <span class="px-2">|</span> </span>
+      <span *ngIf="contentData?.me_totalPlaySessionCount"> {{getContentPlaySessionCount(contentData?.me_totalPlaySessionCount)?.sum || '0' }}
       </span>
       <span class="px-2" *ngIf="contentData?.me_totalPlaySessionCount"> Total Views</span>
     </div>
