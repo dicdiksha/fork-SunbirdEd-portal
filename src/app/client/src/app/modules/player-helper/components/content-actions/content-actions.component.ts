@@ -139,7 +139,6 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
     this.contentPrintable();
     if (this.isDesktopApp && _.get(changes, 'contentData') && !_.get(changes, 'contentData.firstChange')) {
        this.contentData = _.get(changes, 'contentData.currentValue');
-       this.contentData.me_averageRating = 3.5;
         this.contentManagerService.contentDownloadStatus$.pipe(takeUntil(this.unsubscribe$)).subscribe( contentDownloadStatus => {
           this.contentDownloadStatus = contentDownloadStatus;
           if (this.contentData &&
