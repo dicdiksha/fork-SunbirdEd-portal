@@ -15,7 +15,7 @@ import { CommonConsumptionModule } from '@dicdikshaorg/common-consumption';
 import { ContentSearchModule } from '@sunbird/content-search';
 import { SlickModule } from 'ngx-slick';
 import { ExplorePageComponent } from './components';
-import { ContentSectionModule } from 'content-section-v11';
+import { ContentSectionModule } from 'sb-content-section-v1';
 import {ObservationModule} from '../observation/observation.module';
 
 @NgModule({
@@ -31,6 +31,7 @@ import {ObservationModule} from '../observation/observation.module';
     SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule, SuiProgressModule,
     SuiRatingModule, SuiCollapseModule, SuiDimmerModule, WebExtensionModule,
     CommonConsumptionModule, ContentSearchModule, SlickModule, ContentSectionModule, ObservationModule
-  ]
+  ],
+  exports:[ContentSectionModule]
 })
 export class ExplorePageModule { }
