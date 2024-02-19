@@ -31,10 +31,18 @@ export class SelectOrgComponent implements OnInit, AfterViewInit {
     this.setTelemetryData();
     this.setRedirectUriCookie();
 
-    let itemsToRemoveForSSO = ["State Tamil Nandu", "State Himachal Pradesh", "State Gujarat"];
-    this.getSsoOrgList().subscribe(formData => this.tempOrgList = formData,
-      error => console.log('no org configured in form')); // show toaster message
-    this.orgList = this.tempOrgList.filter(item => !itemsToRemoveForSSO.includes(item.name));
+    let itemsToRemoveForSSO = ["State Tamil Nadu", "State Himachal Pradesh", "State Gujarat"];
+    // this.getSsoOrgList().subscribe(formData => this.tempOrgList = formData,
+    //   error => console.log('no org configured in form')); // show toaster message
+    // this.orgList = this.tempOrgList.filter(item => !itemsToRemoveForSSO.includes(item.name));
+    
+    this.getSsoOrgList().subscribe((formData: any) => {
+      this.tempOrgList = formData;
+      this.orgList = this.tempOrgList?.filter(item => !itemsToRemoveForSSO.includes(item?.name));
+    },
+    (error: any) => {
+      console.log('no org configured in form', error);
+    })
   }
   private setTenantInfo() {
     this.tenantService.tenantData$.pipe(first()).subscribe(data => {
