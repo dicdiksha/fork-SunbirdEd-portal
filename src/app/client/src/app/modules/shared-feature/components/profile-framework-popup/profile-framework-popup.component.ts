@@ -61,9 +61,10 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
       this.allowedFields = ['board', 'medium', 'gradeLevel'];
     }
     // Replacing CBSE with CBSE/NCERT
-    if (_.toLower(_.get(this.selectedOption, 'board')) === 'cbse') {
-      this.selectedOption['board'] = ['CBSE/NCERT'];
-    }
+    //117337 - removed cbse/ncert
+    // if (_.toLower(_.get(this.selectedOption, 'board')) === 'cbse') {
+    //   this.selectedOption['board'] = ['CBSE/NCERT'];
+    // }
     this.editMode = _.some(this.selectedOption, 'length') || false;
     this.unsubscribe = this.isCustodianOrgUser().pipe(
       mergeMap((custodianOrgUser: boolean) => {
@@ -197,9 +198,11 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
       this.enableSubmitButton();
       return;
     }
-    if (_.get(this.selectedOption, field.code) === 'CBSE/NCERT') {
-      this.frameWorkId = _.get(_.find(field.range, { name: 'CBSE' }), 'identifier');
-    } else if (_.get(this.boardOptions, 'range.length')) {
+    //117337 - removed cbse/ncert
+    // if (_.get(this.selectedOption, field.code) === 'CBSE/NCERT') {
+    //   this.frameWorkId = _.get(_.find(field.range, { name: 'CBSE' }), 'identifier');
+    // } else
+     if (_.get(this.boardOptions, 'range.length')) {
       this.frameWorkId = _.get(_.find(this.boardOptions.range, { name: _.get(this.selectedOption, field.code) }), 'identifier');
     } else {
       this.frameWorkId = _.get(_.find(field.range, { name: _.get(this.selectedOption, field.code) }), 'identifier');
@@ -294,13 +297,14 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
     const selectedOption = _.cloneDeep(this.selectedOption);
     selectedOption.board = _.get(this.selectedOption, 'board') ? [this.selectedOption.board] : [];
     selectedOption.id = this.frameWorkId;
-    if (selectedOption.board) {
-      _.forEach(selectedOption.board, (data, index) => {
-        if (data === 'CBSE/NCERT') {
-          selectedOption.board[index] = 'CBSE';
-        }
-      });
-    }
+    //117337 - removed cbse/ncert
+    // if (selectedOption.board) {
+    //   _.forEach(selectedOption.board, (data, index) => {
+    //     if (data === 'CBSE/NCERT') {
+    //       selectedOption.board[index] = 'CBSE';
+    //     }
+    //   });
+    // }
     if (this.dialogRef && this.dialogRef.close) {
       this.dialogRef.close();
     }

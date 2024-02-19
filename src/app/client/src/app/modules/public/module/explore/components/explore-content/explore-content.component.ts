@@ -220,8 +220,8 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       filters.channel = this.hashTagId;
     }
     const _filters = _.get(this.allTabData, 'search.filters');
-    filters.primaryCategory = filters.primaryCategory || ((_.get(filters, 'primaryCategory.length') && filters.primaryCategory) || _.get(this.allTabData, 'search.filters.primaryCategory'));
-    filters.mimeType = filters.mimeType || _.get(mimeType, 'values');
+      filters.primaryCategory = filters.primaryCategory || ((_.get(filters, 'primaryCategory.length') && filters.primaryCategory) || _.get(this.allTabData, 'search.filters.primaryCategory'));
+      filters.mimeType = filters.mimeType || _.get(mimeType, 'values');
     _.forEach(_filters, (el, key) => {
       if (key !== 'primaryCategory' && key !== 'mimeType' && !_.has(filters, key)) {
         filters[key] = el;
@@ -259,7 +259,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       queryFields.push(dummyFieldName);
     }
 	
-    const option: any = {
+      const option: any = {
       filters: _.omitBy(filters || {}, value => _.isArray(value) ? (!_.get(value, 'length') ? true : false) : false),
       fields: queryFields,//_.get(this.allTabData, 'search.fields'),
       limit: _.get(this.allTabData, 'search.limit') ?  _.get(this.allTabData, 'search.limit')
@@ -290,7 +290,15 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       option.params.framework = this.frameworkId;
     }
     // Replacing cbse/ncert value with cbse
-    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
+    //117337 - removed hardcoded cbse/ncert
+    // if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+    //         filters.board = ['cbse'];
+    //     }
+    // const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
+    if (_.toLower(_.get(filters, 'board[0]')) === 'cbse' || _.toLower(_.get(filters, 'board')) === 'cbse') {
+      filters.board = ['cbse'];
+  }
+    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse');
     if (cbseNcertExists) {
       option.filters.se_boards = ['CBSE'];
     } else {
