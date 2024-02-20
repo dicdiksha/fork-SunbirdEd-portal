@@ -166,7 +166,7 @@
               <sb-content-section *ngIf="section?.isEnabled" (cardClick)="playContent($event, section?.title)"
                 [sortBy]="section?.apiConfig?.sortBy" [searchRequest]="section?.searchRequest" 
                 [title]="section?.pageTitle === 'frmelmnts.lbl.recentlyPublishedTextBooks' ? resourceService?.frmelmnts?.lbl.recentlyPublishedTextBooks : (section?.pageTitle === 'frmelmnts.lbl.recentlyPublishedCourses' ? resourceService?.frmelmnts?.lbl.recentlyPublishedCourses : section?.title)"
-                [layoutConfig]="layoutConfig" (viewMoreClick)="viewAll($event, section)"
+                [layoutConfig]="layoutConfiguration" (viewMoreClick)="viewAll($event, section)"
                 [viewMoreButtonText]="resourceService?.frmelmnts?.lnk?.viewall">
               </sb-content-section>
             </div>
