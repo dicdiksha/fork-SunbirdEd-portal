@@ -2,7 +2,7 @@
 cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
-npm install -g @angular/cli@11.2.19 
+#npm install -g @angular/cli@11.2.19 
 npm install --ignore-engines
 npm run prod-desktop
 cd ..
