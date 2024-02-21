@@ -2,7 +2,6 @@
 cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
-curl https://www.google.co.in/
 #npm install -g @angular/cli@11.2.19 
 npm install --ignore-engines
 npm run prod-desktop
