@@ -77,6 +77,15 @@ const verifyToken = (token) => {
   date2.setUTCSeconds(token.exp);
   // let exp = date2.getTime();
   let exp = isNaN(date2.getTime()) ? Date.parse(token.exp) : date2.getTime();
+
+  if (token.iss.toLowerCase() == 'mp' && isNaN(token.iat)) {
+    iat = convertEpochDate(token).iat;
+  }
+
+  if (token.iss.toLowerCase() == 'mp' && isNaN(token.exp)) {
+    exp = convertEpochDate(token).exp;
+  }
+  
   logger.info("exp---->>>>>>>>>>>>>>>>>>>>>>", exp);
   logger.info("timeInSeconds---->>>>>>>>>>>>>>>>>>>>>>", timeInSeconds);
   logger.info("!(exp > timeInSeconds)---->>>>>>>>>>>>>>>>>>", !(exp > timeInSeconds));
@@ -103,6 +112,37 @@ const verifyToken = (token) => {
   }
   return true;
 }
+
+function convertEpochDate(token) {
+  let isValidEpochExptTime = isNaN(token?.exp);
+  let isValidEpochIatTime = isNaN(token?.iat);
+
+  let epochDate = {
+      iat: '',
+      exp: '',
+  };
+  if (isValidEpochExptTime && isValidEpochIatTime) {
+      // exp date
+      let expDateStr = token?.exp;
+      let expDateParts = expDateStr.split(/[- :]/);
+      let month = parseInt(expDateParts[1], 10) - 1;
+      let expDate = new Date(Date.UTC(expDateParts[2], month, expDateParts[0], expDateParts[3], expDateParts[4], expDateParts[5]));
+      epochDate.exp = expDate.getTime() / 1000; // convert milisecond to second
+
+      // iat date
+      let iatDateStr = token?.iat;
+      let iatDateParts = iatDateStr.split(/[- :]/);
+      let iatMonth = parseInt(iatDateParts[1], 10) - 1;
+      let iatDate = new Date(Date.UTC(iatDateParts[2], iatMonth, iatDateParts[0], iatDateParts[3], iatDateParts[4], iatDateParts[5]));
+      epochDate.iat = iatDate.getTime() / 1000; // convert milisecond to second
+  }
+  else {
+      epochDate.exp = token?.exp
+      epochDate.iat = token.iat
+  }
+  return epochDate
+}
+
 const fetchUserWithExternalId = async (payload, req) => { // will be called from player docker to learner docker
   const options = {
     method: 'GET',

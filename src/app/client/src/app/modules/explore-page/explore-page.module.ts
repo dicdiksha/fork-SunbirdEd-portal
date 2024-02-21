@@ -15,7 +15,7 @@ import { CommonConsumptionModule } from '@dicdikshaorg/common-consumption';
 import { ContentSearchModule } from '@sunbird/content-search';
 import { SlickModule } from 'ngx-slick';
 import { ExplorePageComponent } from './components';
-import { ContentSectionModule } from 'content-section-v11';
+import { ContentSectionModule } from '@dicdikshaorg/sb-content-section';
 import {ObservationModule} from '../observation/observation.module';
 
 @NgModule({

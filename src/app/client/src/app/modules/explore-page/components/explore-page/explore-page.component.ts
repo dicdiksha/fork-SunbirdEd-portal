@@ -616,7 +616,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 }
                                 return _map(sections, (section) => {
                                     forEach(section.contents, contents => {
-                                        contents.cardImg = contents.appIcon || 'assets/images/book.png';
+                                        contents.cardImg = contents.appIcon || 'assets/images/placeholder-Image.png';
                                     });
                                     return section;
                                 });
