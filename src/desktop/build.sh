@@ -2,17 +2,18 @@
 cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
-yarn install
+npm install -g @angular/cli@11.2.19
+npm install --ignore-engines
 npm run prod-desktop
 cd ..
-yarn install
+npm install
 npm run  resource-bundles
 cd ../desktop/OpenRAP
-yarn install
+npm install
 npm run pack
 cd ..
-yarn --update-checksums
-yarn install
+npm --update-checksums
+npm install
 npm run build-ts
 node scripts/copy.js
 
