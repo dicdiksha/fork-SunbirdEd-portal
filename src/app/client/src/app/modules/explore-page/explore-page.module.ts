@@ -31,7 +31,6 @@ import {ObservationModule} from '../observation/observation.module';
     SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule, SuiProgressModule,
     SuiRatingModule, SuiCollapseModule, SuiDimmerModule, WebExtensionModule,
     CommonConsumptionModule, ContentSearchModule, SlickModule, ContentSectionModule, ObservationModule
-  ],
-  exports:[ContentSectionModule]
+  ]
 })
 export class ExplorePageModule { }
