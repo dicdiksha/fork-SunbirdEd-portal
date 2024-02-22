@@ -3,8 +3,11 @@ cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
 npm install husky
+
 npm install --ignore-engines
 npm run prod-desktop
+npm install lodash
+npm install @types/lodash
 cd ..
 npm install
 npm run  resource-bundles
