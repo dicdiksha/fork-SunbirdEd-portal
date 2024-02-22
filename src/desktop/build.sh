@@ -3,6 +3,7 @@ cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
 npm install --ignore-engines
+git init
 npm install husky --save-dev
 npm run prod-desktop
 cd ..
