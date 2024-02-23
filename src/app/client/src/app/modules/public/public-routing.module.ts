@@ -40,6 +40,9 @@ const routes: Routes = [
     path: 'faq', loadChildren: () => import('./module/help/help.module').then(m => m.HelpModule)
   },
   {
+    path: 'nishtha-dashboard', loadChildren: () => import('./module/nishtha-dashboard/nishtha-dashboard.module').then(m => m.NishthaDashboardModule)
+  },
+  {
     path: 'guest-profile', loadChildren: () => import('./module/guest-profile/guest-profile.module').then(m => m.GuestProfileModule)
   }
 ];
