@@ -6,6 +6,7 @@ npm install husky
 
 npm install --ignore-engines
 npm run prod-desktop
+npm install lodash
 npm install -D @types/lodash@ts2.5
 cd ..
 npm install
