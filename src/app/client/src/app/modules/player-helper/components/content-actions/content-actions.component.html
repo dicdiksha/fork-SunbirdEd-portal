@@ -1,21 +1,21 @@
-<div class="d-flex flex-w-wrap content-video__player__details" #playerInfo *ngIf="contentData">
+<div class="d-flex flex-w-wrap content-video__player__details" #playerInfo *ngIf="playerConfig">
   <div class="d-flex flex-dc flex-basis-1 ml-8">
     <div class="content-video__player__title mr-auto sb__ellipsis sb__ellipsis--one">
-      {{contentData?.name}}
+      {{playerConfig.metadata?.name}}
     </div>
-    <div class="content-video__player__title__subtitle fsmall mt-4" *ngIf="contentData?.me_totalRatingsCount || contentData?.me_averageRating || contentData?.me_totalPlaySessionCount">
-      <span class="mr-4" *ngIf="contentData?.me_averageRating">{{contentData?.me_averageRating || '0'}}</span>
-      <ng-container *ngIf="contentData?.me_averageRating">
+    <div class="content-video__player__title__subtitle fsmall mt-4" *ngIf="playerConfig.metadata?.me_totalRatingsCount || playerConfig.metadata?.me_averageRating || playerConfig.metadata?.me_totalPlaySessionCount">
+      <span class="mr-4" *ngIf="playerConfig.metadata?.me_averageRating">{{playerConfig.metadata?.me_averageRating || '0'}}</span>
+      <ng-container *ngIf="playerConfig.metadata?.me_averageRating">
         <span *ngFor="let item of fullRatingArray" class="star-rating"><img src="assets/images/fullstar.png"></span>
         <span class="star-rating" *ngIf="halfRating"><img src="assets/images/halfstar.png"></span>
          <span class="px-2">|</span>
       </ng-container>
-      <span *ngIf="contentData?.me_totalRatingsCount"> Rated By </span>
-      <span *ngIf="contentData?.me_totalRatingsCount" class="ml-3">{{roundNumber(contentData?.me_totalRatingsCount) || '0'}} 
+      <span *ngIf="playerConfig.metadata?.me_totalRatingsCount"> Rated By </span>
+      <span *ngIf="playerConfig.metadata?.me_totalRatingsCount" class="ml-3">{{roundNumber(playerConfig.metadata?.me_totalRatingsCount) || '0'}} 
         <span class="px-2">|</span> </span>
-      <span *ngIf="contentData?.me_totalPlaySessionCount" class="mr-2"> {{getContentPlaySessionCount(contentData?.me_totalPlaySessionCount)?.sum || '0' }}
+      <span *ngIf="playerConfig.metadata?.me_totalPlaySessionCount" class="mr-2"> {{getContentPlaySessionCount(playerConfig.metadata?.me_totalPlaySessionCount)?.sum || '0' }}
       </span>
-      <span class="px-2" *ngIf="contentData?.me_totalPlaySessionCount"> Total Views</span>
+      <span class="px-2" *ngIf="playerConfig.metadata?.me_totalPlaySessionCount"> Total Views</span>
     </div>
   </div>
 
