@@ -10,7 +10,7 @@ import * as _ from 'lodash-es';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { ContentManagerService } from '../../../public/module/offline/services';
 import { takeUntil } from 'rxjs/operators';
-
+import { PlayerConfig } from '@sunbird/shared';
 @Component({
   selector: 'app-content-actions',
   templateUrl: './content-actions.component.html',
@@ -19,6 +19,7 @@ import { takeUntil } from 'rxjs/operators';
 export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() contentData;
   @Input() isFullScreen = false;
+  @Input() playerConfig: PlayerConfig;;
   @Output() contentDownloaded = new EventEmitter();
   @Input() assessmentEvents;
   actionButtons = actionButtons;
@@ -128,12 +129,12 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
       }
   }
   ngOnChanges(changes: SimpleChanges) {
-    if(this.contentData?.me_averageRating){
-      const fullRating = Math.floor(this.contentData?.me_averageRating);
+    if(this.playerConfig.metadata?.me_averageRating){
+      const fullRating = Math.floor(this.playerConfig.metadata?.me_averageRating);
       if(fullRating){
         this.fullRatingArray = Array.from({ length: fullRating }, (_, index) => index + 1);
       }
-      this.halfRating = (this.contentData?.me_averageRating) % 1 !== 0;
+      this.halfRating = (this.playerConfig.metadata?.me_averageRating) % 1 !== 0;
     }
     this.enableDisableactionButtons();
     this.contentPrintable();
