@@ -6,7 +6,7 @@ npm install husky
 
 npm install --ignore-engines
 npm run prod-desktop
-npm install -D @types/lodash@ts2.5
+npm install @types/lodash@latest
 cd ..
 npm install
 npm run  resource-bundles
