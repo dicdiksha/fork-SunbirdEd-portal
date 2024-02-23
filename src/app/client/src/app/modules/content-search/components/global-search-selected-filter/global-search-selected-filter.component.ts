@@ -28,6 +28,41 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
       }
     });
   }
+  
+  toTitleCase(str) {
+    return str.toLowerCase().replace(/\b\w/g, function (char) {
+      return char.toUpperCase();
+    });
+  }
+  formetText(selectedFilters:string):string{
+    if(selectedFilters.toLowerCase() ==='cbse training'){
+      return 'CBSE Training'
+    }
+    else if (selectedFilters.toLowerCase() == 'igot-health' ) {
+      return 'IGOT-Health';
+    } else if (selectedFilters.toLowerCase() == 'cbse/ncert' ) {
+      return 'CBSE/NCERT ';
+    } else if (selectedFilters.toLowerCase() == 'cisce' ) {
+      return 'CISCE ';
+    } else if (selectedFilters.toLowerCase() == 'nios' ) {
+      return 'NIOS ';
+    }
+    else if(selectedFilters.toLowerCase() === 'cpd'){
+      return 'CPD'
+    }
+    else if(selectedFilters.toLowerCase() == 'ut (dnh and dd)'){
+      return 'UT (DNH And DD) '
+    }
+    else if( selectedFilters.startsWith("ut") || selectedFilters.startsWith("UT")){
+      let text1 = selectedFilters.split(' ')
+      let firstPart = text1.shift()
+      let secondPart = text1.join(' ')
+      return (firstPart.toUpperCase()+(' ').concat(this.toTitleCase(secondPart)))
+    }
+    else {
+      return selectedFilters
+    }
+  }
 
   removeFilterSelection(data) {
     _.map(this.selectedFilters, (value, key) => {
