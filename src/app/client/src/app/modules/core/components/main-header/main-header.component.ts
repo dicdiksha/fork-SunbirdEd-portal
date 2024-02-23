@@ -661,6 +661,18 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.switchToNewTheme();
   }
 
+  formatText(showingResult:string):string{
+    if(showingResult.toLowerCase() ==='explore cbse training'){
+      return 'Explore CBSE Training'
+    }
+    else if(showingResult.toLowerCase() ==='explore cpd'){
+      return 'Explore CPD'
+    }
+    else {
+      return showingResult
+    }
+  }
+
   checkFullScreenView() {
     this.navigationHelperService.contentFullScreenEvent?.pipe(takeUntil(this.unsubscribe$)).subscribe(isFullScreen => {
       this.isFullScreenView = isFullScreen;
