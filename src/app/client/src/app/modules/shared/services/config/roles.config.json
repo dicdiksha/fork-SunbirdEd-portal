@@ -6,7 +6,8 @@
         "myActivityRole" : ["CONTENT_CREATOR"],
         "orgSetupRole" : ["SYSTEM_ADMINISTRATION"],
         "orgAdminRole" : ["ORG_ADMIN","SYSTEM_ADMINISTRATION"],
-        "programDashboardRole":["PROGRAM_MANAGER","PROGRAM_DESIGNER"]
+        "programDashboardRole":["PROGRAM_MANAGER","PROGRAM_DESIGNER"],
+        "nishthaDashboard" : ["ORG_ADMIN","SYSTEM_ADMINISTRATION","REPORT_VIEWER", "REPORT_ADMIN"]
     },
 
     "workSpaceRole":{

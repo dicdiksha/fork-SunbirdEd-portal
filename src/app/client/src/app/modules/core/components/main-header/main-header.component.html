@@ -404,6 +404,11 @@
               </svg></i>
             {{resourceService.frmelmnts?.lnk?.dashboard}}
           </li>
+
+          <li class="list-item" tabindex="0" role="link" *ngIf='!isDesktopApp && permissionService.permissionAvailable'
+            appPermission [permission]='nishthaDashboard' (click)="toggleSideMenu(false);navigate('/nishtha-dashboard')">
+              <span>{{resourceService?.frmelmnts?.tab?.nishthaDashboard}}</span>
+          </li>
         
           <li class="list-item" *ngIf='!isDesktopApp && permissionService.permissionAvailable' appPermission
           [permission]='programDashboardRole' (click)="toggleSideMenu(false)" routerLink="program">
