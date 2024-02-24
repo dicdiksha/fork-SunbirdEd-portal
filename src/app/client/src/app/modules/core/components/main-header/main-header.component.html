@@ -407,8 +407,7 @@
 
           <li class="list-item" tabindex="0" role="link" *ngIf='!isDesktopApp && permissionService.permissionAvailable'
             appPermission [permission]='nishthaDashboard' (click)="toggleSideMenu(false);navigate('/nishtha-dashboard')">
-              <!-- <span>{{resourceService?.frmelmnts?.tab?.nishthaDashboard}}</span>  -->
-              <span>NISHTHA Dashboard</span>
+              <span>{{resourceService?.frmelmnts?.tab?.nishthaDashboard}}</span> 
           </li>
         
           <li class="list-item" *ngIf='!isDesktopApp && permissionService.permissionAvailable' appPermission
@@ -546,9 +545,6 @@
                 </svg></i>
               <span *ngIf="layoutConfiguration">{{resourceService?.frmelmnts?.lbl?.switchToOldLayout}}</span>
               <span *ngIf="!layoutConfiguration">{{resourceService?.frmelmnts?.lbl?.switchToJoyLayout}}</span>
-            </li>
-            <li class="list-item" tabindex="0" role="link" (click)="toggleSideMenu(false);navigate('/nishtha-dashboard')">
-              <span>{{resourceService?.frmelmnts?.tab?.nishthaDashboard}}</span>
             </li>
             <li class="list-item" tabindex="0" role="link" (click)="toggleSideMenu(false);" routerLink="/desktop/telemetry"
               *appDesktopOnly>
