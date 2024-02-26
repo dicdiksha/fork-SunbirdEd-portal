@@ -12,7 +12,7 @@ npm install
 npm run  resource-bundles
 cd ../desktop/OpenRAP
 npm install
-npm run pack
+npm run pack 
 cd ..
 npm --update-checksums
 npm install
