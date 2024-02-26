@@ -18,6 +18,7 @@ npm --update-checksums
 npm install
 npm run build-ts
 node scripts/copy.js
+npm install fs-extra
 
 # Tar the generic build files
 tar -czvf app_dist.tar.gz app_dist
