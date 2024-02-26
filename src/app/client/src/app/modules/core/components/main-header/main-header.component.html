@@ -407,6 +407,9 @@
 
           <li class="list-item" tabindex="0" role="link" *ngIf='!isDesktopApp && permissionService.permissionAvailable'
             appPermission [permission]='nishthaDashboard' (click)="toggleSideMenu(false);navigate('/nishtha-dashboard')">
+            <i class="icon-svg icon-svg--sm icon-dashboard mr-8"><svg class="icon icon-svg--primary">
+              <use xlink:href="./assets/images/sprite.svg#dashboard"></use>
+            </svg></i>
               <span>{{resourceService?.frmelmnts?.tab?.nishthaDashboard}}</span> 
           </li>
         
