@@ -7,6 +7,7 @@ npm install husky
 npm install --ignore-engines
 npm run prod-desktop
 cd ..
+npm install -D typescript
 npm install
 npm run  resource-bundles
 cd ../desktop/OpenRAP
