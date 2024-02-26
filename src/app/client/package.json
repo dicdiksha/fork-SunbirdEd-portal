@@ -165,6 +165,7 @@
     "@types/jquery": "^3.3.38",
     "@types/jquery.fancytree": "2.7.34",
     "@types/node": "^12.20.15",
+    "@types/lodash": "^4.14.104",
     "codelyzer": "^6.0.0",
     "husky": "^4.2.5",
     "jest": "^27.5.1",
