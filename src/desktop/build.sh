@@ -5,9 +5,9 @@ cd ../app/client
 npm install husky
 
 npm install --ignore-engines
+npm cache clean --force
 npm run prod-desktop
 cd ..
-npm install -D typescript
 npm install
 npm run  resource-bundles
 cd ../desktop/OpenRAP
