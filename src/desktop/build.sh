@@ -2,11 +2,10 @@
 cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
-npm install husky
 
 npm install --ignore-engines
-npm cache clean --force
 npm run prod-desktop
+npm install --save @types/lodash@4.14.74
 cd ..
 npm install
 npm run  resource-bundles
