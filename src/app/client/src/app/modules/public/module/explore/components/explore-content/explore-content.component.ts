@@ -224,7 +224,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       filters.mimeType = filters.mimeType || _.get(mimeType, 'values');
     _.forEach(_filters, (el, key) => {
       if (key !== 'primaryCategory' && key !== 'mimeType' && !_.has(filters, key)) {
-        filters[key] = el;
+          filters[key] = el;
       }
     });
 
@@ -307,6 +307,12 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       }
       
     }
+
+    //117337 - For NCERT remove visibility Parent and retain other on All Tab
+    if( this.queryParams.selectedTab==="all" && _.toLower(option.filters.se_boards) === 'ncert' ){
+      option.filters.visibility = option.filters.visibility.filter(item => item !== "Parent");
+    }
+
     this.searchService.contentSearch(option)
       .pipe(
         mergeMap(data => {
