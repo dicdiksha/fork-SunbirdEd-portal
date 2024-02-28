@@ -1,0 +1,18 @@
+@media (min-width: 768px) and (max-width: 860px){
+    .sb-card-grid, .sbgrid, .sb-grid {
+         grid-template-columns: repeat(1, 1fr);
+         grid-gap: 2rem;
+         }
+  }
+
+@media (min-width: 861px) and (max-width: 1200px){
+    .sb-card-grid, .sbgrid, .sb-grid {
+         grid-template-columns: repeat(2, 1fr);
+         }
+  }
+  @media (min-width: 1201px){
+    .sb-card-grid, .sbgrid, .sb-grid {
+         grid-template-columns: repeat(3, 1fr);
+         grid-gap: 1rem;
+        }
+  }
