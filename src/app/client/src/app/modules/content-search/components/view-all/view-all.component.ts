@@ -15,7 +15,8 @@ import { IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
 
 @Component({
   selector: 'app-view-all',
-  templateUrl: './view-all.component.html'
+  templateUrl: './view-all.component.html',
+  styleUrls: ['./view-all.component.scss']
 })
 export class ViewAllComponent implements OnInit, OnDestroy, AfterViewInit {
   /**

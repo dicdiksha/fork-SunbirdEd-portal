@@ -56,6 +56,7 @@
     "@dicdikshaorg/common-consumption": "4.12.10",
     "@dicdikshaorg/common-form-elements": "5.1.14",
     "@dicdikshaorg/sb-content-section": "5.0.1",
+    "@dicdikshaorg/sunbird-collection-editor": "4.5.0",
     "@dictrigyn/pdf-player": "^0.0.6",
     "@ngx-translate/core": "12.0.0",
     "@ngx-translate/http-loader": "^5.0.0",
