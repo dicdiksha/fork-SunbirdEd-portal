@@ -42,7 +42,14 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
       return 'IGOT-Health';
     } else if (selectedFilters.toLowerCase() == 'cbse/ncert' ) {
       return 'CBSE/NCERT ';
-    } else if (selectedFilters.toLowerCase() == 'cisce' ) {
+    }
+    else if(selectedFilters.toLowerCase() == 'cbse'){
+      return 'CBSE'
+    }
+    else if(selectedFilters.toLowerCase() == 'ncert'){
+      return 'NCERT'
+    }
+     else if (selectedFilters.toLowerCase() == 'cisce' ) {
       return 'CISCE ';
     } else if (selectedFilters.toLowerCase() == 'nios' ) {
       return 'NIOS ';
