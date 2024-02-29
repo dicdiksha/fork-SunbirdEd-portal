@@ -15,7 +15,8 @@ import {omit, groupBy, get, uniqBy, toLower, find, map as _map, forEach, each} f
 
 
 @Component({
-  templateUrl: './home-search.component.html'
+  templateUrl: './home-search.component.html',
+  styleUrls: ['./home-search.component.scss']
 })
 export class HomeSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
