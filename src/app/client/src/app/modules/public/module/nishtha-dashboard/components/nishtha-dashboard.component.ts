@@ -41,7 +41,6 @@ export class NishthaDashboardComponent implements OnInit {
     this.setTelemetryImpression();
     this.initLayout();
     this.openWebview();
-    console.log("this.this.userProfile--",this.userProfile);
   }
 
   getToken(): Observable<any>{
