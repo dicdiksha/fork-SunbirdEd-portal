@@ -106,12 +106,15 @@ const getAPIId = (host, requestUrl) => {
 }
 
 export const customProxy = (host, options = {}) => {
+  logger.error('---I am in customProxy method->',host,options);
   return async (req, res, next) => {
     const { method } = req;
     const headers = await decorateRequest(req, options);
     const proxyURL = resolveRequestPath(host, req, options);
     const apiId = getAPIId(host, proxyURL);
-
+    logger.error('---host->',host);
+    logger.error('---proxyURL->',proxyURL);
+    logger.error('---method->',method);
     let config: IHttpRequestConfig = {
       headers: headers,
       responseType: 'json'
@@ -133,6 +136,7 @@ export const customProxy = (host, options = {}) => {
     }).pipe(retryWhen(errors =>
       errors.pipe(
         mergeMap(async (error) => {
+          logger.error('---errorerrorerrorerrorerror->',error);
           const { response } = error;
           // Handle Unauthorized AuthToken
           if (_.get(response, 'status') === 401 && _.lowerCase(_.get(response, 'data.message')) === 'unauthorized') {
@@ -155,11 +159,13 @@ export const customProxy = (host, options = {}) => {
         take(2)
       )
     )).subscribe((resp) => {
+      logger.error('---success-success-success->',resp);
       res.body = resp.data;
       res.headers = resp.headers;
       next();
     }, error => {
       const response = _.get(error, 'response');
+      logger.error('---response-response-response-error->',response);
       res.body = _.get(response, 'data') || {};
       res.headers = _.get(response, 'headers');
       res.statusCode = _.get(response, 'status');

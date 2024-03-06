@@ -358,6 +358,7 @@ export class LoginSessionProvider {
         const reqBody = qs.stringify({
             refresh_token: userTokens.refresh_token
         });
+        logger.error('in the getKongAccessToken method and the getKongAccessToken is ', reqBody)
         const appConfig = {
             headers: {
                 'Authorization': 'Bearer ' + apiKey,
@@ -367,6 +368,7 @@ export class LoginSessionProvider {
         return await HTTPService.post(`${process.env.APP_BASE_URL}/auth/v1/refresh/token`, reqBody, appConfig)
             .toPromise()
             .then(async (response: any) => {
+                logger.error('in the After the api response refresh/token ', _.get(response, 'data.result'));
                 return _.get(response, 'data.result');
             }).catch((err) => {
                 logger.error(`Error while kong access token : ${err.message}`, err);
