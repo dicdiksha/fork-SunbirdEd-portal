@@ -9,7 +9,9 @@ npm install --save @types/lodash@4.14.74
 cd ..
 npm install
 npm run  resource-bundles
+npm install @angular/cli@9.0.4
 cd ../desktop/OpenRAP
+npm i @angular/cli@9.0.4
 npm install
 npm run pack 
 
