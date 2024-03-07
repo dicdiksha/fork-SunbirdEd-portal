@@ -103,7 +103,7 @@
     "devDependencies": {
         "@types/cheerio": "^0.22.22",
         "@types/express-http-proxy": "^1.6.1",
-        "@types/lodash": "^4.14.123",
+        "@types/lodash": "4.14.123",
         "@types/node": "12.12.21",
         "axios": "^0.21.0",
         "chai": "^4.2.0",
@@ -123,7 +123,7 @@
         "spectron": "^10.0.0",
         "ts-node": "^8.10.2",
         "tsconfig-paths": "^3.9.0",
-        "typescript": "^3.9.7"
+        "typescript": "3.9.7"
     },
     "keywords": [],
     "license": "MIT",
