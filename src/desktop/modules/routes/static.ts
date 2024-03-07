@@ -129,7 +129,7 @@ export default (app, contentFilesPath, ecarsFolderPath ) => {
     locals.deviceProfileApi = "/api/v3/device/profile";
     locals.deviceApi = `${process.env.APP_BASE_URL}/api/`;
     locals.baseUrl = process.env.APP_BASE_URL;
-
+    locals.cloudStorageProvider=null;
     locals.slug = null;
     locals.userSid = null;
     locals.slugForProminentFilter = null;
