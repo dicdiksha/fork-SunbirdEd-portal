@@ -186,13 +186,13 @@
           <div *ngFor="let section of pageSections; let last = last" [ngClass]="{'last mb-0':last}">
             <sb-library-cards-grid *ngIf="!isDesktopApp" [layoutConfig]="layoutConfiguration"
               [type]="'infinite_card_grid'" [title]="section.name"
-              [contentList]="section.contents | sortBy:'name':'asc'" [maxCardCount]="2"
+              [contentList]="section.contents | sortBy:'name':'asc'" [maxCardCount]="3"
               (viewMoreClick)="viewAll(section)" (cardClick)="playContent($event, section.name)" (enterKey)="playContent($event, section.name)">
             </sb-library-cards-grid>
             <div class="sb-desktop-library-card relative9">
               <sb-library-cards-grid *ngIf="isDesktopApp" [layoutConfig]="layoutConfiguration"
                 [type]="'infinite_card_grid_with_hover'" [title]="section?.name"
-                [contentList]="section.contents | sortBy:'name':'asc'" [maxCardCount]="2"
+                [contentList]="section.contents | sortBy:'name':'asc'" [maxCardCount]="3"
                 (hoverActionClick)="hoverActionClicked($event)" (viewMoreClick)="viewAll(section)">
               </sb-library-cards-grid>
             </div>
