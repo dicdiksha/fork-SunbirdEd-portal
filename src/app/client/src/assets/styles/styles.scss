@@ -49,3 +49,16 @@
         }
     }
 }
+
+app-search-filter .sb-mat__dropdown.mat-form-field-appearance-fill.mat-form-field-should-float .mat-form-field-flex,sb-search-facet-filter .sb-mat__dropdown.mat-form-field-appearance-fill.mat-form-field-should-float .mat-form-field-flex{
+    align-items: center !important;
+}
+app-search-filter .sb-mat__dropdown.mat-form-field-appearance-fill .mat-select-arrow-wrapper,sb-search-facet-filter .sb-mat__dropdown.mat-form-field-appearance-fill .mat-select-arrow-wrapper {
+    transform: none !important;
+}
+app-search-filter .sb-mat__dropdown.mat-form-field-appearance-fill .mat-select-arrow,sb-search-facet-filter .sb-mat__dropdown.mat-form-field-appearance-fill .mat-select-arrow{
+    transform: none !important;
+}
+app-search-filter .sb-mat__dropdown.mat-form-field-appearance-fill.mat-form-field-should-float .mat-select, sb-search-facet-filter .sb-mat__dropdown.mat-form-field-appearance-fill.mat-form-field-should-float .mat-select{
+    margin-top: 0px !important;
+}
