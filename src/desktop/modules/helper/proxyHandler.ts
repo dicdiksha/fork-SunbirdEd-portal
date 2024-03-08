@@ -14,6 +14,8 @@ const decorateRequest = async (request, options) => {
   const { headers } = request;
   const userSDK: any = containerAPI.getUserSdkInstance();
   const channel = _.get(headers, 'X-Channel-Id') || process.env.CHANNEL;
+  
+  headers['host']=`${process.env.APP_BASE_URL}`.split('//')[1];
 
   if (channel && !_.get(headers, 'X-Channel-Id')) {
     headers['X-Channel-Id'] = channel;
