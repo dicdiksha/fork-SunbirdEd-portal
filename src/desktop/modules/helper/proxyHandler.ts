@@ -108,7 +108,7 @@ const getAPIId = (host, requestUrl) => {
 }
 
 export const customProxy = (host, options = {}) => {
-  logger.error('---I am in customProxy method->',host,options);
+  logger.error('---in customProxy method--->',host,options);
   return async (req, res, next) => {
     const { method } = req;
     const headers = await decorateRequest(req, options);
@@ -121,7 +121,8 @@ export const customProxy = (host, options = {}) => {
       headers: headers,
       responseType: 'json'
     }
-
+    config.headers['host']=`${process.env.APP_BASE_URL}`.split('//')[1]
+    logger.error('in the customProxy method the config is ---->',config);
     config = addAgent(proxyURL, config);
     defer(() => {
       switch (method) {
@@ -138,7 +139,7 @@ export const customProxy = (host, options = {}) => {
     }).pipe(retryWhen(errors =>
       errors.pipe(
         mergeMap(async (error) => {
-          logger.error('---errorerrorerrorerrorerror->',error);
+          //logger.error('---errorerrorerrorerrorerror->',error);
           const { response } = error;
           // Handle Unauthorized AuthToken
           if (_.get(response, 'status') === 401 && _.lowerCase(_.get(response, 'data.message')) === 'unauthorized') {
@@ -167,7 +168,7 @@ export const customProxy = (host, options = {}) => {
       next();
     }, error => {
       const response = _.get(error, 'response');
-      logger.error('---response-response-response-error->',response);
+      //logger.error('---response-response-response-error->',response);
       res.body = _.get(response, 'data') || {};
       res.headers = _.get(response, 'headers');
       res.statusCode = _.get(response, 'status');
