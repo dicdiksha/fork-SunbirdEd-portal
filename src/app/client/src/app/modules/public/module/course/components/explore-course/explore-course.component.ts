@@ -198,7 +198,7 @@ export class ExploreCourseComponent implements OnInit, OnDestroy, AfterViewInit 
             pageNumber: this.paginationDetails.currentPage,
             query: this.queryParams.key,
             mode: 'soft',
-            softConstraints: softConstraints,
+            softConstraints: {},
             facets: this.globalSearchFacets,
             params: this.configService.appConfig.ExplorePage.contentApiQueryParams || {}
         };
