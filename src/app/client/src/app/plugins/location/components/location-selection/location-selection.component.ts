@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ResourceService, ToasterService, NavigationHelperService, UtilService } from '@sunbird/shared';
 import { DeviceRegisterService, FormService, OrgDetailsService, UserService } from '../../../../modules/core/services';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { LocationService } from '../../services/location/location.service';
 import { IImpressionEventInput, IInteractEventInput, TelemetryService } from '@sunbird/telemetry';
 import { PopupControlService } from '../../../../service/popup-control.service';
@@ -60,6 +60,24 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
         this.closeModal();
         this.toasterService.error(this.resourceService.messages.fmsg.m0049);
       });
+
+      this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          let substring1 = "play/content";
+          let substring2 = "contentType=Resource";
+          if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
+            console.log("urlAfterRedirects condition called");
+            this.closeModal();
+          }
+        }
+      });
+
+      console.log("isReturnFromThirdParty", localStorage.getItem('isReturnFromThirdParty'));
+      if (localStorage.getItem('isReturnFromThirdParty') === 'true') {
+        this.closeModal();
+        localStorage.setItem('isReturnFromThirdParty', 'false');
+      }
+      console.log("location-selection.component page called");
   }
 
   ngOnDestroy() {
@@ -90,6 +108,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
     dialogRef && dialogRef.close();
     this.popupControlService.changePopupStatus(true);
     this.close.emit({isSubmitted: this.isSubmitted});
+    console.log("called close method---->>>>>")
   }
 
   async updateUserLocation() {

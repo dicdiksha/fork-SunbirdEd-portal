@@ -378,6 +378,18 @@ export class AppComponent implements OnInit, OnDestroy {
         (document.activeElement  as HTMLElement).click();
       }
     };
+
+    // this method is to close user onboarding pop-up when user come from third party web url.
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        let substring1 = "play/content";
+        let substring2 = "contentType=Resource";
+        if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
+          this.FORM_CONFIG_ENABLED = false;
+          localStorage.setItem('isReturnFromThirdParty', 'true');
+        }
+      }
+    });
   }
   setUserOptions() {
     const userStoredData = JSON.parse(localStorage.getItem('guestUserDetails'));
