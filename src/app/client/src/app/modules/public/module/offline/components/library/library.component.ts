@@ -295,7 +295,7 @@ export class LibraryComponent implements OnInit, OnDestroy {
             filters: _.omitBy(filters || {}, value => _.isArray(value) ? (!_.get(value, 'length') ? true : false) : false),
             fields: _.get(this.currentPageData, 'search.fields'),
             query: this.queryParams.key,
-            softConstraints: {},
+            softConstraints: {}, // remove soft constranint for openforge - 140826 (softConstraints : softConstraints)
             facets: this.globalSearchFacets,
             params: this.configService.appConfig.ExplorePage.contentApiQueryParams || {}
         };

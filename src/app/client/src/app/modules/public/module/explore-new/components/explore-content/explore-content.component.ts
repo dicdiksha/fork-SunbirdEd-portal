@@ -743,8 +743,8 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     filters.mimeType = filters.mimeType || _.get(mimeType, 'values');
     _.forEach(_filters, (el, key) => {
       if (key !== 'primaryCategory' && key !== 'mimeType' && !_.has(filters, key)) {
-        //removed visibility Parent specifi to ncert ALL tab only
-        if( key==="visibility" && this.queryParams.selectedTab==="all" ){
+        //removed visibility Parent from exploren tabs
+        if( key==="visibility"){
           filters[key] = el.filter(item => item !== "Parent");
         }else{
           filters[key] = el;
@@ -789,7 +789,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       query: this.queryParams.key,
       sort_by: {lastPublishedOn: 'desc'},
       mode: 'soft',
-      softConstraints: {},
+      softConstraints: {}, // remove soft constranint for openforge - 140826 (softConstraints : softConstraints)
       facets: this.globalSearchFacets,
       params: this.configService.appConfig.ExplorePage.contentApiQueryParams || {}
     };
