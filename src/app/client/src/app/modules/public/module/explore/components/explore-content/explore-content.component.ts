@@ -268,7 +268,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       query: this.queryParams.key,
       sort_by: {lastPublishedOn: 'desc'},
       mode: 'soft',
-      softConstraints: softConstraints,
+      softConstraints: {},
       facets: this.globalSearchFacets,
       params: this.configService.appConfig.ExplorePage.contentApiQueryParams || {}
     };
