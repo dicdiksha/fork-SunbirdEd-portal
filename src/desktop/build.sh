@@ -4,6 +4,7 @@ rm -rf app_dist
 cd ../app/client
 yarn install --ignore-engines
 npm install -g @angular/cli
+npm install --save moment
 npm run prod-desktop
 cd ..
 yarn install --ignore-engines
@@ -13,9 +14,10 @@ yarn install --ignore-engines
 npm run pack
 cd ..
 yarn --update-checksums
+yarn cache clean
 yarn install --ignore-engines
-npm run build-ts
 npm install --save @types/yargs
+npm run build-ts
 node scripts/copy.js
 
 # Tar the generic build files
