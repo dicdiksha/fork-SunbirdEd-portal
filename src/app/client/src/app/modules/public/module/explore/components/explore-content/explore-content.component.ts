@@ -239,7 +239,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     // Openforgeid 133157 remove softConstraints for ALL tab
     let softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
     
-    softConstraints = this.userService.slug && this.queryParams.selectedTab==="all" ? {} : softConstraints;
+    softConstraints = this.userService.slug ? {} : softConstraints;
 
     if (this.queryParams.key) {
       delete softConstraints['board'];
@@ -268,7 +268,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       query: this.queryParams.key,
       sort_by: {lastPublishedOn: 'desc'},
       mode: 'soft',
-      softConstraints: {}, // remove soft constranint for openforge - 140826 (softConstraints : softConstraints)
+      softConstraints: softConstraints,
       facets: this.globalSearchFacets,
       params: this.configService.appConfig.ExplorePage.contentApiQueryParams || {}
     };
