@@ -3,7 +3,7 @@ cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
 yarn install
-yarn global add @angular/cli
+npm install @angular/cli
 yarn add moment
 npm run prod-desktop
 cd ..
