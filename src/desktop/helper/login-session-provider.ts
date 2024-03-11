@@ -88,7 +88,6 @@ export class LoginSessionProvider {
             _.forEach(this.loginConfig.return, (forCase) => {
                 switch (forCase.type) {
                     case 'password':
-                        logger.error('we are in the password flow',forCase);
                         this.buildPasswordSessionProvider(forCase);
                         break;
                     case 'state':
@@ -123,7 +122,6 @@ export class LoginSessionProvider {
     }
 
     protected buildPasswordSessionProvider(forCase) {
-        logger.error('we are in the buildPasswordSessionProvider method',forCase);
         this.capture({
             host: forCase.when.host,
             path: forCase.when.path,
@@ -131,13 +129,9 @@ export class LoginSessionProvider {
         }).then(async () =>
             await this.success()
         ).then(async (captured) => {
-            logger.error('we are in the buildPasswordSessionProvider post success method');
             this.showLoader();
-            logger.error(`Resolve access token from buildPasswordSessionProvider`,captured);
             const userData = await this.resolvePasswordSession(captured);
-            logger.error(`Resolve access token from userData`,userData);
             const userTokens = await this.getKongAccessToken(userData);
-            logger.error(`Resolve access token from userTokens`,userTokens);
             if(userTokens) {
                 await this.getUsers(userTokens);
             }
@@ -302,7 +296,6 @@ export class LoginSessionProvider {
         return await HTTPService.post(`${process.env.APP_BASE_URL}/${this.loginConfig.target.authUrl}/token`, reqBody, appConfig)
             .toPromise()
             .then(async (response: any) => {
-                logger.error('in the resolvePasswordSession method and the response is ', response)
                 if (response.data.access_token && response.data.refresh_token) {
                     return {
                         access_token: response.data.access_token,
@@ -358,13 +351,15 @@ export class LoginSessionProvider {
         const reqBody = qs.stringify({
             refresh_token: userTokens.refresh_token
         });
-        logger.error('in the getKongAccessToken method and the getKongAccessToken is ', reqBody)
+        logger.error('in the getKongAccessToken method and the getKongAccessToken is ', reqBody);
         const appConfig = {
             headers: {
                 'Authorization': 'Bearer ' + apiKey,
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
         };
+        logger.error('in the getKongAccessToken method and the appConfig is ', appConfig);
+        logger.error('in the getKongAccessToken method and the path is is ', `${process.env.APP_BASE_URL}/auth/v1/refresh/token`);
         return await HTTPService.post(`${process.env.APP_BASE_URL}/auth/v1/refresh/token`, reqBody, appConfig)
             .toPromise()
             .then(async (response: any) => {
