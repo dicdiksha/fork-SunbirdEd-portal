@@ -2,21 +2,20 @@
 cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
-npm install --ignore-engines
-npm install -g @angular/cli
-npm install --save moment
+yarn install
+yarn global add @angular/cli
+yarn add moment
 npm run prod-desktop
 cd ..
-npm install --ignore-engines
+yarn install
 npm run  resource-bundles
 cd ../desktop/OpenRAP
-npm install --ignore-engines
+yarn install
 npm run pack
 cd ..
-npm --update-checksums
-npm cache clean
-npm install --ignore-engines
-npm install --save @types/yargs
+yarn --update-checksums
+yarn install
+yarn add @types/yargs
 npm run build-ts
 node scripts/copy.js
 
