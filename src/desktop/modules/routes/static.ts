@@ -152,4 +152,5 @@ export default (app, contentFilesPath, ecarsFolderPath ) => {
     locals.sunbirdCollectionChildrenLimit = null;
     locals.defaultBoard = null;
     return locals;
+    
   }

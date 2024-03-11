@@ -16,5 +16,6 @@ yarn install
 npm run build-ts
 node scripts/copy.js
 
+
 # Tar the generic build files
 tar -czvf app_dist.tar.gz app_dist
