@@ -11,6 +11,7 @@ cd /offline/src/desktop
 rm -rf app_dist
 cd ../app/client
 yarn install --force
+npm install angular@14.2.10
 npm run prod-desktop
 cd ..
 yarn cache clean --all && yarn install --force
