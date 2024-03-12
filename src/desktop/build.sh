@@ -66,7 +66,6 @@ done
 
 
       cd ../app/client
-      npm install -g @angular/cli
       checkArgument yarn install --force
 
       printLog "Build prod desktop build."
