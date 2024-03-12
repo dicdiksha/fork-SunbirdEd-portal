@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { DateFormatPipe, FilterPipe, InterpolatePipe, SortByPipe, SbDataTablePipe, TransposeTermsPipe } from './pipes';
 import { CacheService } from 'ng2-cache-service';
-import { DeviceDetectorModule } from 'ngx-device-detector';
+// import { DeviceDetectorModule } from 'ngx-device-detector';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { TelemetryModule } from '@sunbird/telemetry';
 import { CdnprefixPipe } from './pipes/cdnprefix.pipe';
@@ -90,7 +90,7 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [ResourceService, ConfigService, ToasterService, PaginationService, RecaptchaService,
         RouterNavigationService, WindowScrollService, NavigationHelperService, CacheService, UtilService, ContentUtilsServiceService,
-        DeviceDetectorModule, DeviceDetectorService, BrowserCacheTtlService, ExternalUrlPreviewService, OfflineCardService, TranslateStore, TitleCasePipe, ConnectionService, GenericResourceService]
+        DeviceDetectorService, BrowserCacheTtlService, ExternalUrlPreviewService, OfflineCardService, TranslateStore, TitleCasePipe, ConnectionService, GenericResourceService]
     };
   }
 }

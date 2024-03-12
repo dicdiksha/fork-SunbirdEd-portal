@@ -47,6 +47,7 @@ const firebaseConfig = {
     BrowserAnimationsModule, // used this instaed of browser module since it includes in it.
     CoreModule,
     CommonModule,
+    DeviceDetectorModule,
     HttpClientModule,
     ModalModule.forRoot(),
     SuiModalModule,
@@ -60,7 +61,7 @@ const firebaseConfig = {
           deps: [HttpClient]
       }
     }),
-    DeviceDetectorModule.forRoot(),
+    // DeviceDetectorModule.forRoot(),
     SbSearchFilterModule.forRoot('web'),
     ChatLibModule,
     SharedFeatureModule,
