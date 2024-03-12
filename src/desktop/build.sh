@@ -6,6 +6,10 @@ export PYTHON=/usr/bin/python3.7
 
 npm install typescript@4.6.4 -g
 npm install fs-extra@11.1.1 -g
+node -v
+nvm -v
+npm -v
+ng version
 
 # ARGUMENTS copy=false build=false yarn=false
 # https://stackoverflow.com/questions/46354149/how-do-i-parse-command-line-argumentsas-key-value-pair-in-bash-with-arguments
