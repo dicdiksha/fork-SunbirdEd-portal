@@ -67,7 +67,7 @@ done
 
       cd ../app/client
       checkArgument yarn install --force
-      yarn add @angular/cli@14.2.10
+      npm install @angular/cli@14.2.10
       printLog "Build prod desktop build."
       checkArgument npm run prod-desktop
       cd ..
