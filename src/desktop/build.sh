@@ -9,7 +9,7 @@ npm install fs-extra@11.1.1 -g
 node -v
 nvm -v
 npm -v
-ng version
+npm run ng
 
 # ARGUMENTS copy=false build=false yarn=false
 # https://stackoverflow.com/questions/46354149/how-do-i-parse-command-line-argumentsas-key-value-pair-in-bash-with-arguments
@@ -72,7 +72,8 @@ done
 
       cd ../app/client
       checkArgument yarn install --force
-
+      ng --version
+      ng version
       printLog "Build prod desktop build."
       checkArgument npm run prod-desktop
       cd ..
