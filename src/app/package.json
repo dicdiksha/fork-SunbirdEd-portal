@@ -28,8 +28,8 @@
     "webpack-bundle-analyzer": "^3.7.0"
   },
   "engines": {
-    "node": ">=14.19.0",
-    "npm": ">=6.14.16"
+    "node": ">=16.19.0",
+    "npm": ">=8.19.3"
   },
   "nodemonConfig": {
     "ignore": [
@@ -79,7 +79,7 @@
     "azure-storage": "2.10.2",
     "body-parser": "1.17.2",
     "cassandra-session-store": "1.0.6",
-    "client-cloud-services": "https://github.com/dicdiksha/client-cloud-services.git#5cd4e1208308627e00ec9df7a0e77c94045960fa",
+    "client-cloud-services": "3.0.4",
     "compare-versions": "3.5.1",
     "compression": "1.7.2",
     "connect-redis": "4.0.4",
