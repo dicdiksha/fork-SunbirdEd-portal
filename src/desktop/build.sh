@@ -59,7 +59,6 @@ done
   if [ $build == true ]
     then
     cd /offline/src/app
-
     else
       cd /offline/src/desktop
       rm -rf app_dist
@@ -67,6 +66,7 @@ done
 
 
       cd ../app/client
+      npm install -g @angular/cli
       checkArgument yarn install --force
 
       printLog "Build prod desktop build."
