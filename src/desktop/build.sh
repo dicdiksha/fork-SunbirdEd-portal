@@ -6,8 +6,7 @@ export PYTHON=/usr/bin/python3.7
 
 npm install typescript@4.6.4 -g
 npm install fs-extra@11.1.1 -g
-npm install @angular/cli@14.2.10 -g
-ng --version
+
 
 # ARGUMENTS copy=false build=false yarn=false
 # https://stackoverflow.com/questions/46354149/how-do-i-parse-command-line-argumentsas-key-value-pair-in-bash-with-arguments
@@ -68,25 +67,24 @@ done
 
 
       cd ../app/client
-      checkArgument yarn install --force
-      ng --version
+      checkArgument yarn install --ignore-engines
       printLog "Build prod desktop build."
       checkArgument npm run prod-desktop
       cd ..
   fi
 
-  yarn cache clean --all && yarn install --force
+  yarn cache clean --all && yarn install --ignore-engines
   yarn add properties
   npm run resource-bundles
   cd ../desktop/OpenRAP
-  yarn cache clean --all && yarn install --force
+  yarn cache clean --all && yarn install --ignore-engines
 
   printLog "Packaging OpenRAP"
   chown -R root:root  /offline
 
   npm run pack
   cd ..
-  yarn cache clean --all && yarn install --force
+  yarn cache clean --all && yarn install --ignore-engines
   yarn add fs-extra@11.1.1
 
   printLog "Starting tsc to compile/execute tsconfig.json"
