@@ -16,7 +16,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es5",
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "es2020",
+    "module": "es2020",    
     "paths": {
       "@sunbird/core": [
         "app/modules/core"
@@ -99,7 +103,7 @@
     ],
     "removeComments": true,
     "lib": [
-      "es2017",
+      "es2018",
       "es6",
       "dom"
     ]
