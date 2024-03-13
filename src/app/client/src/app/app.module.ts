@@ -13,7 +13,8 @@ import { WebExtensionsConfig } from './framework.config';
 import { CacheService } from 'ng2-cache-service';
 import { CacheStorageAbstract } from 'ng2-cache-service/dist/src/services/storage/cache-storage-abstract.service';
 import { CacheSessionStorage } from 'ng2-cache-service/dist/src/services/storage/session-storage/cache-session-storage.service';
-import { DeviceDetectorModule } from 'ngx-device-detector';
+//import { DeviceDetectorModule } from 'ngx-device-detector';
+import { DeviceDetectorService } from 'ngx-device-detector';
 import { PluginModules } from './framework.config';
 import {ChatLibModule, ChatLibService} from '@dicdikshaorg/chatbot-client';
 import { RouteReuseStrategy } from '@angular/router';
@@ -47,7 +48,7 @@ const firebaseConfig = {
     BrowserAnimationsModule, // used this instaed of browser module since it includes in it.
     CoreModule,
     CommonModule,
-    DeviceDetectorModule,
+   // DeviceDetectorModule,
     HttpClientModule,
     ModalModule.forRoot(),
     SuiModalModule,
@@ -61,7 +62,7 @@ const firebaseConfig = {
           deps: [HttpClient]
       }
     }),
-    // DeviceDetectorModule.forRoot(),
+    DeviceDetectorService.forRoot(),
     SbSearchFilterModule.forRoot('web'),
     ChatLibModule,
     SharedFeatureModule,
