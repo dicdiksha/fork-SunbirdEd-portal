@@ -65,7 +65,7 @@ done
       rm -rf app_dist
       printLog "Removed app_dist successfully."
 
-
+      npm install -g @angular/cli@11.2.19
       cd ../app/client
       rm -rf yarn.lock
       checkArgument yarn install --ignore-engines
