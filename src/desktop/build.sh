@@ -67,6 +67,7 @@ done
 
 
       cd ../app/client
+      rm -rf yarn.lock
       checkArgument yarn install --ignore-engines
       printLog "Build prod desktop build."
       checkArgument npm run prod-desktop
