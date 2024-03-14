@@ -18,7 +18,9 @@ import { CommonConsumptionModule } from '@dicdikshaorg/common-consumption';
 import { SunbirdPdfPlayerModule} from '@dictrigyn/pdf-player';
 import { SunbirdVideoPlayerModule } from 'dictrigyn-video-player';
 // import { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
-import { SunbirdEpubPlayerModule } from '@project-sunbird/sunbird-epub-player-v9';
+// import { SunbirdEpubPlayerModule } from '@project-sunbird/sunbird-epub-player-v9';
+import { SunbirdEpubPlayerModule } from '@dicdikshaorg/epub-player-v9';
+
 import { QumlPlayerService } from './service/quml-player/quml-player.service';
 import { QumlLibraryModule, QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 // import { EditorCursor } from '@project-sunbird/sunbird-collection-editor-v9';
