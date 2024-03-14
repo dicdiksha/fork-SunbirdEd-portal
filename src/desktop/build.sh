@@ -76,8 +76,8 @@ done
       cd ..
   fi
 
-  yarn cache clean --all && yarn install  --ignore-engines 
-  yarn add properties
+  yarn cache clean --all && yarn install --ignore-engines 
+  yarn add properties --ignore-engines
   npm run resource-bundles
   cd ../desktop/OpenRAP
   yarn cache clean --all && yarn install --ignore-engines
