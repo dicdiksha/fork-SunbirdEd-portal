@@ -118,8 +118,8 @@ let envVariables = {
     clientSecret: env.sunbird_google_oauth_clientSecret
   },
   GOOGLE_OAUTH_TEST_CONFIG: {
-    clientId: env.sunbird_google_oauth_test_clientId || '382823555712-j0aksv0v5n9t23lgmlbnbsea1vfss8m3.apps.googleusercontent.com',
-    clientSecret: env.sunbird_google_oauth_test_clientSecret || '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'
+    clientId: env.sunbird_google_oauth_test_clientId || 'test',
+    clientSecret: env.sunbird_google_oauth_test_clientSecret || 'test'
   },
   GOOGLE_OAUTH_CONFIG_IOS: {
     clientId: env.sunbird_google_oauth_ios_clientId,
