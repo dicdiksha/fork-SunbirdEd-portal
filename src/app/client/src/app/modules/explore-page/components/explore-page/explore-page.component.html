@@ -192,7 +192,7 @@
             <div class="sb-desktop-library-card relative9">
               <sb-library-cards-grid *ngIf="isDesktopApp" [layoutConfig]="layoutConfiguration"
                 [type]="'infinite_card_grid_with_hover'" [title]="section?.name"
-                [contentList]="section.contents | sortBy:'name':'asc'" [maxCardCount]="3"
+                [contentList]="section.contents | sortBy:'name':'asc'" [maxCardCount]="2"
                 (hoverActionClick)="hoverActionClicked($event)" (viewMoreClick)="viewAll(section)">
               </sb-library-cards-grid>
             </div>
