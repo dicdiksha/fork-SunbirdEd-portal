@@ -5,7 +5,7 @@ angular.module('org.sunbird.header:headerApp', []).controller('mainController', 
     $scope.saveBtnEnabled = true;
     $scope.userDetails = !_.isUndefined(window.context) ? window.context.user : undefined;
     $scope.telemetryService = org.ekstep.contenteditor.api.getService(ServiceConstants.TELEMETRY_SERVICE);
-    $scope.sunbirdLogo = ecEditor.resolvePluginResource(plugin.id, plugin.ver, "editor/images/sunbird_logo.png");
+    $scope.sunbirdLogo = ecEditor.resolvePluginResource(plugin.id, plugin.ver, "editor/images/diksha.png");
 
     $scope.setEditorState = function(event, data) {
         if (data) $scope.editorState = data;
