@@ -142,7 +142,14 @@ export class OtpComponent implements OnInit {
         this.logVerifyOtpError(err.error.params.errmsg);
         this.telemetryService.interact(this.generateVerifyOtpErrorInteractEdata);
         if (_.get(err, 'error.result.remainingAttempt') === 0) {
-          this.utilService.redirectToLogin(this.resourceService.messages.emsg.m0050);
+
+          let dynamicKey = Math.random().toString(36).substring(2, 15);
+          let messageValue = this.resourceService.messages.emsg.m0050;
+          let final_value = `${dynamicKey} value${messageValue} second ${dynamicKey}`;
+          let encodedValue = btoa(final_value);
+          console.log("encodedValue", encodedValue);
+          this.utilService.redirectToLogin(encodedValue); // this.resourceService.messages.emsg.m0050;
+
         } else {
           this.infoMessage = '';
           this.otpForm.controls.otp.setValue('');
