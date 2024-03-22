@@ -454,9 +454,9 @@ export class SbFormLocationSelectionDelegate {
             //#143235 - extract all subroles for selected state
             let latestSubroleValues = [];
             personaLocationConfig.templateOptions.options.forEach(option=> {
-              latestSubroleValues.push(option.value);//SPD,spd
+              latestSubroleValues.push(option.value);
             });
-          if(personaLocationConfig.code = "subPersona"){
+          if(personaLocationConfig.code == "subPersona"){
             let prevFormValues = _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
                                   personaLocationConfig.default;
             let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
