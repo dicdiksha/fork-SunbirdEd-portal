@@ -105,7 +105,10 @@ export class SbFormLocationSelectionDelegate {
       this.shouldUserProfileLocationUpdate = true;
       let anchor = document.querySelector('.item--about') as HTMLElement;
       let pathSegment;
-      if( this.userService.guestUserProfile.framework.board){
+      if(this.userService.loggedIn){
+        pathSegment = this.userService._slug;
+      }
+      else if( this.userService.guestUserProfile.framework.board){
         let board = this.userService.guestUserProfile.framework.board[0];
         if(board==="CBSE/NCERT"){
             board="CBSE";
@@ -413,11 +416,19 @@ export class SbFormLocationSelectionDelegate {
               case 'SUBPERSONA_LIST': {
                 if (this.userService.loggedIn) {
                   if (personaLocationConfig.templateOptions.multiple) {
+                     //#143235 - extract all subroles for selected state
+                     let latestSubroleValues = [];
+                     personaLocationConfig.templateOptions.options.forEach(option=> {
+                       latestSubroleValues.push(option.value);//SPD,spd
+                     });
+
                     const defaultSubpersona = [];
                     if (this.userService.userProfile.profileUserTypes && this.userService.userProfile.profileUserTypes.length) {
                       this.userService.userProfile.profileUserTypes.forEach(element => {
                         if (element.subType) {
-                          defaultSubpersona.push(element.subType);
+                           if(latestSubroleValues.includes(element.subType)){
+                              defaultSubpersona.push(element.subType);
+                          }
                         }
                       });
                     } else {
