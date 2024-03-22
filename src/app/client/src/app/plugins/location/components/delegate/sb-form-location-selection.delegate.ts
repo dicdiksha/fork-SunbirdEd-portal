@@ -416,19 +416,11 @@ export class SbFormLocationSelectionDelegate {
               case 'SUBPERSONA_LIST': {
                 if (this.userService.loggedIn) {
                   if (personaLocationConfig.templateOptions.multiple) {
-                     //#143235 - extract all subroles for selected state
-                     let latestSubroleValues = [];
-                     personaLocationConfig.templateOptions.options.forEach(option=> {
-                       latestSubroleValues.push(option.value);//SPD,spd
-                     });
-
                     const defaultSubpersona = [];
                     if (this.userService.userProfile.profileUserTypes && this.userService.userProfile.profileUserTypes.length) {
                       this.userService.userProfile.profileUserTypes.forEach(element => {
                         if (element.subType) {
-                           if(latestSubroleValues.includes(element.subType)){
-                              defaultSubpersona.push(element.subType);
-                          }
+                            defaultSubpersona.push(element.subType);
                         }
                       });
                     } else {
@@ -458,9 +450,22 @@ export class SbFormLocationSelectionDelegate {
             }
 
             this.changesMap[`children.persona.${personaLocationConfig.code}`] = personaLocationConfig.default;
-            personaLocationConfig.default =
-              _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
-              personaLocationConfig.default;
+            
+            //#143235 - extract all subroles for selected state
+            let latestSubroleValues = [];
+            personaLocationConfig.templateOptions.options.forEach(option=> {
+              latestSubroleValues.push(option.value);//SPD,spd
+            });
+          if(personaLocationConfig.code = "subPersona"){
+            let prevFormValues = _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
+                                  personaLocationConfig.default;
+            let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
+            personaLocationConfig.default = filteredValues;
+          }else{
+              personaLocationConfig.default =
+                _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
+                personaLocationConfig.default;
+            }
           }
         }
       }
