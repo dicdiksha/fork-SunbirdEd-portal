@@ -1146,6 +1146,9 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     convertToString(value) {
+        if (typeof value == "string") {
+            return value;
+        }
         return _.isArray(value) ? _.join(value, ', ') : undefined;
     }
 
