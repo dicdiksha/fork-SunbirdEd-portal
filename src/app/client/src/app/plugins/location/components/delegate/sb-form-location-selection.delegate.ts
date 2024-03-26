@@ -425,7 +425,6 @@ export class SbFormLocationSelectionDelegate {
                       this.userService.userProfile.profileUserTypes.forEach(element => {
                         if (element.subType) {
                             defaultSubpersona.push(element.subType);
-                            defaultSubpersona.push(element.subType);
                         }
                       });
                     } else {
