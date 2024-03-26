@@ -109,6 +109,10 @@ export class SbFormLocationSelectionDelegate {
         pathSegment = this.userService._slug;
       }
       else if( this.userService.guestUserProfile.framework.board){
+      if(this.userService.loggedIn){
+        pathSegment = this.userService._slug;
+      }
+      else if( this.userService.guestUserProfile.framework.board){
         let board = this.userService.guestUserProfile.framework.board[0];
         if(board==="CBSE/NCERT"){
             board="CBSE";
@@ -421,6 +425,7 @@ export class SbFormLocationSelectionDelegate {
                       this.userService.userProfile.profileUserTypes.forEach(element => {
                         if (element.subType) {
                             defaultSubpersona.push(element.subType);
+                            defaultSubpersona.push(element.subType);
                         }
                       });
                     } else {
@@ -462,8 +467,13 @@ export class SbFormLocationSelectionDelegate {
           
             let prevFormValues = _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
                                   personaLocationConfig.default;
-            let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
-            personaLocationConfig.default = filteredValues;
+            if(prevFormValues){
+              let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
+              personaLocationConfig.default = filteredValues;
+            }
+            else{
+              personaLocationConfig.default = prevFormValues;
+            }
           }else{
               personaLocationConfig.default =
                 _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
