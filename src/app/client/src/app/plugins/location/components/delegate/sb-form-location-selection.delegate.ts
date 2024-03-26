@@ -462,8 +462,13 @@ export class SbFormLocationSelectionDelegate {
           
             let prevFormValues = _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
                                   personaLocationConfig.default;
-            let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
-            personaLocationConfig.default = filteredValues;
+            if(prevFormValues){
+              let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
+              personaLocationConfig.default = filteredValues;
+            }
+            else{
+              personaLocationConfig.default = prevFormValues;
+            }
           }else{
               personaLocationConfig.default =
                 _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
