@@ -452,11 +452,14 @@ export class SbFormLocationSelectionDelegate {
             this.changesMap[`children.persona.${personaLocationConfig.code}`] = personaLocationConfig.default;
             
             //#143235 - extract all subroles for selected state
+            if(personaLocationConfig.code && personaLocationConfig.code == "subPersona"){
             let latestSubroleValues = [];
-            personaLocationConfig.templateOptions.options.forEach(option=> {
-              latestSubroleValues.push(option.value);
-            });
-          if(personaLocationConfig.code == "subPersona"){
+            if(personaLocationConfig.templateOptions.options){
+              personaLocationConfig.templateOptions.options.forEach(option=> {
+                latestSubroleValues.push(option.value);
+              });
+            }
+          
             let prevFormValues = _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
                                   personaLocationConfig.default;
             let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
