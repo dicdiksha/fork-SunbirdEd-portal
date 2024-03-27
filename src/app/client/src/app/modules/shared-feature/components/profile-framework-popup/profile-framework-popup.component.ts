@@ -294,7 +294,8 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
     const selectedOption = _.cloneDeep(this.selectedOption);
     selectedOption.board = _.get(this.selectedOption, 'board') ? [this.selectedOption.board] : [];
     selectedOption.medium = _.get(this.selectedOption, 'medium') ? [this.selectedOption.medium] : [];
-selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel') ? [this.selectedOption.gradeLevel] : [];
+    selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel') ? [this.selectedOption.gradeLevel] : [];
+    selectedOption.subject = _.get(this.selectedOption, 'subject') ? [this.selectedOption.subject] : [];
     selectedOption.id = this.frameWorkId;
     if (selectedOption.board) {
       _.forEach(selectedOption.board, (data, index) => {
