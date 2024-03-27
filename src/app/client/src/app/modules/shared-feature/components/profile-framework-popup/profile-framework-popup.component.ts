@@ -83,7 +83,6 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
         this.toasterService.warning(this.resourceService.messages.emsg.m0012);
         this.navigateToLibrary();
       });
-
     this.setInteractEventData();
   }
   private getFormOptionsForCustodianOrgForGuestUser() {
@@ -97,6 +96,7 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
         this.selectedOption.board = _.get(this.selectedOption, 'board[0]');
         this.selectedOption.medium = _.get(this.selectedOption, 'medium[0]');
         this.selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel[0]');
+        this.selectedOption.subject = _.get(this.selectedOption, 'subject[0]');
         this.frameWorkId = _.get(_.find(this.custOrgFrameworks, { 'name': this.selectedOption.board }), 'identifier');
         return this.getFormatedFilterDetails().pipe(map((formFieldProperties) => {
           this._formFieldProperties = formFieldProperties;
@@ -137,6 +137,7 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
         this.selectedOption.board = _.get(this.selectedOption, 'board[0]');
         this.selectedOption.medium = _.get(this.selectedOption, 'medium[0]');
         this.selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel[0]');
+        this.selectedOption.subject = _.get(this.selectedOption, 'subject[0]');
         this.frameWorkId = _.get(_.find(this.custOrgFrameworks, { 'name': this.selectedOption.board }), 'identifier');
         return this.getFormatedFilterDetails().pipe(map((formFieldProperties) => {
           this._formFieldProperties = formFieldProperties;
@@ -161,6 +162,7 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
         this.selectedOption.board = _.get(this.selectedOption, 'board[0]');
         this.selectedOption.medium = _.get(this.selectedOption, 'medium[0]');
         this.selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel[0]');
+        this.selectedOption.subject = _.get(this.selectedOption, 'subject[0]');
       }
       return this.getUpdatedFilters({ index: 0 }, this.editMode); // get filters for first field i.e index 0 incase of init
     }));
