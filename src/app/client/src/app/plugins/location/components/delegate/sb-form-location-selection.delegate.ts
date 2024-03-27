@@ -112,6 +112,7 @@ export class SbFormLocationSelectionDelegate {
       if(this.userService.loggedIn){
         pathSegment = this.userService._slug;
       }
+    }
       else if( this.userService.guestUserProfile.framework.board){
         let board = this.userService.guestUserProfile.framework.board[0];
         if(board==="CBSE/NCERT"){
