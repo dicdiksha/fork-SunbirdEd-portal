@@ -1139,6 +1139,9 @@ async ngOnInit() {
     }
 
     convertToString(value) {
+        if (typeof value == "string") {
+            return value;
+        }
         return _.isArray(value) ? _.join(value, ', ') : undefined;
     }
 

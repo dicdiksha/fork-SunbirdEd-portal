@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ResourceService, UtilService } from '@sunbird/shared';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
+import { upperCase } from 'lodash';
 
 @Component({
   selector: 'app-global-search-selected-filter',
@@ -17,9 +18,20 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
   @Output() filterChange: EventEmitter<{ status: string, filters?: any }> = new EventEmitter();
   private unsubscribe$ = new Subject<void>();
 
+  upperCaseObj = ["igot-health","cbse/ncert","cbse","ncert","cisce","nios","cpd","ut (dnh and dd)"]
   constructor(private router: Router, private activatedRoute: ActivatedRoute, public resourceService: ResourceService, private utilService: UtilService) { }
 
   ngOnInit() {
+    if(this.selectedFilters.se_boards && !_.isArray(this.selectedFilters.se_boards && this.selectedFilters.se_boards)){
+      this.selectedFilters.se_boards = [this.selectedFilters.se_boards];
+    }
+    if(this.selectedFilters.se_mediums && !_.isArray(this.selectedFilters.se_mediums && this.selectedFilters.se_mediums)){
+      this.selectedFilters.se_mediums = [this.selectedFilters.se_mediums];
+    }
+    if(this.selectedFilters.se_gradeLevels && !_.isArray(this.selectedFilters.se_gradeLevels && this.selectedFilters.se_gradeLevels)){
+      this.selectedFilters.se_gradeLevels = [this.selectedFilters.se_gradeLevels];
+    }
+    
     this.resourceService.languageSelected$.pipe(takeUntil(this.unsubscribe$)).subscribe((languageData) => {
       if (this.facets) {
         this.facets.forEach((facet) => {
@@ -34,33 +46,16 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
       return char.toUpperCase();
     });
   }
-  formetText(selectedFilters:string):string{
-    if(selectedFilters.toLowerCase() ==='cbse training'){
+  formetText(selectedFilters:any):string{
+    if (typeof selectedFilters != "string") {
+      selectedFilters = selectedFilters[0];
+    }
+    
+    if(this.upperCaseObj.includes(selectedFilters)){
+      return selectedFilters.toUpperCase();
+    } else if(selectedFilters.toLowerCase() ==='cbse training'){
       return 'CBSE Training'
-    }
-    else if (selectedFilters.toLowerCase() == 'igot-health' ) {
-      return 'IGOT-Health';
-    } else if (selectedFilters.toLowerCase() == 'cbse/ncert' ) {
-      return 'CBSE/NCERT ';
-    }
-    else if(selectedFilters.toLowerCase() == 'cbse'){
-      return 'CBSE'
-    }
-    else if(selectedFilters.toLowerCase() == 'ncert'){
-      return 'NCERT'
-    }
-     else if (selectedFilters.toLowerCase() == 'cisce' ) {
-      return 'CISCE ';
-    } else if (selectedFilters.toLowerCase() == 'nios' ) {
-      return 'NIOS ';
-    }
-    else if(selectedFilters.toLowerCase() === 'cpd'){
-      return 'CPD'
-    }
-    else if(selectedFilters.toLowerCase() == 'ut (dnh and dd)'){
-      return 'UT (DNH And DD) '
-    }
-    else if( selectedFilters.startsWith("ut") || selectedFilters.startsWith("UT")){
+    } else if( selectedFilters.startsWith("ut") || selectedFilters.startsWith("UT")){
       let text1 = selectedFilters.split(' ')
       let firstPart = text1.shift()
       let secondPart = text1.join(' ')
@@ -114,5 +109,9 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
     } else {
       return true;
     }
+  }
+
+  checkDataType(selectedVar:any){
+    return typeof(selectedVar) === 'string';
   }
 }
