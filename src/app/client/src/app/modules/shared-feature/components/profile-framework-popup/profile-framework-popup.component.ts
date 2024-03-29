@@ -93,6 +93,9 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
       this.boardOptions = board;
       if (_.get(this.selectedOption, 'board[0]')) { // update mode, get 1st board framework and update all fields
         this.selectedOption.board = _.get(this.selectedOption, 'board[0]');
+        this.selectedOption.medium = _.get(this.selectedOption, 'medium[0]');
+        this.selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel[0]');
+        this.selectedOption.subject = _.get(this.selectedOption, 'subject[0]');
         this.frameWorkId = _.get(_.find(this.custOrgFrameworks, { 'name': this.selectedOption.board }), 'identifier');
         return this.getFormatedFilterDetails().pipe(map((formFieldProperties) => {
           this._formFieldProperties = formFieldProperties;
@@ -131,6 +134,9 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
       this.boardOptions = board;
       if (_.get(this.selectedOption, 'board[0]')) { // update mode, get 1st board framework and update all fields
         this.selectedOption.board = _.get(this.selectedOption, 'board[0]');
+        this.selectedOption.medium = _.get(this.selectedOption, 'medium[0]');
+        this.selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel[0]');
+        this.selectedOption.subject = _.get(this.selectedOption, 'subject[0]');
         this.frameWorkId = _.get(_.find(this.custOrgFrameworks, { 'name': this.selectedOption.board }), 'identifier');
         return this.getFormatedFilterDetails().pipe(map((formFieldProperties) => {
           this._formFieldProperties = formFieldProperties;
@@ -153,6 +159,9 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
 
       if (_.get(this.selectedOption, 'board[0]')) {
         this.selectedOption.board = _.get(this.selectedOption, 'board[0]');
+        this.selectedOption.medium = _.get(this.selectedOption, 'medium[0]');
+        this.selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel[0]');
+        this.selectedOption.subject = _.get(this.selectedOption, 'subject[0]');
       }
       return this.getUpdatedFilters({ index: 0 }, this.editMode); // get filters for first field i.e index 0 incase of init
     }));
@@ -293,6 +302,9 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
   onSubmitForm() {
     const selectedOption = _.cloneDeep(this.selectedOption);
     selectedOption.board = _.get(this.selectedOption, 'board') ? [this.selectedOption.board] : [];
+    selectedOption.medium = _.get(this.selectedOption, 'medium') ? [this.selectedOption.medium] : [];
+    selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel') ? [this.selectedOption.gradeLevel] : [];
+    selectedOption.subject = _.get(this.selectedOption, 'subject') ? [this.selectedOption.subject] : [];
     selectedOption.id = this.frameWorkId;
     if (selectedOption.board) {
       _.forEach(selectedOption.board, (data, index) => {
