@@ -237,7 +237,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     // Openforgeid 133157 remove softConstraints for ALL tab
     let softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
     
-    softConstraints = this.userService.slug && this.queryParams.selectedTab==="all" ? {} : softConstraints;
+    softConstraints = this.userService.slug ? {} : softConstraints;
 
     if (this.queryParams.key) {
       delete softConstraints['board'];
