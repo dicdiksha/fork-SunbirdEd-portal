@@ -121,8 +121,15 @@ export class VerifyAccountIdentifierComponent implements OnInit {
   }
   handleError(err) {
     if (_.get(err, 'error.result.remainingAttempt') === 0) {
+
+      let dynamicKey = Math.random().toString(36).substring(2, 15);
+      let messageValue = this.resourceService.messages.emsg.m0050;
+      let final_value = `${dynamicKey} value${messageValue} second ${dynamicKey}`;
+      let encodedValue = btoa(final_value);
+      console.log("verify account identifier encodedValue", encodedValue);
+
       this.disableFormSubmit = true;
-      this.utilService.redirectToLogin(this.resourceService.messages.emsg.m0050);
+      this.utilService.redirectToLogin(encodedValue); // this.resourceService.messages.emsg.m0050
     } else {
       const filterPipe = new InterpolatePipe();
       const errorMessage =
