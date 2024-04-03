@@ -106,7 +106,7 @@ export class GlobalSearchFilterNcertComponent implements OnInit, OnChanges, OnDe
           type: 'dropdown',
           labelText: f.name === 'se_boards' ? _.get(this.resourceService, 'frmelmnts.lbl.boardsFilter') : f.label || f.name,
           placeholderText: `${this.resourceService.frmelmnts.lbl.Select} ${f.label || f.name}`,
-          multiple: true
+          multiple: (f.name == 'se_boards' || f.name == 'se_mediums' || f.name == 'se_gradeLevels') ? false :true
         };
       });
       this.resourceService.languageSelected$.pipe(takeUntil(this.unsubscribe$)).subscribe((languageData) => {
