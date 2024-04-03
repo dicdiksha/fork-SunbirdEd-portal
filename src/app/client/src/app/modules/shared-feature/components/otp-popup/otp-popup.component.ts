@@ -106,10 +106,17 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
       },
       (err) => {
         if (_.get(err, 'error.result.remainingAttempt') === 0) {
+
+          let dynamicKey = Math.random().toString(36).substring(2, 15);
+          let messageValue = this.resourceService.messages.emsg.m0050;
+          let final_value = `${dynamicKey} value${messageValue} second ${dynamicKey}`;
+          let encodedValue = btoa(final_value);
+          console.log("popup encodedValue", encodedValue);
+
           if (this.redirectToLogin) {
-            this.utilService.redirectToLogin(this.resourceService.messages.emsg.m0050);
+            this.utilService.redirectToLogin(encodedValue); // this.resourceService.messages.emsg.m0050
           } else {
-            this.toasterService.error(this.resourceService.messages.emsg.m0050);
+            this.toasterService.error(encodedValue); // this.resourceService.messages.emsg.m0050
             this.closeContactForm.emit('true');
           }
         } else {
