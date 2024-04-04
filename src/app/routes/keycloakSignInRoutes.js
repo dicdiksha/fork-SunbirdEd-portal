@@ -16,38 +16,48 @@ let client_id = "";
 
 module.exports = (app) => {
   app.post('/keycloak/login', bodyParser.json(), async (req, res) => {
-    if(_.get(req, 'body.loginConfig')) {
-      let config = _.get(req, 'body.loginConfig');
-      client_id = _.get(req, 'body.client_id');
-      formData.username = _.get(req, 'body.emailId');
-      formData.password = _.get(req, 'body.password');
-      let queryArr = [];
-      (config.params).forEach(item => {
-        let arr = [];
-        if (item['key'] == 'redirect_uri') {
-          redirect_uri = item['value'];
-        }
-        arr.push(item['key'])
-        arr.push(item['value']);
-        queryArr.push(arr)
-      });
-      let reqOption = getRequestOptions(config.host+config.path, getHeaders(), qs.stringify(Object.fromEntries(queryArr)));
-      handleRequest(reqOption, "reqLogin", res);
-    } else {
-      logger.info({msg: 'Keycloak Signin route: Cannot read a Property of undefined'})
-      res.send('Cannot read property of undefined');
+    logger.error({msg: '/keycloak/login api request and response data', req, res});
+    try {
+      if(_.get(req, 'body.loginConfig')) {
+        let config = _.get(req, 'body.loginConfig');
+        client_id = _.get(req, 'body.client_id');
+        formData.username = _.get(req, 'body.emailId');
+        formData.password = _.get(req, 'body.password');
+        let queryArr = [];
+        (config.params).forEach(item => {
+          let arr = [];
+          if (item['key'] == 'redirect_uri') {
+            redirect_uri = item['value'];
+          }
+          arr.push(item['key'])
+          arr.push(item['value']);
+          queryArr.push(arr)
+        });
+        let reqOption = getRequestOptions(config.host+config.path, getHeaders(), qs.stringify(Object.fromEntries(queryArr)));
+        handleRequest(reqOption, "reqLogin", res);
+      } else {
+        logger.info({msg: 'Keycloak Signin route: Cannot read a Property of undefined'})
+        res.send('Cannot read property of undefined');
+      }
+    } catch (error) {
+      logger.error({msg: 'getting error during /keycloak/login API', error: error});
     }
   });
 }
 
 function handleRequest(option, type, res) {
-  request(option, ((err, response, data) => {
-    if(!err && (_.get(response, 'statusCode') == 200)) {
-      handleSuccessResponse(option, response, data, type, res);
-    } else {
-      handleResponse(err, response, data, type, res);
-    }
-  }))
+  logger.error({msg: 'handleRequest data', option, type, res});
+  try {
+    request(option, ((err, response, data) => {
+      if(!err && (_.get(response, 'statusCode') == 200)) {
+        handleSuccessResponse(option, response, data, type, res);
+      } else {
+        handleResponse(err, response, data, type, res);
+      }
+    }))
+  } catch (error) {
+    logger.error({msg: 'getting error in handleRequest', error: error});
+  }
 }
 
 function handleSuccessResponse(option, response, data, type, res) {
@@ -71,7 +81,8 @@ function handleSuccessResponse(option, response, data, type, res) {
 }
 
 function handleResponse(err, response, data, type, res) {
-  logger.error({msg: 'handleResponse for testing', err, response, data, type, res})
+  try {
+    logger.error({msg: 'handleResponse for testing', err, response, data, type, res});
   if(type == "reqLogin") {
     let errMsg = extractErrorMsg(data, "kc-error-message");
     logger.error({ msg: 'keyclaok Signin route : initialize keyclaok error: '+ _.get(response, 'statusCode'), error: errMsg.trim() });
@@ -102,6 +113,9 @@ function handleResponse(err, response, data, type, res) {
         res.send(data);
       }
     }
+  }
+  } catch (error) {
+    logger.error({msg: 'getting error in handleResponse' , error: error});
   }
 }
 
