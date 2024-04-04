@@ -71,6 +71,7 @@ function handleSuccessResponse(option, response, data, type, res) {
 }
 
 function handleResponse(err, response, data, type, res) {
+  logger.error({msg: 'handleResponse for testing', err, response, data, type, res})
   if(type == "reqLogin") {
     let errMsg = extractErrorMsg(data, "kc-error-message");
     logger.error({ msg: 'keyclaok Signin route : initialize keyclaok error: '+ _.get(response, 'statusCode'), error: errMsg.trim() });
@@ -105,10 +106,15 @@ function handleResponse(err, response, data, type, res) {
 }
 
 function extractErrorMsg(data, id) {
-  let errObj = parser.parseFromString(data, 'text/html');
-  let err_res = errObj.getElementById(id).textContent;
-  err_res.replace(/\\\n/g, '');
-  return err_res;
+  logger.error({msg: 'extractErrorMsg for testing', data :  data , id: id });
+  try {
+    let errObj = parser.parseFromString(data, 'text/html');
+    let err_res = errObj.getElementById(id).textContent;
+    err_res.replace(/\\\n/g, '');
+    return err_res;
+  } catch (error) {
+    logger.error({msg: "getting extractErrorMsg here", error : error});
+  }
 }
 
 function getHeaders(cookie, referer) {
