@@ -60,14 +60,14 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       type: 'dropdown',
       labelText: _.get(this.resourceService, 'frmelmnts.lbl.medium'),
       placeholderText: _.get(this.resourceService, 'frmelmnts.lbl.selectMedium'),
-      multiple: true
+      multiple: false
     },
     {
       category: 'gradeLevel',
       type: 'dropdown',
       labelText: _.get(this.resourceService, 'frmelmnts.lbl.class'),
       placeholderText: _.get(this.resourceService, 'frmelmnts.lbl.selectClass'),
-      multiple: true
+      multiple: false
     },
     {
       category: 'subject',
