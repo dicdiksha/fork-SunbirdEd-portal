@@ -53,7 +53,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@dicdikshaorg/chatbot-client": "^3.0.3",
-    "@dicdikshaorg/common-consumption": "4.12.13",
+    "@dicdikshaorg/common-consumption": "4.12.14",
     "@dicdikshaorg/common-form-elements": "5.1.24",
     "@dicdikshaorg/epub-player-v9": "5.0.3",
     "@dicdikshaorg/player-sdk-v9": "5.1.8",
