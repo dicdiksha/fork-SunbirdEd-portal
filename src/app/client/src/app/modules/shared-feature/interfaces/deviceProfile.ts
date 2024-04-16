@@ -6,4 +6,5 @@ export interface IDeviceProfile {
 interface ILocation {
   state: string;
   district: string;
+  role: string;
 }
