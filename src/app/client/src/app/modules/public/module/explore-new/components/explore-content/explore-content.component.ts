@@ -817,7 +817,9 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     //   option.filters.se_boards = ['CBSE'];
     // }
     option.filters.primaryCategory = this.selectedFilters.primaryCategory && this.selectedFilters.primaryCategory.length ? this.selectedFilters.primaryCategory : filters.primaryCategory;
-    console.log("Options before API", option);
+    if(this.queryParams.selectedTab == 'course'){
+      Object.assign(option.filters, {"batches.enrollmentType": "open","batches.status": 1,"status":["Live"]});
+    }
     this.searchService.contentSearch(option)
       .pipe(
         mergeMap(data => {
