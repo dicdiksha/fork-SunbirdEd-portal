@@ -18,7 +18,7 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
   @Output() filterChange: EventEmitter<{ status: string, filters?: any }> = new EventEmitter();
   private unsubscribe$ = new Subject<void>();
 
-  upperCaseObj = ["igot-health","cbse/ncert","cbse","ncert","cisce","nios","cpd","ut (dnh and dd)"]
+  upperCaseObj = ["igot-health","cbse/ncert","cbse","ncert","cisce","nios","cpd","ut (dnh and dd)", "ict", "nss volunteers", "aas pass (evs)", "craft", "ecce", "evs", "gka", "ict", "tamil (at)", "tamil (bt)","spcc", "nyks","nursing", "nep", "manipuri lairek laisu (meetei mayek)", "looking around (evs)", "kannada (bt)", "ircs"]
   constructor(private router: Router, private activatedRoute: ActivatedRoute, public resourceService: ResourceService, private utilService: UtilService) { }
 
   ngOnInit() {
