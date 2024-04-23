@@ -202,9 +202,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (this.isUserLoggedIn()) {
                     this.prepareVisits([]);
                 }
-                if (_.get(params, 'board') && params.board[0] === 'CBSE') {
-                    params.board[0] = 'CBSE/NCERT';
-                }
+                //117337 - removed hardcoded cbse/ncert
+                // if (_.get(params, 'board') && params.board[0] === 'CBSE') {
+                //     params.board[0] = 'CBSE/NCERT';
+                // }
                 this.queryParams = { ...params, ...queryParams };
             }));
     }
@@ -217,7 +218,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             const selectedTab = urlQuery.get("selectedTab") != undefined || urlQuery.get("selectedTab") != null ? urlQuery.get("selectedTab") : 'home';
         const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
             if (tenant) {
-                const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                //117337 - removed hardcoded cbse/ncert
+                //const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                const queryParams: Params = { board: tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                console.log("queryParams===",queryParams)
             console.log("queryParams===",queryParams)
             this.router.navigate(
                 [],
@@ -243,7 +247,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 // guestUserDetails.framework.id = 'ncert_k-12';
                 // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
             } else {
-                this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+                //117337 - removed hardcoded cbse/ncert
+                // this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+                this.router.navigateByUrl('/explore?board=CBSE&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+           
             }
         }
         const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -421,9 +428,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         //this.cacheService.set('searchFilters', filters, { expires: Date.now() + _cacheTimeout });
         this.showLoader = true;
         this.selectedFilters = pick(filters, _.get(currentPageData , 'metaData.filters'));
-        if (this.selectedFilters && this.selectedFilters['board'] && this.selectedFilters['board'][0] === 'CBSE/NCERT') {
-            this.selectedFilters['board'][0] = 'CBSE';
-        }
+        //117337 - removed hardcoded cbse/ncert
+        // if (this.selectedFilters && this.selectedFilters['board'] && this.selectedFilters['board'][0] === 'CBSE/NCERT') {
+        //     this.selectedFilters['board'][0] = 'CBSE';
+        // }
         if (has(filters, 'audience') || (localStorage.getItem('userType') && currentPageData.contentType !== 'all')) {
             const userTypes = get(filters, 'audience') || [localStorage.getItem('userType')];
             const audienceSearchFilterValue = _.get(filters, 'audienceSearchFilterValue');
@@ -509,9 +517,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                             if (_.get(currentPageData, 'metaData.filters') && _.get(currentPageData, 'metaData.filters')!=undefined && ((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
                                 let param = {};
                                 param[filterValue] = (typeof (params[filterValue]) === "string") ? params[filterValue].split(',') : params[filterValue];
-                                if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
-                                    param[filterValue][0] = "CBSE";                                
-                                }
+                               //117337 - removed hardcoded cbse/ncert
+                                // if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
+                                //     param[filterValue][0] = "CBSE";                                
+                                // }
                                 option.filters[filterValue] = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
                             }
                         });
@@ -1176,7 +1185,8 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         const paramValuesInLowerCase = _.mapValues(updatedCategoriesMapping, value => {
-            if (_.toLower(value) === 'cbse') { return 'CBSE/NCERT'; }
+            //117337 - removed hardcoded cbse/ncert
+            // if (_.toLower(value) === 'cbse') { return 'CBSE/NCERT'; }
             return Array.isArray(value) ? _.map(value, _.toLower) : _.toLower(value);
         });
 
@@ -1399,9 +1409,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         let pathSegment;
         if( this.userPreference.framework.board){
             let board = this.userPreference.framework.board[0];
-            if(board==="CBSE/NCERT"){
-                board="CBSE";
-            }
+             //117337 - removed hardcoded cbse/ncert
+            // if(board==="CBSE/NCERT"){
+            //     board="CBSE";
+            // }
           pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
         }
         if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
