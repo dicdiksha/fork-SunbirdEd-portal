@@ -38,7 +38,7 @@
               *ngFor="let content of contentList;let i = index;">
               <sb-library-card [indexToDisplay]="i" [layoutConfig]="layoutConfiguration" *ngIf="!isDesktopApp;else desktopCard"
               appContentDirection appTelemetryInteract [telemetryInteractEdata]="cardIntractEdata" [telemetryInteractObject]="{id:content.metaData.identifier,type:content.metaData.contentType||'Content',ver:'1.0'}"
-              (cardClick)="playContent($event)" [content]="content" [cardImg]="'assets/images/book.png'" ></sb-library-card>
+              (cardClick)="playContent($event)" [content]="content" [cardImg]="'assets/images/placeholder-Image.png'" ></sb-library-card>
             </div>
             </div>
           </div>
