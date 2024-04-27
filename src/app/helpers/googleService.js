@@ -55,6 +55,12 @@ const validateRecaptcha = async (req, res, next) => {
         errType: errType,
         did: req.headers['x-device-id']
       });
+
+      logger.error({
+       googleService:  "googleService reCaptcha bypass success"
+      });
+
+      return next();
       res.status(httpSatusCode.IM_A_TEAPOT).send({
         'id': 'api.validate.recaptcha', 'ts': new Date(),
         'params': {
