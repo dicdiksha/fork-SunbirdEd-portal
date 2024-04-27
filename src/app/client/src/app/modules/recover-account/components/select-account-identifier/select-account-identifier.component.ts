@@ -15,7 +15,7 @@ export class SelectAccountIdentifierComponent implements OnInit {
   selectedAccountIdentifier: any = {};
   validIdentifiers = [];
   errorCount = 0;
-  disableFormSubmit = true;
+  disableFormSubmit = false; // todo -> true
   telemetryImpression: IImpressionEventInput;
   telemetryCdata = [{
     id: 'user:account:recovery',

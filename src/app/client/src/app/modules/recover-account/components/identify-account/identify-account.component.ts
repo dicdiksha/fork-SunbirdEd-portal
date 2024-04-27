@@ -14,7 +14,7 @@ import { RecaptchaComponent } from 'ng-recaptcha';
 })
 export class IdentifyAccountComponent implements OnInit {
 
-  disableFormSubmit = true;
+  disableFormSubmit = false; // todo -> true
   @ViewChild('captchaRef') captchaRef: RecaptchaComponent;
   googleCaptchaSiteKey: string;
   nameNotExist = false;
@@ -58,7 +58,7 @@ export class IdentifyAccountComponent implements OnInit {
       if (this.form.status === 'VALID') {
         this.disableFormSubmit = false;
       } else {
-        this.disableFormSubmit = true;
+        this.disableFormSubmit = false; // todo -> true
       }
     });
     this.form.controls.identifier.valueChanges.subscribe(val => this.identiferStatus = '');
