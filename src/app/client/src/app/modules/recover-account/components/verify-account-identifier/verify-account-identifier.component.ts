@@ -13,7 +13,7 @@ import { RecaptchaComponent } from 'ng-recaptcha';
 })
 export class VerifyAccountIdentifierComponent implements OnInit {
   @ViewChild('captchaRef') captchaRef: RecaptchaComponent;
-  disableFormSubmit = true;
+  disableFormSubmit = false; // todo -> true
   disableResendOtp = false;
   form: FormGroup;
   errorCount = 0;
@@ -75,12 +75,12 @@ export class VerifyAccountIdentifierComponent implements OnInit {
       if (this.form.status === 'VALID') {
         this.disableFormSubmit = false;
       } else {
-        this.disableFormSubmit = true;
+        this.disableFormSubmit = false; // todo -> true
       }
     });
   }
   handleVerifyOtp() {
-    this.disableFormSubmit = true;
+    this.disableFormSubmit = false; // todo -> true
     const request = {
       request: {
         type: this.recoverAccountService.selectedAccountIdentifier.type,
@@ -121,7 +121,7 @@ export class VerifyAccountIdentifierComponent implements OnInit {
   }
   handleError(err) {
     if (_.get(err, 'error.result.remainingAttempt') === 0) {
-      this.disableFormSubmit = true;
+      this.disableFormSubmit = false; // todo -> true
       this.utilService.redirectToLogin(this.resourceService.messages.emsg.m0050);
     } else {
       const filterPipe = new InterpolatePipe();
