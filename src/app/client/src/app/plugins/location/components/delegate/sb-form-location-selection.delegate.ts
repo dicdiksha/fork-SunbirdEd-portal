@@ -214,6 +214,7 @@ export class SbFormLocationSelectionDelegate {
         acc[l.type] = l.name;
         return acc;
       }, {});
+      localStorage.setItem('userType',this.formGroup.value.persona)
       const task = this.deviceRegisterService.updateDeviceProfile(request).toPromise()
         .then(() => ({ deviceProfile: 'success' }))
         .catch(() => ({ deviceProfile: 'fail' }));
@@ -221,7 +222,6 @@ export class SbFormLocationSelectionDelegate {
     }
 
     if (this.shouldUserProfileLocationUpdate && this.userService.loggedIn) {
-      console.log("Logged in user...");
       const formValue = this.formGroup.value;
       const profileUserTypes = [];
       let userType;
@@ -242,7 +242,7 @@ export class SbFormLocationSelectionDelegate {
       } else {
         profileUserTypes.push({ type: formValue.persona });
       }
-      console.log("updateUserLocation--- this.userService---",this.userService);
+      
       const payload: any = {
         userId: _.get(this.userService, 'userid'),
         profileLocation: locationDetails,
@@ -521,7 +521,8 @@ export class SbFormLocationSelectionDelegate {
 
           suggestions = [
             { type: 'state', name: this.deviceProfile.userDeclaredLocation.state },
-            { type: 'district', name: this.deviceProfile.userDeclaredLocation.district }
+            { type: 'district', name: this.deviceProfile.userDeclaredLocation.district },
+            { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
           ];
         }
       }
@@ -547,7 +548,8 @@ export class SbFormLocationSelectionDelegate {
 
           suggestions = [
             { type: 'state', name: this.deviceProfile.ipLocation.state },
-            { type: 'district', name: this.deviceProfile.ipLocation.district }
+            { type: 'district', name: this.deviceProfile.ipLocation.district },
+            { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
           ];
         }
       }
@@ -561,7 +563,8 @@ export class SbFormLocationSelectionDelegate {
 
         suggestions = [
           { type: 'state', name: _.get(this.deviceProfile, 'ipLocation.state') },
-          { type: 'district', name: _.get(this.deviceProfile, 'ipLocation.district') }
+          { type: 'district', name: _.get(this.deviceProfile, 'ipLocation.district') },
+          { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
         ];
       } else {
         // render using userDeclaredLocation
@@ -572,7 +575,8 @@ export class SbFormLocationSelectionDelegate {
 
         suggestions = [
           { type: 'state', name: this.deviceProfile.userDeclaredLocation.state },
-          { type: 'district', name: this.deviceProfile.userDeclaredLocation.district }
+          { type: 'district', name: this.deviceProfile.userDeclaredLocation.district },
+          { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
         ];
       }
     }

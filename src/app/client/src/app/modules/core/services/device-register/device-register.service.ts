@@ -81,7 +81,8 @@ export class DeviceRegisterService  {
         producer: this.appId,
         userDeclaredLocation: {
           state: userDeclaredLocation.state || '',
-          district: userDeclaredLocation.district || ''
+          district: userDeclaredLocation.district || '',
+          role: (localStorage.getItem('userType') || '').toLowerCase() || 'other'
         }
       }
     };
