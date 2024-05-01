@@ -229,6 +229,9 @@ async ngOnInit() {
         let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
             if(guestUserDetails && Object.keys(guestUserDetails).length){
                 console.log('inside')
+                if(!guestUserDetails.framework){
+                    guestUserDetails.framework = {}
+                }
                 guestUserDetails.framework.board = [queryParams.board];
                 guestUserDetails.framework.id = queryParams.id;
                 localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
