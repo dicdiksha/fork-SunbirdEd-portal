@@ -115,9 +115,10 @@ export class SbFormLocationSelectionDelegate {
     }
       else if( this.userService.guestUserProfile.framework.board){
         let board = this.userService.guestUserProfile.framework.board[0];
-        if(board==="CBSE/NCERT"){
-            board="CBSE";
-        }
+        //117337 - removed cbse/ncert
+        // if(board==="CBSE/NCERT"){
+        //     board="CBSE";
+        // }
         pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
       }
       if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
