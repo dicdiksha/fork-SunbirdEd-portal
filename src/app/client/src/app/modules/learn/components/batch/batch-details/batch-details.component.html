@@ -164,11 +164,11 @@
           <ul>
             <li *ngIf="showCompletionCertificate" class="fsmall mb-8 sb-color-gray-800">
               {{resourceService?.frmelmnts?.bltpt?.earnyourcert}}</li>
-            <li *ngIf="showCompletionCertificate" class="fsmall mb-8 sb-color-gray-800">
-              {{resourceService?.frmelmnts?.bltpt?.earnyourcertnew}}</li>
             <li *ngIf="showMeritCertificate" class="fsmall mb-8 sb-color-gray-800">
               {{resourceService?.frmelemnts?.bltpt?.earnmcert |
               interpolate:'{percent}': meritCertPercent}}</li>
+            <li *ngIf="showCompletionCertificate" class="fsmall mb-8 sb-color-gray-800">
+              {{resourceService?.frmelmnts?.bltpt?.earnyourcertnew}}</li>
           </ul>
         </div>
       </div>
