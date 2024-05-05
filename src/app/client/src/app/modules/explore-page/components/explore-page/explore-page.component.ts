@@ -234,7 +234,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             );
             let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
                 if(guestUserDetails && Object.keys(guestUserDetails).length){
-                    console.log('inside')
                     if(!guestUserDetails.framework){
                         guestUserDetails.framework = {}
                     }
