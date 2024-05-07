@@ -325,7 +325,14 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
   }
   private enableSubmitButton() {
     const optionalFields = _.map(_.filter(this._formFieldProperties, formField => !_.get(formField, 'required')), 'code');
-    const enableSubmitButton = _.every(this.selectedOption, (value, index) => {
+    
+    //117337 - removed meadium from selection option check for enable submit button
+    let tempOptions = this.selectedOption;
+    if(tempOptions.board && tempOptions.board=="NCERT"){
+      delete tempOptions.medium;
+    }
+
+    const enableSubmitButton = _.every(tempOptions, (value, index) => {
       return _.includes(optionalFields, index) ? true : value.length;
     });
     if (enableSubmitButton) {
