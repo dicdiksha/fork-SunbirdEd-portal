@@ -89,7 +89,9 @@ export class DeleteUserComponent implements OnInit {
   }
 
   onSubmitForm() {
+    console.log('onSubmitForm clicked')
     if (this.enableSubmitBtn) {
+      console.log('onSubmitForm clicked')
       this.enableSubmitBtn = false;
       this.showContactPopup = true;
       this.conditions = []
@@ -97,6 +99,7 @@ export class DeleteUserComponent implements OnInit {
         element.nativeElement.checked = false;
       });
     }else{
+      console.log('onSubmitForm warning msg')
       this.toasterService.warning(this.resourceService.messages.imsg.m0092)
     }
   }
