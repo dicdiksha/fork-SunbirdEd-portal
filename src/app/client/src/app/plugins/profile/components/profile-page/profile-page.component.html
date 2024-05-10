@@ -208,15 +208,10 @@
         <span class="fmedium white-space-nowrap">{{resourceService.frmelmnts.lbl.boards | transposeTerms: 'frmelmnts.lbl.boards' : resourceService?.selectedLang}}:</span>
          <!-- //117337 - removed cbse/ncert
         <span class="fmedium font-w-bold text-center"
-<<<<<<< HEAD
           *ngIf="userProfile.framework">{{convertToString(userProfile.framework.board) | interpolate: 'CBSE': 'CBSE/NCERT'}}</span> -->
           <span class="fmedium font-w-bold text-center"
           *ngIf="userProfile.framework">{{convertToString(userProfile.framework.board)}}</span>
         </div>
-=======
-          *ngIf="userProfile.framework">{{convertToString(userProfile.framework.board)}}</span>
-      </div>
->>>>>>> c78a5f84c91e9e5a72c99961b7bd59caf8cae9f7
       <div class="mb-15 d-flex flex-ai-center flex-dc">
         <span class="fmedium white-space-nowrap">{{resourceService.frmelmnts.lbl.medium | transposeTerms: 'frmelmnts.lbl.medium' : resourceService?.selectedLang}} :</span>
         <span class="fmedium font-w-bold text-center"
