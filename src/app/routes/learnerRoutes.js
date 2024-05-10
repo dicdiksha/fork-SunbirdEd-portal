@@ -19,6 +19,7 @@ const { logger } = require('@project-sunbird/logger');
 const {parseJson, isDateExpired, decodeNChkTime} = require('../helpers/utilityService');
 const _ = require('lodash');
 
+
 module.exports = function (app) {
   require('./accountRecoveryRoute.js')(app) // account recovery route
 
@@ -44,6 +45,35 @@ module.exports = function (app) {
       }
     })
   )
+  
+  app.post('/learner/user/v1/delete',
+    bodyParser.json(),
+    proxyUtils.verifyToken(),
+    isAPIWhitelisted.isAllowed(),
+    telemetryHelper.generateTelemetryForLearnerService,
+    telemetryHelper.generateTelemetryForProxy,
+    proxy(learnerURL, {
+      limit: reqDataLimitOfContentUpload,
+      proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
+      proxyReqPathResolver: (req) => {
+        logger.info({ msg: '/learner/user/v1/delete called upstream url /user/v1/delete in request path resolver' });
+        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '')).path
+      },
+      userResDecorator: (proxyRes, proxyResData, req, res) => {
+        logger.info({ msg: '/learner/user/v1/delete called upstream url /user/v1/delete' });
+        try {
+          const data = JSON.parse(proxyResData.toString('utf8'));
+          if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
+          else return proxyUtils.handleSessionExpiry(proxyRes, data, req, res, data);
+        } catch (err) {
+          logger.error({ msg: 'learner route : userResDecorator json parse error:', proxyResData });
+          logger.error({ msg: 'learner route : error for /learner/user/v1/delete upstram url is /private/user/v1/delete ', err });
+          return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, null);
+        }
+      }
+    })
+  )
+
 
   app.get('/learner/user/v1/managed/*', proxyManagedUserRequest());
 
@@ -85,9 +115,10 @@ module.exports = function (app) {
         let urlParam = req.params['0']
         let query = require('url').parse(req.url).query
         if (urlParam.indexOf('anonymous') > -1) urlParam = urlParam.replace('anonymous/', '');
+        if (urlParam.indexOf('delete/otp') > -1) urlParam = urlParam.replace('delete/otp', 'otp/');
         if (req.url.indexOf('/otp/') > 0) {
           proxyUtils.addReqLog(req);
-        }
+        }     
         if (req.originalUrl === '/learner/data/v1/role/read') {
           urlParam = req.originalUrl.replace('/learner/', '')
         }
