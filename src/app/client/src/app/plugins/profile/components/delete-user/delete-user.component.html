@@ -2,9 +2,10 @@
   [config]="{disableClose: false, panelClass: ['overflow-visible', 'material-modal']}"
   (dismiss)="showContactPopup = !showContactPopup">
   <ng-template sbModalContent let-data>
-    <app-delete-account [dialogProps]="data" (close)="showContactPopup = !showContactPopup" [contactType]="contactType"
+    <p>delete account popup</p>
+    <!-- <app-delete-account [dialogProps]="data" (close)="showContactPopup = !showContactPopup" [contactType]="contactType"
       [userProfile]="userProfile">
-    </app-delete-account>
+    </app-delete-account> -->
   </ng-template>
 </app-modal-wrapper>
 

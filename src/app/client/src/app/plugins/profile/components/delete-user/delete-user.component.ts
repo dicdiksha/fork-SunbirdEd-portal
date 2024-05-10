@@ -91,11 +91,12 @@ export class DeleteUserComponent implements OnInit {
   onSubmitForm() {
     console.log('onSubmitForm clicked')
     if (this.enableSubmitBtn) {
-      console.log('onSubmitForm clicked')
       this.enableSubmitBtn = false;
       this.showContactPopup = true;
       this.conditions = []
+      console.log('onSubmitForm clicked enableSubmitBtn',this.enableSubmitBtn,'tttt',this.showContactPopup)
       this.inputFields.forEach((element) => {
+        console.log('onSubmitForm clicked enableSubmitBtn inputFields')
         element.nativeElement.checked = false;
       });
     }else{
