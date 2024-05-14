@@ -3,7 +3,11 @@
   (dismiss)="showContactPopup = !showContactPopup">
   <ng-template sbModalContent let-data>
     <p>delete account popup</p>
-    <app-delete-account [dialogProps]="data" (close)="showContactPopup = !showContactPopup" [contactType]="contactType"
+    <p>data : {{data | json}}</p>
+    <p>showContactPopup : {{showContactPopup}}</p>
+    <p>contactType : {{contactType}}</p>
+    <p>userProfile : {{userProfile | json}}</p>
+    <app-delete-account [dialogProps]="data" (close)="showContactPopup=!showContactPopup" [contactType]="contactType"
       [userProfile]="userProfile">
     </app-delete-account>
   </ng-template>
