@@ -12,6 +12,7 @@ import { UserSearchService } from '../../../../modules/search/services/user-sear
   selector: 'app-delete-user',
   templateUrl: './delete-user.component.html',
   styleUrls: ['./delete-user.component.scss'],
+  providers: [UserSearchService]
 })
 export class DeleteUserComponent implements OnInit {
 
