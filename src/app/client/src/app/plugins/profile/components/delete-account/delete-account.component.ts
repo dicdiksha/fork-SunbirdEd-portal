@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-// import * as _ from 'lodash-es';
+import * as _ from 'lodash-es';
 import { UserService, OtpService } from '@sunbird/core';
 import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
 // import { ProfileService } from '../../services';
-// import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
+import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
-// import { DeviceDetectorService } from 'ngx-device-detector';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-delete-account',
@@ -25,8 +25,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   showUniqueError = '';
 
   otpData: any;
-  // submitInteractEdata: IInteractEventEdata;
-  // telemetryInteractObject: IInteractEventObject;
+  submitInteractEdata: IInteractEventEdata;
+  telemetryInteractObject: IInteractEventObject;
   verifiedUser = false;
   templateId: any = 'otpaccontDeleteTemplate';
 
