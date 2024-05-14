@@ -31,15 +31,15 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   templateId: any = 'otpaccontDeleteTemplate';
 
   constructor(
-    // public resourceService: ResourceService, 
-    // public userService: UserService,
-    // public otpService: OtpService, 
-    // public toasterService: ToasterService,
+    public resourceService: ResourceService, 
+    public userService: UserService,
+    public otpService: OtpService, 
+    public toasterService: ToasterService,
     // public profileService: ProfileService, 
     private matDialog: MatDialog,
     public configService: ConfigService,
-    // private cacheService:CacheService,
-    // public deviceDetectorService: DeviceDetectorService
+    private cacheService:CacheService,
+    public deviceDetectorService: DeviceDetectorService
   ) { }
 
   ngOnInit() {
