@@ -99,19 +99,18 @@ export class DeleteUserComponent implements OnInit {
       this.inputFields.forEach((element) => {
         element.nativeElement.checked = false;
       });
-      console.log("this.userProfile=======",this.userProfile)
-      return
-      // const option = { userId: this.userId };
-      // this.userSearchService.deleteUser(option).subscribe(
-      //   (apiResponse: ServerResponse) => {
-      //     this.toasterService.success(this.resourceService.messages.smsg.m0029);
-      //     this.redirect();
-      //   },
-      //   err => {
-      //     this.toasterService.error(this.resourceService.messages.emsg.m0005);
-      //     this.redirect();
-      //   }
-      // );
+      console.log("this.userProfile=======",this.userProfile.identifier)
+      const option = { userId: this.userProfile.identifier };
+      this.userSearchService.deleteUser(option).subscribe(
+        (apiResponse: ServerResponse) => {
+          this.toasterService.success(this.resourceService.messages.smsg.m0029);
+          this.redirect();
+        },
+        err => {
+          this.toasterService.error(this.resourceService.messages.emsg.m0005);
+          this.redirect();
+        }
+      );
 
 
     }else{
