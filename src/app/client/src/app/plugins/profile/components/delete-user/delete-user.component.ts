@@ -39,6 +39,7 @@ export class DeleteUserComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("ngOnInit .userProfile=======",this.userProfile)
     let obj = this.resourceService.frmelmnts.lbl
     this.list = Object.keys(obj)
       .filter(key => key.includes('condition'))
