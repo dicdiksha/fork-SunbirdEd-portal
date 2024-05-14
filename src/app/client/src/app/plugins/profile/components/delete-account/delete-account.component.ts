@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 import { UserService, OtpService } from '@sunbird/core';
 import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
-// import { ProfileService } from '../../services';
+import { ProfileService } from '../../services';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -34,12 +34,12 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     public resourceService: ResourceService, 
     public userService: UserService,
     public otpService: OtpService, 
-    public toasterService: ToasterService,
+    // public toasterService: ToasterService,
     // public profileService: ProfileService, 
     private matDialog: MatDialog,
-    public configService: ConfigService,
-    private cacheService:CacheService,
-    public deviceDetectorService: DeviceDetectorService
+    // public configService: ConfigService,
+    // private cacheService:CacheService,
+    // public deviceDetectorService: DeviceDetectorService
   ) { }
 
   ngOnInit() {
