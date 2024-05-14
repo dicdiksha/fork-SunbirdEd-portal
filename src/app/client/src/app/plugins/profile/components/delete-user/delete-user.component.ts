@@ -1,16 +1,17 @@
 import { Component, EventEmitter, OnInit, Output, ViewChildren } from '@angular/core';
-import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData } from '@sunbird/shared';
+import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData,ServerResponse } from '@sunbird/shared';
 import * as _ from 'lodash-es';
 import { takeUntil } from 'rxjs/operators';
 import { IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
 import { UserService } from '@sunbird/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 
 @Component({
   selector: 'app-delete-user',
   templateUrl: './delete-user.component.html',
-  styleUrls: ['./delete-user.component.scss']
+  styleUrls: ['./delete-user.component.scss'],
 })
 export class DeleteUserComponent implements OnInit {
 
@@ -29,7 +30,7 @@ export class DeleteUserComponent implements OnInit {
   userProfile: any;
 
   constructor(public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
-    public userService: UserService,
+    public userService: UserService,  private userSearchService: UserSearchService,public route: Router,
     private activatedRoute: ActivatedRoute, public navigationhelperService: NavigationHelperService,
     public layoutService: LayoutService) {
     this.userService.userData$.subscribe((user: IUserData) => {
@@ -89,18 +90,29 @@ export class DeleteUserComponent implements OnInit {
   }
 
   onSubmitForm() {
-    console.log('onSubmitForm clicked')
     if (this.enableSubmitBtn) {
       this.enableSubmitBtn = false;
-      this.showContactPopup = true;
+      this.showContactPopup = false; // true when full functionality will work with otp
       this.conditions = []
-      console.log('onSubmitForm clicked enableSubmitBtn',this.enableSubmitBtn,'tttt',this.showContactPopup)
       this.inputFields.forEach((element) => {
-        console.log('onSubmitForm clicked enableSubmitBtn inputFields')
         element.nativeElement.checked = false;
       });
+      console.log("this.userProfile=======",this.userProfile)
+      return
+      // const option = { userId: this.userId };
+      // this.userSearchService.deleteUser(option).subscribe(
+      //   (apiResponse: ServerResponse) => {
+      //     this.toasterService.success(this.resourceService.messages.smsg.m0029);
+      //     this.redirect();
+      //   },
+      //   err => {
+      //     this.toasterService.error(this.resourceService.messages.emsg.m0005);
+      //     this.redirect();
+      //   }
+      // );
+
+
     }else{
-      console.log('onSubmitForm warning msg')
       this.toasterService.warning(this.resourceService.messages.imsg.m0092)
     }
   }
@@ -128,4 +140,15 @@ export class DeleteUserComponent implements OnInit {
     }
     this.validateModal();
   }
+
+  /**
+   * This method helps to redirect to the parent component
+   * page, i.e, outbox listing page with proper page number
+	 *
+	 */
+  redirect(): void {
+    this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+  }
+
+
 }
