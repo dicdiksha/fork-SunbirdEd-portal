@@ -12,7 +12,8 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 @Component({
   selector: 'app-delete-account',
   templateUrl: './delete-account.component.html',
-  styleUrls: ['./delete-account.component.scss']
+  styleUrls: ['./delete-account.component.scss'],
+  providers:[ProfileService]
 })
 export class DeleteAccountComponent implements OnInit, OnDestroy {
   public unsubscribe = new Subject<void>();
