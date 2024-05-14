@@ -37,11 +37,14 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     public deviceDetectorService: DeviceDetectorService) { }
 
   ngOnInit() {
+    console.log("delete-account.component ngoninit")
     this.validateAndEditContact();
   }
 
   private async validateAndEditContact() {
+    console.log('validateAndEditContact')
     if (this.userProfile) {
+      console.log('inside userProfile',this.userProfile)
       const request: any = {
         key: this.userProfile.email || this.userProfile.phone || this.userProfile.recoveryEmail,
         userId: this.userProfile.userId,
@@ -49,8 +52,10 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         type: ''
       };
       if ((this.userProfile.email) || this.userProfile.recoveryEmail) {
+        console.log('inside recoveryEmail')
         request.type = 'email';
       } else if (this.userProfile.phone || this.userProfile.recoveryPhone) {
+        console.log('inside recoveryPhone')
         request.type = 'phone';
       }
       const otpData = {
@@ -62,7 +67,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
           this.resourceService.frmelmnts.lbl.wrongEmailOTP
       };
       this.verifiedUser = false;
-
+      console.log('show otpData',otpData)
       this.generateOTP({ request }, otpData);
     }
   }
