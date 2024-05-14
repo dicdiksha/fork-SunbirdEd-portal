@@ -38,7 +38,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log("delete-account.component ngoninit")
-    this.validateAndEditContact();
+    //this.validateAndEditContact();
   }
 
   private async validateAndEditContact() {
