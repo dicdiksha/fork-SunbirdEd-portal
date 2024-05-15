@@ -99,13 +99,14 @@ export class DeleteUserComponent implements OnInit {
       this.inputFields.forEach((element) => {
         element.nativeElement.checked = false;
       });
-      console.log("this.userProfile=======",this.userProfile.identifier)
       const option = { 
-        userId: this.userProfile.identifier };
-        console.log("onSubmitForm option",option)
+      userId: this.userProfile.identifier };
       this.userSearchService.deleteUser(option).subscribe(
         (apiResponse: ServerResponse) => {
           this.toasterService.success(this.resourceService.messages.smsg.m0029);
+          localStorage.clear();
+          sessionStorage.clear();
+          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
         },
         err => {
           this.toasterService.error(this.resourceService.messages.emsg.m0005);
