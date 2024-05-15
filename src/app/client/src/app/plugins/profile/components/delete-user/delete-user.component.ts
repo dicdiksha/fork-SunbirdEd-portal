@@ -108,7 +108,7 @@ export class DeleteUserComponent implements OnInit {
           sessionStorage.clear();
           setTimeout(() => {
             this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-          }, 100);
+          }, 500);
           
         },
         err => {
