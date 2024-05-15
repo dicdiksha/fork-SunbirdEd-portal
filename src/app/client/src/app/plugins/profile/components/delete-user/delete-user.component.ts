@@ -104,7 +104,7 @@ export class DeleteUserComponent implements OnInit {
         headers: requestParam.header,
         userId: this.userProfile.identifier };
         console.log("onSubmitForm option",option)
-      this.userSearchService.deleteUser(option).subscribe(
+      this.userSearchService.blockUser(option).subscribe(
         (apiResponse: ServerResponse) => {
           this.toasterService.success(this.resourceService.messages.smsg.m0029);
         },
