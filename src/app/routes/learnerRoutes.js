@@ -89,8 +89,11 @@ module.exports = function (app) {
       },
       userResDecorator: (proxyRes, proxyResData, req, res) => {
         logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block' });
+        console.log('learner/user/v1/block req===================',req)
+        console.log('learner/user/v1/block res===================',res)
         try {
           const data = JSON.parse(proxyResData.toString('utf8'));
+          console.log('learner/user/v1/block data===================',data)
           if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
           else return proxyUtils.handleSessionExpiry(proxyRes, data, req, res, data);
         } catch (err) {
