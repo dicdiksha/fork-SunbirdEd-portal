@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ViewChildren } from '@angular/core';
-import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData,ServerResponse } from '@sunbird/shared';
+import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData,ServerResponse,RequestParam } from '@sunbird/shared';
 import * as _ from 'lodash-es';
 import { takeUntil } from 'rxjs/operators';
 import { IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
@@ -91,7 +91,7 @@ export class DeleteUserComponent implements OnInit {
     this.navigationhelperService.navigateToLastUrl();
   }
 
-  onSubmitForm() {
+  onSubmitForm(requestParam: RequestParam) {
     if (this.enableSubmitBtn) {
       this.enableSubmitBtn = false;
       this.showContactPopup = false; // true when full functionality will work with otp
@@ -100,15 +100,16 @@ export class DeleteUserComponent implements OnInit {
         element.nativeElement.checked = false;
       });
       console.log("this.userProfile=======",this.userProfile.identifier)
-      const option = { userId: this.userProfile.identifier };
+      const option = { 
+        headers: requestParam.header,
+        userId: this.userProfile.identifier };
+        console.log("onSubmitForm option",option)
       this.userSearchService.deleteUser(option).subscribe(
         (apiResponse: ServerResponse) => {
           this.toasterService.success(this.resourceService.messages.smsg.m0029);
-          this.redirect();
         },
         err => {
           this.toasterService.error(this.resourceService.messages.emsg.m0005);
-          this.redirect();
         }
       );
 
@@ -147,9 +148,9 @@ export class DeleteUserComponent implements OnInit {
    * page, i.e, outbox listing page with proper page number
 	 *
 	 */
-  redirect(): void {
-    this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-  }
+  // redirect(): void {
+  //   this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+  // }
 
 
 }
