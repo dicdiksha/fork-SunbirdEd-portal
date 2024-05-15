@@ -103,7 +103,7 @@ export class DeleteUserComponent implements OnInit {
       const option = { 
         userId: this.userProfile.identifier };
         console.log("onSubmitForm option",option)
-      this.userSearchService.blockUser(option).subscribe(
+      this.userSearchService.deleteUser(option).subscribe(
         (apiResponse: ServerResponse) => {
           this.toasterService.success(this.resourceService.messages.smsg.m0029);
         },

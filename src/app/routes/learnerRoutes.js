@@ -74,6 +74,34 @@ module.exports = function (app) {
     })
   )
 
+  app.post('/learner/user/v1/block',
+    bodyParser.json(),
+    proxyUtils.verifyToken(),
+    isAPIWhitelisted.isAllowed(),
+    telemetryHelper.generateTelemetryForLearnerService,
+    telemetryHelper.generateTelemetryForProxy,
+    proxy(learnerURL, {
+      limit: reqDataLimitOfContentUpload,
+      proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
+      proxyReqPathResolver: (req) => {
+        logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver' });
+        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '/api/')).path
+      },
+      userResDecorator: (proxyRes, proxyResData, req, res) => {
+        logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block' });
+        try {
+          const data = JSON.parse(proxyResData.toString('utf8'));
+          if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
+          else return proxyUtils.handleSessionExpiry(proxyRes, data, req, res, data);
+        } catch (err) {
+          logger.error({ msg: 'learner route : userResDecorator json parse error:', proxyResData });
+          logger.error({ msg: 'learner route : error for /learner/user/v1/delete upstram url is /private/user/v1/delete ', err });
+          return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, null);
+        }
+      }
+    })
+  )
+
 
   app.get('/learner/user/v1/managed/*', proxyManagedUserRequest());
 
