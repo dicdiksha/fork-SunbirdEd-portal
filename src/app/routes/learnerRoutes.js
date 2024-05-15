@@ -85,15 +85,17 @@ module.exports = function (app) {
       proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
       proxyReqPathResolver: (req) => {
         logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver' });
-        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '/api/')).path
+        let newURL= require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '/api/')).path
+        logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver' ,'newURL':newURL});
+        return newURL
       },
       userResDecorator: (proxyRes, proxyResData, req, res) => {
         logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block' });
-        console.log('learner/user/v1/block req===================',req)
-        console.log('learner/user/v1/block res===================',res)
+        console.info('learner/user/v1/block req===================',req)
+        console.info('learner/user/v1/block res===================',res)
         try {
           const data = JSON.parse(proxyResData.toString('utf8'));
-          console.log('learner/user/v1/block data===================',data)
+          console.info('learner/user/v1/block data===================',data)
           if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
           else return proxyUtils.handleSessionExpiry(proxyRes, data, req, res, data);
         } catch (err) {
