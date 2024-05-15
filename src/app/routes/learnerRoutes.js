@@ -84,15 +84,15 @@ module.exports = function (app) {
       limit: reqDataLimitOfContentUpload,
       proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
       proxyReqPathResolver: (req) => {
-        logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver' });
+        logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver',learnerURL });
         let newURL= require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', 'api/')).path
-        logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver' ,'newURL':newURL});
+        logger.info({ msg: 'learner/user/v1/block called upstream url =====' ,'newURL':newURL});
         return newURL
       },
       userResDecorator: (proxyRes, proxyResData, req, res) => {
         logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block' });
-        console.info('learner/user/v1/block req===================',req)
-        console.info('learner/user/v1/block res===================',res)
+        console.info('learner/user/v1/block proxyRes===================',proxyRes)
+        console.info('learner/user/v1/block proxyResData===================',proxyResData)
         try {
           const data = JSON.parse(proxyResData.toString('utf8'));
           console.info('learner/user/v1/block data===================',data)
@@ -100,7 +100,7 @@ module.exports = function (app) {
           else return proxyUtils.handleSessionExpiry(proxyRes, data, req, res, data);
         } catch (err) {
           logger.error({ msg: 'learner route : userResDecorator json parse error:', proxyResData });
-          logger.error({ msg: 'learner route : error for /learner/user/v1/delete upstram url is /private/user/v1/delete ', err });
+          logger.error({ msg: 'learner route : error for /learner/user/v1/block upstram url is /private/user/v1/block ', err });
           return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, null);
         }
       }
