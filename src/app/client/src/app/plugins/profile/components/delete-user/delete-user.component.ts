@@ -106,7 +106,10 @@ export class DeleteUserComponent implements OnInit {
           this.toasterService.success(this.resourceService.messages.smsg.m0029);
           localStorage.clear();
           sessionStorage.clear();
-          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+          setTimeout(() => {
+            this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+          }, 100);
+          
         },
         err => {
           this.toasterService.error(this.resourceService.messages.emsg.m0005);
