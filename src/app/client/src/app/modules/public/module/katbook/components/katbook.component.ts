@@ -43,7 +43,7 @@ export class KatbookComponent implements OnInit {
     }
     this.sendInteractDataToTelemetry(generateUniqueId);    
     this.siteUrl = "https://diksha.katbook.com/#/Diksha/BookView/U2FsdGVkX1/KlGcAvs2pumIukQ2hvxNmFnb13iBsBhvVbWyIYYKLn4i4WikTt+n2wfLWBYhPGLd4lduUzOZdPPlmHYQNsq8w6GZs8foq6MUz+5QSHLgUrQNf6hqIlKMEN50QWWl6EuXV2b/gLcBF/WwzzaVu5e8S0C3UuughQTeU1sLsBF54CBmMyZQJeA+d";
-    // this.getUrl(this.siteUrl);
+    this.getUrl(this.siteUrl);
   }
 
   getUrl(url: any) {
