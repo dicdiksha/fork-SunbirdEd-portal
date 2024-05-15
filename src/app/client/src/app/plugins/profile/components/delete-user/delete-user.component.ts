@@ -91,7 +91,7 @@ export class DeleteUserComponent implements OnInit {
     this.navigationhelperService.navigateToLastUrl();
   }
 
-  onSubmitForm(requestParam: RequestParam) {
+  onSubmitForm() {
     if (this.enableSubmitBtn) {
       this.enableSubmitBtn = false;
       this.showContactPopup = false; // true when full functionality will work with otp
@@ -101,7 +101,6 @@ export class DeleteUserComponent implements OnInit {
       });
       console.log("this.userProfile=======",this.userProfile.identifier)
       const option = { 
-        headers: requestParam.header,
         userId: this.userProfile.identifier };
         console.log("onSubmitForm option",option)
       this.userSearchService.blockUser(option).subscribe(
