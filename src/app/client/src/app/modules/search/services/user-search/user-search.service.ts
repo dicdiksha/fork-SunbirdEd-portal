@@ -35,7 +35,7 @@ export class UserSearchService {
     this.config = config;
   }
 
-  deleteUser(requestParam) {
+  deleteUser(requestParam) { 
     const option = {
       url: this.config.urlConFig.URLS.ADMIN.DELETE_USER,
       data: {
