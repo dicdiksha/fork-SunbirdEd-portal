@@ -85,7 +85,7 @@ module.exports = function (app) {
       proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
       proxyReqPathResolver: (req) => {
         logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver' });
-        let newURL= require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '/api/')).path
+        let newURL= require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', 'api/')).path
         logger.info({ msg: 'learner/user/v1/block called upstream url /api/user/v1/block in request path resolver' ,'newURL':newURL});
         return newURL
       },
