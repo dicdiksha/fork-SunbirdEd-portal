@@ -38,7 +38,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     // public profileService: ProfileService, 
     private matDialog: MatDialog,
     public configService: ConfigService,
-    private cacheService:CacheService,
+    // private cacheService:CacheService,
     // public deviceDetectorService: DeviceDetectorService
   ) { }
 
@@ -121,28 +121,28 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     );
   }
 
-  verificationSuccess(data) {
-    this.userService.deleteUser().subscribe(
-      (data: ServerResponse) => {
-        if(_.get(data, 'result.response') === 'SUCCESS'){
-          window.location.replace('/logoff');
-          this.cacheService.removeAll();
-          // if(this.deviceDetectorService.isMobile()){
-          //   //TODO changes need to be done on the Mobile Deeplink
-          //   const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-          //   window.open(url, '_blank');
-          // }
-          window.location.replace('/logoff');
-          this.cacheService.removeAll();
-        }
-      },
-      (err) => {
-        //TODO we need to update the error 
-        const errorMessage =  this.resourceService.messages.fmsg.m0085;
-        this.toasterService.error(errorMessage);
-      }
-    );
-  }
+  // verificationSuccess(data) {
+  //   this.userService.deleteUser().subscribe(
+  //     (data: ServerResponse) => {
+  //       if(_.get(data, 'result.response') === 'SUCCESS'){
+  //         window.location.replace('/logoff');
+  //         this.cacheService.removeAll();
+  //         if(this.deviceDetectorService.isMobile()){
+  //           //TODO changes need to be done on the Mobile Deeplink
+  //           const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
+  //           window.open(url, '_blank');
+  //         }
+  //         window.location.replace('/logoff');
+  //         this.cacheService.removeAll();
+  //       }
+  //     },
+  //     (err) => {
+  //       //TODO we need to update the error 
+  //       const errorMessage =  this.resourceService.messages.fmsg.m0085;
+  //       this.toasterService.error(errorMessage);
+  //     }
+  //   );
+  // }
 
   setInteractEventData() {
     const id = 'delete-account';
