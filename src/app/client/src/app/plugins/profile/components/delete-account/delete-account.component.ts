@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 import { UserService, OtpService } from '@sunbird/core';
 import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
-import { ProfileService } from '../../services';
+// import { ProfileService } from '../../services';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
 // import { DeviceDetectorService } from 'ngx-device-detector';
@@ -12,8 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-delete-account',
   templateUrl: './delete-account.component.html',
-  styleUrls: ['./delete-account.component.scss'],
-  providers:[ProfileService]
+  styleUrls: ['./delete-account.component.scss']
 })
 export class DeleteAccountComponent implements OnInit, OnDestroy {
   public unsubscribe = new Subject<void>();
