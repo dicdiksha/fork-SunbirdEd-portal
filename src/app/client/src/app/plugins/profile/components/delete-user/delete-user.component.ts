@@ -121,23 +121,17 @@ export class DeleteUserComponent implements OnInit {
   // }
 
   onSubmitForm() {
-    this.enableSubmitBtn = false;
-    this.showContactPopup = true;
-    this.conditions = []
-    this.inputFields.forEach((element) => {
-      element.nativeElement.checked = false;
-    });
-    // if (this.enableSubmitBtn) {
-    //   this.enableSubmitBtn = false;
-    //   this.showContactPopup = true;
-    //   this.conditions = []
-    //   this.inputFields.forEach((element) => {
-    //     element.nativeElement.checked = false;
-    //   });
-    // }else{
-    //   console.log('onSubmitForm warning msg')
-    //   this.toasterService.warning(this.resourceService.messages.imsg.m0092)
-    // }
+    if (this.enableSubmitBtn) {
+      this.enableSubmitBtn = false;
+      this.showContactPopup = true;
+      this.conditions = []
+      this.inputFields.forEach((element) => {
+        element.nativeElement.checked = false;
+      });
+    }else{
+      console.log('onSubmitForm warning msg')
+      this.toasterService.warning(this.resourceService.messages.imsg.m0092)
+    }
   }
 
   /**
