@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ViewChildren } from '@angular/core';
-import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData,ServerResponse,RequestParam } from '@sunbird/shared';
+import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData,ServerResponse,RequestParam,UtilService } from '@sunbird/shared';
 import * as _ from 'lodash-es';
 import { takeUntil } from 'rxjs/operators';
 import { IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
@@ -29,22 +29,20 @@ export class DeleteUserComponent implements OnInit {
   public unsubscribe = new Subject<void>();
   pageId = 'delete-user';
   userProfile: any;
-
+  appBaseUrl: string;
   constructor(public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
     public userService: UserService,  private userSearchService: UserSearchService,public route: Router,
     private activatedRoute: ActivatedRoute, public navigationhelperService: NavigationHelperService,
-    public layoutService: LayoutService) {
+    public layoutService: LayoutService,private utilService: UtilService) {
     this.userService.userData$.subscribe((user: IUserData) => {
       this.userProfile = user.userProfile;
     })
   }
 
   ngOnInit() {
-    console.log("ngOnInit .userProfile=======",this.userProfile)
+    this.appBaseUrl = this.utilService.getAppBaseUrl();
     let obj = this.resourceService.frmelmnts.lbl
-    this.list = Object.keys(obj)
-      .filter(key => key.includes('condition'))
-      .map(key => obj[key]);
+    this.list = Object.keys(obj).filter(key => key.includes('condition')).map(key => obj[key]);
     this.navigationhelperService.setNavigationUrl();
     this.setTelemetryData();
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
