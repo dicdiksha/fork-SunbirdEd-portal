@@ -34,7 +34,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     public resourceService: ResourceService, 
     public userService: UserService,
     public otpService: OtpService, 
-    // public toasterService: ToasterService,
+    public toasterService: ToasterService,
     // public profileService: ProfileService, 
     private matDialog: MatDialog,
     // public configService: ConfigService,

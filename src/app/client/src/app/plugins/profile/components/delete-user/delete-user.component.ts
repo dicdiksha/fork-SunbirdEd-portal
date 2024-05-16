@@ -91,35 +91,53 @@ export class DeleteUserComponent implements OnInit {
     this.navigationhelperService.navigateToLastUrl();
   }
 
-  onSubmitForm() {
-    if (this.enableSubmitBtn) {
-      this.enableSubmitBtn = false;
-      this.showContactPopup = false; // true when full functionality will work with otp
-      this.conditions = []
-      this.inputFields.forEach((element) => {
-        element.nativeElement.checked = false;
-      });
-      const option = { 
-      userId: this.userProfile.identifier };
-      this.userSearchService.deleteUser(option).subscribe(
-        (apiResponse: ServerResponse) => {
-          this.toasterService.success(this.resourceService.messages.smsg.m0029);
-          localStorage.clear();
-          sessionStorage.clear();
-          setTimeout(() => {
-            this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-          }, 500);
+  // onSubmitForm() {
+  //   if (this.enableSubmitBtn) {
+  //     this.enableSubmitBtn = false;
+  //     this.showContactPopup = false; // true when full functionality will work with otp
+  //     this.conditions = []
+  //     this.inputFields.forEach((element) => {
+  //       element.nativeElement.checked = false;
+  //     });
+  //     const option = { 
+  //     userId: this.userProfile.identifier };
+  //     this.userSearchService.deleteUser(option).subscribe(
+  //       (apiResponse: ServerResponse) => {
+  //         this.toasterService.success(this.resourceService.messages.smsg.m0029);
+  //         localStorage.clear();
+  //         sessionStorage.clear();
+  //         setTimeout(() => {
+  //           this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+  //         }, 500);
           
-        },
-        err => {
-          this.toasterService.error(this.resourceService.messages.emsg.m0005);
-        }
-      );
+  //       },
+  //       err => {
+  //         this.toasterService.error(this.resourceService.messages.emsg.m0005);
+  //       }
+  //     );
+  //   }else{
+  //     this.toasterService.warning(this.resourceService.messages.imsg.m0092)
+  //   }
+  // }
 
-
-    }else{
-      this.toasterService.warning(this.resourceService.messages.imsg.m0092)
-    }
+  onSubmitForm() {
+    this.enableSubmitBtn = false;
+    this.showContactPopup = true;
+    this.conditions = []
+    this.inputFields.forEach((element) => {
+      element.nativeElement.checked = false;
+    });
+    // if (this.enableSubmitBtn) {
+    //   this.enableSubmitBtn = false;
+    //   this.showContactPopup = true;
+    //   this.conditions = []
+    //   this.inputFields.forEach((element) => {
+    //     element.nativeElement.checked = false;
+    //   });
+    // }else{
+    //   console.log('onSubmitForm warning msg')
+    //   this.toasterService.warning(this.resourceService.messages.imsg.m0092)
+    // }
   }
 
   /**
