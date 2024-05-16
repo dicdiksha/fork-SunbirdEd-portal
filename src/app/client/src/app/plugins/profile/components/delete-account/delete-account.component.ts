@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import { ProfileService } from '../../services';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
-import { DeviceDetectorService } from 'ngx-device-detector';
+// import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-delete-account',
@@ -40,7 +40,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     public configService: ConfigService,
     private cacheService:CacheService,
-    public deviceDetectorService: DeviceDetectorService
+    // public deviceDetectorService: DeviceDetectorService
   ) { }
 
   ngOnInit() {
@@ -128,11 +128,11 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         if(_.get(data, 'result.response') === 'SUCCESS'){
           window.location.replace('/logoff');
           this.cacheService.removeAll();
-          if(this.deviceDetectorService.isMobile()){
-            //TODO changes need to be done on the Mobile Deeplink
-            const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-            window.open(url, '_blank');
-          }
+          // if(this.deviceDetectorService.isMobile()){
+          //   //TODO changes need to be done on the Mobile Deeplink
+          //   const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
+          //   window.open(url, '_blank');
+          // }
           window.location.replace('/logoff');
           this.cacheService.removeAll();
         }
