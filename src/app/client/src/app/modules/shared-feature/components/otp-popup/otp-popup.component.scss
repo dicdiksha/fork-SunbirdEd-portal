@@ -21,6 +21,8 @@ input[type=number]::-webkit-inner-spin-button {
 .delete__title{
     margin: auto;
     color: #dd4841 !important;
+    font-size: medium;
+    font-weight: 600;
   }
 .container {
 max-width: calculateRem(550px);

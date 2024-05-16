@@ -17,6 +17,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
   @Input() otpData: any;
   @Input() redirectToLogin: boolean;
   @Input() delete=false
+  @Input() deleteUser=false
   @Output() redirectToParent = new EventEmitter();
   @Output() verificationSuccess = new EventEmitter();
   @Output() closeContactForm = new EventEmitter();

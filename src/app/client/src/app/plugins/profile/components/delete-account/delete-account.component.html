@@ -3,7 +3,7 @@
   </div>
   <mat-dialog-content>
     <app-otp-popup [otpData]="otpData" [redirectToLogin]="false" (verificationSuccess)="verificationSuccess($event)"
-      (closeContactForm)="closeModal()" [delete]="true">
+      (closeContactForm)="closeModal()" [delete]="true" [deleteUser]="true">
     </app-otp-popup>
   </mat-dialog-content>
   <router-outlet></router-outlet>
