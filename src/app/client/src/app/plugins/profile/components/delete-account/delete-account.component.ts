@@ -45,120 +45,120 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('delete account ngOnInit')
-    //this.validateAndEditContact();
+    this.validateAndEditContact();
   }
 
-  // private async validateAndEditContact() {
-  //   if (this.userProfile) {
-  //     const request: any = {
-  //       key: this.userProfile.email || this.userProfile.phone || this.userProfile.recoveryEmail,
-  //       userId: this.userProfile.userId,
-  //       templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
-  //       type: ''
-  //     };
-  //     if ((this.userProfile.email) || this.userProfile.recoveryEmail) {
-  //       request.type = 'email';
-  //     } else if (this.userProfile.phone || this.userProfile.recoveryPhone) {
-  //       request.type = 'phone';
-  //     }
-  //     const otpData = {
-  //       'type': request.type,
-  //       'value': request.key,
-  //       'instructions': request.type === 'phone' ? this.resourceService.frmelmnts.lbl.phoneOtpDeleteInfo : this.resourceService.frmelmnts.lbl.emailOtpDeleteInfo,
-  //       'retryMessage': this.resourceService.frmelmnts.lbl.unableToDeleteAccount,
-  //       'wrongOtpMessage': request.type === 'phone' ? this.resourceService.frmelmnts.lbl.wrongPhoneOTP :
-  //         this.resourceService.frmelmnts.lbl.wrongEmailOTP
-  //     };
-  //     this.verifiedUser = false;
+  private async validateAndEditContact() {
+    if (this.userProfile) {
+      const request: any = {
+        key: this.userProfile.email || this.userProfile.phone || this.userProfile.recoveryEmail,
+        userId: this.userProfile.userId,
+        templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+        type: ''
+      };
+      if ((this.userProfile.email) || this.userProfile.recoveryEmail) {
+        request.type = 'email';
+      } else if (this.userProfile.phone || this.userProfile.recoveryPhone) {
+        request.type = 'phone';
+      }
+      const otpData = {
+        'type': request.type,
+        'value': request.key,
+        'instructions': request.type === 'phone' ? this.resourceService.frmelmnts.lbl.phoneOtpDeleteInfo : this.resourceService.frmelmnts.lbl.emailOtpDeleteInfo,
+        'retryMessage': this.resourceService.frmelmnts.lbl.unableToDeleteAccount,
+        'wrongOtpMessage': request.type === 'phone' ? this.resourceService.frmelmnts.lbl.wrongPhoneOTP :
+          this.resourceService.frmelmnts.lbl.wrongEmailOTP
+      };
+      this.verifiedUser = false;
 
-  //     this.generateOTP({ request }, otpData);
-  //   }
-  // }
+      this.generateOTP({ request }, otpData);
+    }
+  }
 
-  // closeModal() {
-  //   this.closeMatDialog();
-  //   this.close.emit();
-  // }
+  closeModal() {
+    this.closeMatDialog();
+    this.close.emit();
+  }
 
-  // prepareOtpData(otpData?) {
-  //   this.otpData = otpData || {
-  //     'type': this.contactType.toString(),
-  //     'value': this.contactType === 'phone' ?
-  //       this.contactTypeForm.controls.phone.value.toString() : this.contactTypeForm.controls.email.value,
-  //     'instructions': this.contactType === 'phone' ?
-  //       this.resourceService.frmelmnts.instn.t0083 : this.resourceService.frmelmnts.instn.t0084,
-  //     'retryMessage': this.contactType === 'phone' ?
-  //       this.resourceService.frmelmnts.lbl.unableToUpdateMobile : this.resourceService.frmelmnts.lbl.unableToUpdateEmail,
-  //     'wrongOtpMessage': this.contactType === 'phone' ? this.resourceService.frmelmnts.lbl.wrongPhoneOTP :
-  //       this.resourceService.frmelmnts.lbl.wrongEmailOTP
-  //   };
-  // }
+  prepareOtpData(otpData?) {
+    this.otpData = otpData || {
+      'type': this.contactType.toString(),
+      'value': this.contactType === 'phone' ?
+        this.contactTypeForm.controls.phone.value.toString() : this.contactTypeForm.controls.email.value,
+      'instructions': this.contactType === 'phone' ?
+        this.resourceService.frmelmnts.instn.t0083 : this.resourceService.frmelmnts.instn.t0084,
+      'retryMessage': this.contactType === 'phone' ?
+        this.resourceService.frmelmnts.lbl.unableToUpdateMobile : this.resourceService.frmelmnts.lbl.unableToUpdateEmail,
+      'wrongOtpMessage': this.contactType === 'phone' ? this.resourceService.frmelmnts.lbl.wrongPhoneOTP :
+        this.resourceService.frmelmnts.lbl.wrongEmailOTP
+    };
+  }
 
-  // generateOTP(request?, otpData?) {
-  //   if (!request) {
-  //     request = {
-  //       'request': {
-  //         'key': this.contactType === 'phone' ?
-  //           this.contactTypeForm.controls.phone.value.toString() : this.contactTypeForm.controls.email.value,
-  //         'type': this.contactType.toString()
-  //       }
-  //     };
-  //   }
-  //   this.prepareOtpData(otpData);
+  generateOTP(request?, otpData?) {
+    if (!request) {
+      request = {
+        'request': {
+          'key': this.contactType === 'phone' ?
+            this.contactTypeForm.controls.phone.value.toString() : this.contactTypeForm.controls.email.value,
+          'type': this.contactType.toString()
+        }
+      };
+    }
+    this.prepareOtpData(otpData);
 
-  //   this.otpService.generateOTP(request).subscribe(
-  //     (data: ServerResponse) => {
-  //       this.prepareOtpData(otpData);
-  //     },
-  //     (err) => {
-  //       const failedgenerateOTPMessage = (err.error.params.status === 'PHONE_ALREADY_IN_USE') ||
-  //         (err.error.params.status === 'EMAIL_IN_USE') ? err.error.params.errmsg : this.resourceService.messages.fmsg.m0051;
-  //       this.toasterService.error(failedgenerateOTPMessage);
-  //       this.enableSubmitBtn = true;
-  //       if (!this.verifiedUser) {
-  //         this.closeModal();
-  //       }
-  //     }
-  //   );
-  // }
+    this.otpService.generateOTP(request).subscribe(
+      (data: ServerResponse) => {
+        this.prepareOtpData(otpData);
+      },
+      (err) => {
+        const failedgenerateOTPMessage = (err.error.params.status === 'PHONE_ALREADY_IN_USE') ||
+          (err.error.params.status === 'EMAIL_IN_USE') ? err.error.params.errmsg : this.resourceService.messages.fmsg.m0051;
+        this.toasterService.error(failedgenerateOTPMessage);
+        this.enableSubmitBtn = true;
+        if (!this.verifiedUser) {
+          this.closeModal();
+        }
+      }
+    );
+  }
 
-  // verificationSuccess(data) {
-  //   this.userService.deleteUser().subscribe(
-  //     (data: ServerResponse) => {
-  //       if(_.get(data, 'result.response') === 'SUCCESS'){
-  //         window.location.replace('/logoff');
-  //         this.cacheService.removeAll();
-  //         if(this.deviceDetectorService.isMobile()){
-  //           //TODO changes need to be done on the Mobile Deeplink
-  //           const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-  //           window.open(url, '_blank');
-  //         }
-  //         window.location.replace('/logoff');
-  //         this.cacheService.removeAll();
-  //       }
-  //     },
-  //     (err) => {
-  //       //TODO we need to update the error 
-  //       const errorMessage =  this.resourceService.messages.fmsg.m0085;
-  //       this.toasterService.error(errorMessage);
-  //     }
-  //   );
-  // }
+  verificationSuccess(data) {
+    this.userService.deleteUser().subscribe(
+      (data: ServerResponse) => {
+        if(_.get(data, 'result.response') === 'SUCCESS'){
+          window.location.replace('/logoff');
+          this.cacheService.removeAll();
+          if(this.deviceDetectorService.isMobile()){
+            //TODO changes need to be done on the Mobile Deeplink
+            const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
+            window.open(url, '_blank');
+          }
+          window.location.replace('/logoff');
+          this.cacheService.removeAll();
+        }
+      },
+      (err) => {
+        //TODO we need to update the error 
+        const errorMessage =  this.resourceService.messages.fmsg.m0085;
+        this.toasterService.error(errorMessage);
+      }
+    );
+  }
 
-  // setInteractEventData() {
-  //   const id = 'delete-account';
-  //   this.submitInteractEdata = {
-  //     id: id,
-  //     type: 'click',
-  //     pageid: 'delete-account'
-  //   };
+  setInteractEventData() {
+    const id = 'delete-account';
+    this.submitInteractEdata = {
+      id: id,
+      type: 'click',
+      pageid: 'delete-account'
+    };
 
-  //   this.telemetryInteractObject = {
-  //     id: this.userService.userid,
-  //     type: 'User',
-  //     ver: '1.0'
-  //   };
-  // }
+    this.telemetryInteractObject = {
+      id: this.userService.userid,
+      type: 'User',
+      ver: '1.0'
+    };
+  }
 
   ngOnDestroy() {
     this.unsubscribe.next();
