@@ -70,7 +70,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       };
       this.verifiedUser = false;
 
-      this.generateOTP({ request }, otpData);
+     // this.generateOTP({ request }, otpData);
     }
   }
 
