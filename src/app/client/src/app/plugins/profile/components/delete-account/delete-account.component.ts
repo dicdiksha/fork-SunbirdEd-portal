@@ -8,11 +8,13 @@ import { Subject } from 'rxjs';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
 // import { DeviceDetectorService } from 'ngx-device-detector';
+import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 
 @Component({
   selector: 'app-delete-account',
   templateUrl: './delete-account.component.html',
-  styleUrls: ['./delete-account.component.scss']
+  styleUrls: ['./delete-account.component.scss'],
+  providers: [UserSearchService]
 })
 export class DeleteAccountComponent implements OnInit, OnDestroy {
   public unsubscribe = new Subject<void>();
@@ -28,7 +30,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   submitInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
   verifiedUser = false;
-  templateId: any = 'otpaccontDeleteTemplate';
+  templateId: any = 'otpContactUpdateTemplate';
 
   constructor(
     public resourceService: ResourceService, 
@@ -39,11 +41,11 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     public configService: ConfigService,
     // private cacheService:CacheService,
-    // public deviceDetectorService: DeviceDetectorService
+    // public deviceDetectorService: DeviceDetectorService,
+    private userSearchService: UserSearchService,
   ) { }
 
   ngOnInit() {
-    console.log('delete account ngOnInit')
     this.validateAndEditContact();
   }
 
@@ -52,7 +54,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       const request: any = {
         key: this.userProfile.email || this.userProfile.phone || this.userProfile.recoveryEmail,
         userId: this.userProfile.userId,
-        templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+       // templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+       templateId: 'otpContactUpdateTemplate',
         type: ''
       };
       if ((this.userProfile.email) || this.userProfile.recoveryEmail) {
@@ -122,26 +125,46 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   verificationSuccess(data) {
-    // this.userService.deleteUser().subscribe(
-    //   (data: ServerResponse) => {
-    //     if(_.get(data, 'result.response') === 'SUCCESS'){
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //       if(this.deviceDetectorService.isMobile()){
-    //         //TODO changes need to be done on the Mobile Deeplink
-    //         const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-    //         window.open(url, '_blank');
-    //       }
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //     }
-    //   },
-    //   (err) => {
-    //     //TODO we need to update the error 
-    //     const errorMessage =  this.resourceService.messages.fmsg.m0085;
-    //     this.toasterService.error(errorMessage);
-    //   }
-    // );
+    this.userService.deleteUser().subscribe(
+      (data: ServerResponse) => {
+        console.log("delete account verificationSuccess")
+        if(_.get(data, 'result.response') === 'SUCCESS'){
+          window.location.replace('/logoff');
+          console.log("delete account verification SUCCESS==")
+            const option = { userId: this.userProfile.identifier };
+            this.userSearchService.deleteUser(option).subscribe(
+              (apiResponse: ServerResponse) => {
+                console.log("delete account userSearchService.deleteUser==")
+                this.toasterService.success(this.resourceService.messages.smsg.m0029);
+                localStorage.clear();
+                sessionStorage.clear();
+                // setTimeout(() => {
+                //   this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+                // }, 500);
+                
+              },
+              err => {
+                this.toasterService.error(this.resourceService.messages.emsg.m0005);
+              }
+            );
+
+
+          // this.cacheService.removeAll();
+          // if(this.deviceDetectorService.isMobile()){
+          //   //TODO changes need to be done on the Mobile Deeplink
+          //   const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
+          //   window.open(url, '_blank');
+          // }
+          // window.location.replace('/logoff');
+          // this.cacheService.removeAll();
+        }
+      },
+      (err) => {
+        //TODO we need to update the error 
+        const errorMessage =  this.resourceService.messages.fmsg.m0085;
+        this.toasterService.error(errorMessage);
+      }
+    );
   }
 
   setInteractEventData() {
