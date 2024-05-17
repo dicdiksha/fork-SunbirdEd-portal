@@ -106,6 +106,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         } else if (this.otpData.type === 'email') {
           emitData = {'email': this.otpData.value, 'emailVerified': true};
         }
+        console.log("OTP POPUP otpService.verifyOTP")
         this.verificationSuccess.emit(emitData);
       },
       (err) => {

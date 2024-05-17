@@ -9,6 +9,7 @@ import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
 // import { DeviceDetectorService } from 'ngx-device-detector';
 import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-delete-account',
@@ -43,6 +44,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     // private cacheService:CacheService,
     // public deviceDetectorService: DeviceDetectorService,
     private userSearchService: UserSearchService,
+    public route: Router,
+    private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -125,46 +128,47 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   verificationSuccess(data) {
-    this.userService.deleteUser().subscribe(
-      (data: ServerResponse) => {
-        console.log("delete account verificationSuccess")
-        if(_.get(data, 'result.response') === 'SUCCESS'){
-          window.location.replace('/logoff');
-          console.log("delete account verification SUCCESS==")
-            const option = { userId: this.userProfile.identifier };
-            this.userSearchService.deleteUser(option).subscribe(
-              (apiResponse: ServerResponse) => {
-                console.log("delete account userSearchService.deleteUser==")
-                this.toasterService.success(this.resourceService.messages.smsg.m0029);
-                localStorage.clear();
-                sessionStorage.clear();
-                // setTimeout(() => {
-                //   this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-                // }, 500);
-                
-              },
-              err => {
-                this.toasterService.error(this.resourceService.messages.emsg.m0005);
-              }
-            );
+    // this.userService.deleteUser().subscribe(
+    //   (data: ServerResponse) => {
+    //     if(_.get(data, 'result.response') === 'SUCCESS'){
+    //       window.location.replace('/logoff');
+    //       this.cacheService.removeAll();
+    //       if(this.deviceDetectorService.isMobile()){
+    //         //TODO changes need to be done on the Mobile Deeplink
+    //         const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
+    //         window.open(url, '_blank');
+    //       }
+    //       window.location.replace('/logoff');
+    //       this.cacheService.removeAll();
+    //     }
+    //   },
+    //   (err) => {
+    //     //TODO we need to update the error 
+    //     const errorMessage =  this.resourceService.messages.fmsg.m0085;
+    //     this.toasterService.error(errorMessage);
+    //   }
+    // );
 
 
-          // this.cacheService.removeAll();
-          // if(this.deviceDetectorService.isMobile()){
-          //   //TODO changes need to be done on the Mobile Deeplink
-          //   const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-          //   window.open(url, '_blank');
-          // }
-          // window.location.replace('/logoff');
-          // this.cacheService.removeAll();
-        }
+    const option = { userId: this.userProfile.identifier };
+    this.userSearchService.deleteUser(option).subscribe(
+      (apiResponse: ServerResponse) => {
+        console.log("delete account userSearchService.deleteUser==")
+        this.toasterService.success(this.resourceService.messages.smsg.m0029);
+        localStorage.clear();
+        sessionStorage.clear();
+        setTimeout(() => {
+          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+        }, 500);
+        
       },
-      (err) => {
-        //TODO we need to update the error 
-        const errorMessage =  this.resourceService.messages.fmsg.m0085;
-        this.toasterService.error(errorMessage);
+      err => {
+        this.toasterService.error(this.resourceService.messages.emsg.m0005);
       }
     );
+
+
+
   }
 
   setInteractEventData() {
