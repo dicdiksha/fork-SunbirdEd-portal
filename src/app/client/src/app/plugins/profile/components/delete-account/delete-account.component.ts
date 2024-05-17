@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 // import { DeviceDetectorService } from 'ngx-device-detector';
 import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
 
 @Component({
   selector: 'app-delete-account',
@@ -26,7 +27,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   contactTypeForm: FormGroup;
   enableSubmitBtn = false;
   showUniqueError = '';
-
+  
   otpData: any;
   submitInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
@@ -46,6 +47,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     private userSearchService: UserSearchService,
     public route: Router,
     private activatedRoute: ActivatedRoute,
+    public learnerService: LearnerService,
   ) { }
 
   ngOnInit() {
@@ -75,8 +77,27 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
           this.resourceService.frmelmnts.lbl.wrongEmailOTP
       };
       this.verifiedUser = false;
-     let resultttt =  await this.userService.getDecryptedUserProfile();
-     console.log("resultttt===============",resultttt)
+     
+     
+    //let resultttt =  await this.userService.getDecryptedUserProfile();
+     const option = {
+      url: `${this.configService.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}`,
+      param: this.configService.urlConFig.params.userReadParam + '&userdelete=true'
+    };
+    this.learnerService.getWithHeaders(option).subscribe(
+      (data: ServerResponse) => {
+        console.log("getDecriptedUserProfile data ",data);
+       
+        console.log("getDecriptedUserProfile data return ",data);
+        return data;
+      },
+      (err: ServerResponse) => {
+        console.log("getDecriptedUserProfile error ",err);
+      //  this._userData$.next({ err: err, userProfile: this._userProfile as any });
+      }
+    )
+
+
     // this.generateOTP({ request }, otpData);
     }
   }
