@@ -88,6 +88,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     this.learnerService.getWithHeaders(option).subscribe(
       (data: ServerResponse) => {
         if(data?.result && (data?.result?.response?.phone || data?.result?.response?.email)){
+          //user update
           let updateData = {userDeleteCalled:true, userId:this.userProfile.userId};
           if(data?.result?.response?.phone && data?.result?.response?.phone != "")
           {
@@ -112,7 +113,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       },
       (err: ServerResponse) => {
         console.log("getDecriptedUserProfile error ",err);
-        this.toasterService.error(err);
+        // this.toasterService.error(err);
       }
     )
 
