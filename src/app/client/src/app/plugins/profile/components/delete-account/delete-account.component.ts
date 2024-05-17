@@ -192,13 +192,13 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       (data: ServerResponse) => {
         if(data?.result && (data?.result?.response?.phone || data?.result?.response?.email)){
           //user update
-          let updateData = {userDeleteCalled:true, userId:this.userProfile.userId};
+          let updateData = {"request":{userDeleteCalled:true, userId:this.userProfile.userId}};
           if(data?.result?.response?.phone && data?.result?.response?.phone != "")
           {
-            updateData['phone'] = data?.result?.response?.phone + '-'+ Date.now()
+            updateData['request']['phone'] = data?.result?.response?.phone + '-'+ Date.now()
           } else if(data?.result?.response?.email && data?.result?.response?.email !="")
           {
-            updateData['email'] = data?.result?.response?.email.slice(0, data?.result?.response?.email.indexOf('@')) + '-'+Date.now() + data?.result?.response?.email.slice(data?.result?.response?.email.indexOf('@'));
+            updateData['request']['email'] = data?.result?.response?.email.slice(0, data?.result?.response?.email.indexOf('@')) + '-'+Date.now() + data?.result?.response?.email.slice(data?.result?.response?.email.indexOf('@'));
           }
           const updateOptions = {
             url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
