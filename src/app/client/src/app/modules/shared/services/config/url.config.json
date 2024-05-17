@@ -3,6 +3,9 @@
     "userReadParam": {
       "fields": "organisations,roles,locations,declarations,externalIds"
     },
+    "userReadDecodedParam": {
+      "fields": "organisations,roles,locations,declarations,externalIds&userdelete=true"
+    },
     "LibrarySearchField": [
       "name",
       "appIcon",
