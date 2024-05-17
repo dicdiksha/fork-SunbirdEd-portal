@@ -213,13 +213,16 @@ export class UserService {
     console.log("getDecriptedUserProfile ",option);
     this.learnerService.getWithHeaders(option).subscribe(
       (data: ServerResponse) => {
+        console.log("getDecriptedUserProfile data ",data);
         if (data.ts) {
           // data.ts is taken from header and not from api response ts, and format in IST
           this.timeDiff = data.ts;
         }
-        return data
+        console.log("getDecriptedUserProfile data return ",data);
+        return data;
       },
       (err: ServerResponse) => {
+        console.log("getDecriptedUserProfile error ",err);
         this._userData$.next({ err: err, userProfile: this._userProfile as any });
       }
     );
