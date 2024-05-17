@@ -81,12 +81,14 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
      
     //let resultttt =  await this.userService.getDecryptedUserProfile();
      const option = {
-      url: `${this.configService.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}`,
-      param: this.configService.urlConFig.params.userReadDecodedParam
+      url: `${this.configService.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`,
+      param: this.configService.urlConFig.params.userReadParam
     };
     this.learnerService.getWithHeaders(option).subscribe(
       (data: ServerResponse) => {
-        if(data.result){}
+        if(data?.result && data?.result){
+
+        }
         console.log("getDecriptedUserProfile data ",data);
        
         console.log("getDecriptedUserProfile data return ",data);
