@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
+import { map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-delete-account',
@@ -86,17 +87,32 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     };
     this.learnerService.getWithHeaders(option).subscribe(
       (data: ServerResponse) => {
-        if(data?.result && data?.result){
+        if(data?.result && (data?.result?.response?.phone || data?.result?.response?.email)){
+          let updateData = {userDeleteCalled:true, userId:this.userProfile.userId};
+          if(data?.result?.response?.phone && data?.result?.response?.phone != "")
+          {
+            updateData['phone'] = data?.result?.response?.phone + '-'+ Date.now()
+          } else if(data?.result?.response?.email && data?.result?.response?.email !="")
+          {
+            updateData['email'] = data?.result?.response?.email.slice(0, data?.result?.response?.email.indexOf('@')) + '-'+Date.now() + data?.result?.response?.email.slice(data?.result?.response?.email.indexOf('@'));
+          }
+          const options = {
+            url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
+            data: updateData
+          };
+            console.log("profile API key",options);
+            return this.learnerService.patch(options).pipe(map(
+              (res: ServerResponse) => {
+                console.log("profile API update result",res);
+                return res;
+              }
+            ));
 
         }
-        console.log("getDecriptedUserProfile data ",data);
-       
-        console.log("getDecriptedUserProfile data return ",data);
-        return data;
       },
       (err: ServerResponse) => {
         console.log("getDecriptedUserProfile error ",err);
-      //  this._userData$.next({ err: err, userProfile: this._userProfile as any });
+        this.toasterService.error(err);
       }
     )
 
