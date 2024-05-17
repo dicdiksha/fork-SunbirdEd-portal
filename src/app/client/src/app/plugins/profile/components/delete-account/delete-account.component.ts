@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
-import { UserService, OtpService } from '@sunbird/core';
+import { UserService, OtpService,LearnerService } from '@sunbird/core';
 import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
 // import { ProfileService } from '../../services';
@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 // import { DeviceDetectorService } from 'ngx-device-detector';
 import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
+// import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
 import { map} from 'rxjs/operators';
 
 @Component({
@@ -78,47 +78,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
           this.resourceService.frmelmnts.lbl.wrongEmailOTP
       };
       this.verifiedUser = false;
-     
-     
-    //let resultttt =  await this.userService.getDecryptedUserProfile();
-     const option = {
-      url: `${this.configService.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`,
-      param: this.configService.urlConFig.params.userReadParam
-    };
-    this.learnerService.getWithHeaders(option).subscribe(
-      (data: ServerResponse) => {
-        if(data?.result && (data?.result?.response?.phone || data?.result?.response?.email)){
-          //user update
-          let updateData = {userDeleteCalled:true, userId:this.userProfile.userId};
-          if(data?.result?.response?.phone && data?.result?.response?.phone != "")
-          {
-            updateData['phone'] = data?.result?.response?.phone + '-'+ Date.now()
-          } else if(data?.result?.response?.email && data?.result?.response?.email !="")
-          {
-            updateData['email'] = data?.result?.response?.email.slice(0, data?.result?.response?.email.indexOf('@')) + '-'+Date.now() + data?.result?.response?.email.slice(data?.result?.response?.email.indexOf('@'));
-          }
-          const options = {
-            url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
-            data: updateData
-          };
-            console.log("profile API key",options);
-            return this.learnerService.patch(options).pipe(map(
-              (res: ServerResponse) => {
-                console.log("profile API update result",res);
-                return res;
-              }
-            ));
-
-        }
-      },
-      (err: ServerResponse) => {
-        console.log("getDecriptedUserProfile error ",err);
-        // this.toasterService.error(err);
-      }
-    )
-
-
-    // this.generateOTP({ request }, otpData);
+    this.generateOTP({ request }, otpData);
     }
   }
 
@@ -191,23 +151,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     //   }
     // );
 
-
-    const option = { userId: this.userProfile.identifier };
-    this.userSearchService.deleteUser(option).subscribe(
-      (apiResponse: ServerResponse) => {
-        console.log("delete account userSearchService.deleteUser==")
-        this.toasterService.success(this.resourceService.messages.smsg.m0029);
-        localStorage.clear();
-        sessionStorage.clear();
-        setTimeout(() => {
-          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-        }, 500);
-        
-      },
-      err => {
-        this.toasterService.error(this.resourceService.messages.emsg.m0005);
-      }
-    );
+    this.updateProfile();
+    
   }
 
 
@@ -236,5 +181,60 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   closeMatDialog() {
     const dialogRef = this.dialogProps && this.dialogProps.id && this.matDialog.getDialogById(this.dialogProps.id);
     dialogRef && dialogRef.close();
+  }
+
+  updateProfile(){
+     const optionData = {
+      url: `${this.configService.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`,
+      param: this.configService.urlConFig.params.userReadParam
+    };
+    this.learnerService.getWithHeaders(optionData).subscribe(
+      (data: ServerResponse) => {
+        if(data?.result && (data?.result?.response?.phone || data?.result?.response?.email)){
+          //user update
+          let updateData = {userDeleteCalled:true, userId:this.userProfile.userId};
+          if(data?.result?.response?.phone && data?.result?.response?.phone != "")
+          {
+            updateData['phone'] = data?.result?.response?.phone + '-'+ Date.now()
+          } else if(data?.result?.response?.email && data?.result?.response?.email !="")
+          {
+            updateData['email'] = data?.result?.response?.email.slice(0, data?.result?.response?.email.indexOf('@')) + '-'+Date.now() + data?.result?.response?.email.slice(data?.result?.response?.email.indexOf('@'));
+          }
+          const updateOptions = {
+            url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
+            data: updateData
+          };
+            console.log("profile API key",updateOptions);
+            this.learnerService.patch(updateOptions).subscribe(
+              (res: ServerResponse) => {
+                console.log("profile API update result",res);
+                this.blockUser();
+              }
+            );
+        }
+      },
+      (err: ServerResponse) => {
+        console.log("getDecriptedUserProfile error ",err);
+        // this.toasterService.error(err);
+      }
+    )
+  }
+
+  blockUser(){
+    const deleteOption = { userId: this.userProfile.identifier };
+    this.userSearchService.deleteUser(deleteOption).subscribe(
+      (apiResponse: ServerResponse) => {
+        console.log("delete account userSearchService.deleteUser==")
+        this.toasterService.success(this.resourceService.messages.smsg.m0029);
+        localStorage.clear();
+        sessionStorage.clear();
+        setTimeout(() => {
+          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+        }, 800);
+      },
+      err => {
+        this.toasterService.error(this.resourceService.messages.emsg.m0005);
+      }
+    );
   }
 }

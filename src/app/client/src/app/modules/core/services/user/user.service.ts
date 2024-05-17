@@ -203,31 +203,6 @@ export class UserService {
   }
 
   /**
-   * method to fetch user profile from server.
-   */
-  public getDecryptedUserProfile(): any {
-    const option = {
-      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userid}`,
-      param: this.config.urlConFig.params.userReadParam + '&userdelete=true'
-    };
-    console.log("getDecriptedUserProfile ",option);
-    this.learnerService.getWithHeaders(option).subscribe(
-      (data: ServerResponse) => {
-        console.log("getDecriptedUserProfile data ",data);
-        if (data.ts) {
-          // data.ts is taken from header and not from api response ts, and format in IST
-          this.timeDiff = data.ts;
-        }
-        console.log("getDecriptedUserProfile data return ",data);
-        return data;
-      },
-      (err: ServerResponse) => {
-        console.log("getDecriptedUserProfile error ",err);
-        this._userData$.next({ err: err, userProfile: this._userProfile as any });
-      }
-    );
-  }
-  /**
    * get method to fetch appId.
    */
   get appId(): string {
