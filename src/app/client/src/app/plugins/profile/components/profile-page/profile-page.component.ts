@@ -373,6 +373,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           pdfUrl: _.get(value, 'url')
         }
       };
+
+      
       this.profileService.downloadCertificates(request).subscribe((apiResponse) => {
         console.log(apiResponse,'377')
         const signedPdfUrl = _.get(apiResponse, 'result.signedUrl');
