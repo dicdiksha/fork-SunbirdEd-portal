@@ -75,8 +75,9 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
           this.resourceService.frmelmnts.lbl.wrongEmailOTP
       };
       this.verifiedUser = false;
-
-     this.generateOTP({ request }, otpData);
+     let resultttt =  this.userService.getUserProfile();
+     console.log("resultttt===============",resultttt)
+    // this.generateOTP({ request }, otpData);
     }
   }
 
@@ -166,10 +167,9 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
       }
     );
-
-
-
   }
+
+
 
   setInteractEventData() {
     const id = 'delete-account';
