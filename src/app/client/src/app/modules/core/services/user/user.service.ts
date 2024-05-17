@@ -201,6 +201,29 @@ export class UserService {
       }
     );
   }
+
+  /**
+   * method to fetch user profile from server.
+   */
+  public getDecryptedUserProfile(): any {
+    const option = {
+      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userid}`,
+      param: this.config.urlConFig.params.userReadParam + '&userdelete=true'
+    };
+    console.log("getDecriptedUserProfile ",option);
+    this.learnerService.getWithHeaders(option).subscribe(
+      (data: ServerResponse) => {
+        if (data.ts) {
+          // data.ts is taken from header and not from api response ts, and format in IST
+          this.timeDiff = data.ts;
+        }
+        return data
+      },
+      (err: ServerResponse) => {
+        this._userData$.next({ err: err, userProfile: this._userProfile as any });
+      }
+    );
+  }
   /**
    * get method to fetch appId.
    */

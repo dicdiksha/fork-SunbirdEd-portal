@@ -75,7 +75,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
           this.resourceService.frmelmnts.lbl.wrongEmailOTP
       };
       this.verifiedUser = false;
-     let resultttt =  await this.userService.getUserProfile();
+     let resultttt =  await this.userService.getDecryptedUserProfile();
      console.log("resultttt===============",resultttt)
     // this.generateOTP({ request }, otpData);
     }
