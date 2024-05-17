@@ -294,6 +294,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadCert(course) {
+    console.log('--------course----------', course)
     if (this.isDesktopApp && !this.isConnected) {
       this.toasterService.error(this.resourceService.messages.desktop.emsg.cannotAccessCertificate);
       return;
@@ -315,21 +316,26 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.courseCService.getSignedCourseCertificate(_.get(certificateInfo, 'identifier'))
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe((resp) => {
+            console.log('--------resp----------', resp)
             if (_.get(resp, 'printUri')) {
               this.certDownloadAsPdf.download(resp.printUri, null, courseName);
             } else if (_.get(course, 'certificates.length')) {
+            console.log('--------course.certificates----------', course.certificates)
               this.downloadPdfCertificate(course.certificates[0]);
             } else {
               this.toasterService.error(this.resourceService.messages.emsg.m0076);
             }
           }, error => {
+            console.log('--------certificateInfo----------329', certificateInfo)
             this.downloadPdfCertificate(certificateInfo);
           });
       } else {
+        console.log('--------certificateInfo----------333', certificateInfo)
         this.downloadPdfCertificate(certificateInfo);
       }
     } else if (_.get(course, 'certificates.length')) { // For V1 - backward compatibility
       this.toasterService.success(_.get(this.resourceService, 'messages.smsg.certificateGettingDownloaded'));
+      console.log('--------course.certificates----------338', course.certificates)
       this.downloadPdfCertificate(course.certificates[0]);
     } else {
       this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -361,13 +367,18 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadPdfCertificate(value) {
+    console.log('value---', value)
+
     if (_.get(value, 'url')) {
       const request = {
         request: {
           pdfUrl: _.get(value, 'url')
         }
       };
+      console.log('request---', request)
+
       this.profileService.downloadCertificates(request).subscribe((apiResponse) => {
+        console.log('apiResponse---', apiResponse)
         const signedPdfUrl = _.get(apiResponse, 'result.signedUrl');
         if (signedPdfUrl) {
           window.open(signedPdfUrl, '_blank');
