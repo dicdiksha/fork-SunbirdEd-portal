@@ -1,6 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
-import { CertificateDirectivesUtility } from '../certificates/certificate-directives-utility';
-import { jsPDF } from 'jspdf';
+import {Inject, Injectable} from '@angular/core';
+import {CertificateDirectivesUtility} from '../certificates/certificate-directives-utility';
 
 @Injectable()
 export class CertificateDownloadAsPdfService {
@@ -24,26 +23,64 @@ export class CertificateDownloadAsPdfService {
 
     canvasElement.innerHTML = template;
 
-    const svgElement = canvasElement.querySelector('svg');
-    if (!svgElement) {
-      console.error('No SVG element found in template');
-      return;
-    }
+    // const domtoimage = await this.domtoimageModule;
 
-    const svgString = new XMLSerializer().serializeToString(svgElement);
-    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
-
-    const JsPDF = await this.jsPDFModule;
-    const pdf = new JsPDF({
-      orientation: 'landscape',
-      unit: 'pt',
-      format: [1060 / 1.33, 750 / 1.33]
+    // domtoimage.toPng(canvasElement, {
+    //   style: {
+    //     left: '0',
+    //     right: '0',
+    //     bottom: '0',
+    //     top: '0'
+    //   }
+    // })
+    // .then(async (blob) => {
+    //   const JsPDF = await this.jsPDFModule;
+    //   const pdf = new JsPDF({
+    //     orientation: 'landscape',
+    //     unit: 'pt',
+    //     format: [
+    //       1060 / 1.33, 750 / 1.33
+    //     ]
+    //   });
+    const svgToPng = new Promise<Blob>((resolve, reject) => {
+      const svgString = new XMLSerializer().serializeToString(canvasElement.firstChild);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob: Blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject('Error converting SVG to PNG');
+          }
+        });
+      };
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
     });
 
-    const img = new Image();
-    img.onload = () => {
-      pdf.addImage(img, 'SVG', 0, 0);
+    svgToPng.then(async (blob) => {
+        const JsPDF = await this.jsPDFModule;
+      const pdf = new JsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: [1060 / 1.33, 750 / 1.33]
+      });
+      pdf.addImage(blob, 'PNG', 0, 0);
+
+    // const JsPDF = await this.jsPDFModule;
+    // const pdf = new JsPDF({
+    //   orientation: 'landscape',
+    //   unit: 'pt',
+    //   format: [1060 / 1.33, 750 / 1.33]
+    // });
+
+    // const img = new Image();
+    // img.onload = () => {
+    //   pdf.addImage(img, 'SVG', 0, 0);
       fileName = fileName || CertificateDirectivesUtility.extractFileName(template);
 
       if (handlePdfData) {
@@ -53,8 +90,9 @@ export class CertificateDownloadAsPdfService {
       }
 
       canvasElement.remove();
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
-  }
+    //   URL.revokeObjectURL(url);
+    // };
+    // img.src = url;
+  })
+    }
 }
