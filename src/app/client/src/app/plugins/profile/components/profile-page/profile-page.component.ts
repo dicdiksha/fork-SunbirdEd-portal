@@ -1,19 +1,21 @@
-import {ProfileService} from '../../services';
+import { ProfileService } from '../../services';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Inject } from '@angular/core';
 import { CertRegService, CoursesService, OrgDetailsService, PlayerService, SearchService, UserService, FormService } from '@sunbird/core';
 import { ConfigService, IUserData, LayoutService, NavigationHelperService, ResourceService, ServerResponse, ToasterService, UtilService, ConnectionService } from '@sunbird/shared';
 import * as _ from 'lodash-es';
-import {Subject, Subscription} from 'rxjs';
-import {IImpressionEventInput, IInteractEventEdata, TelemetryService} from '@sunbird/telemetry';
-import {ActivatedRoute, Router} from '@angular/router';
-import {CacheService} from 'ng2-cache-service';
-import {takeUntil} from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
+import { IImpressionEventInput, IInteractEventEdata, TelemetryService } from '@sunbird/telemetry';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CacheService } from 'ng2-cache-service';
+import { takeUntil } from 'rxjs/operators';
 import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 // import fs from 'fs';
 // import puppeteer from 'puppeteer'
+import html2pdf from 'html2pdf.js';
+
 @Component({
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.scss'],
@@ -21,9 +23,9 @@ import { CsCertificateService } from '@project-sunbird/client-services/services/
 })
 export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   private static readonly SUPPORTED_PERSONA_LIST_FORM_REQUEST =
-  { formType: 'config', formAction: 'get', contentType: 'userType', component: 'portal' };
+    { formType: 'config', formAction: 'get', contentType: 'userType', component: 'portal' };
   private static readonly DEFAULT_PERSONA_LOCATION_CONFIG_FORM_REQUEST =
-  { formType: 'profileConfig_v2', contentType: 'default', formAction: 'get' };
+    { formType: 'profileConfig_v2', contentType: 'default', formAction: 'get' };
   @ViewChild('profileModal') profileModal;
   @ViewChild('slickModal') slickModal;
   userProfile: any;
@@ -44,7 +46,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   orgDetails: any = [];
   showContactPopup = false;
   showEditUserDetailsPopup = false;
-  disableDelete=true
+  disableDelete = true
   userFrameWork: any;
   telemetryImpression: IImpressionEventInput;
   myFrameworkEditEdata: IInteractEventEdata;
@@ -86,7 +88,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   showFullScreenLoader = false;
 
   constructor(@Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
-  public resourceService: ResourceService, public coursesService: CoursesService,
+    public resourceService: ResourceService, public coursesService: CoursesService,
     public toasterService: ToasterService, public profileService: ProfileService, public userService: UserService,
     public configService: ConfigService, public router: Router, public utilService: UtilService, public searchService: SearchService,
     private playerService: PlayerService, private activatedRoute: ActivatedRoute, public orgDetailsService: OrgDetailsService,
@@ -105,17 +107,17 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isDesktopApp = this.utilService.isDesktopApp;
 
     this.activatedRoute.queryParams.subscribe((params) => {
-      console.log("112388 ngOnInit param ",params);
+      console.log("112388 ngOnInit param ", params);
       if (params['showEditUserDetailsPopup']) {
         this.showEditUserDetailsPopup = true;
       }
-      });
+    });
 
     if (this.isDesktopApp) {
       this.connectionService.monitor()
-      .pipe(takeUntil(this.unsubscribe$)).subscribe(isConnected => {
-        this.isConnected = isConnected;
-      });
+        .pipe(takeUntil(this.unsubscribe$)).subscribe(isConnected => {
+          this.isConnected = isConnected;
+        });
     }
     this.initLayout();
     this.instance = _.upperFirst(_.toLower(this.resourceService.instance || 'SUNBIRD'));
@@ -128,7 +130,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const role: string = (!this.userProfile.profileUserType.type ||
           (this.userProfile.profileUserType.type && this.userProfile.profileUserType.type === 'OTHER')) ? '' : this.userProfile.profileUserType.type;
         this.userLocation = this.getUserLocation(this.userProfile);
-        console.log("112388 ngOnInit userLocation ",this.userLocation);
+        console.log("112388 ngOnInit userLocation ", this.userLocation);
         this.getPersonaConfig(role).then((val) => {
           this.persona = val;
         });
@@ -240,16 +242,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getContribution(): void {
     const { constantData, metaData, dynamicFields } = this.configService.appConfig.Course.otherCourse;
-      const searchParams = {
-        status: ['Live'],
-        contentType: this.configService.appConfig.WORKSPACE.contentType,
-        params: { lastUpdatedOn: 'desc' }
-      };
-      const inputParams = { params: this.configService.appConfig.PROFILE.contentApiQueryParams };
-      this.searchService.searchContentByUserId(searchParams, inputParams).subscribe((data: ServerResponse) => {
-        this.contributions = this.utilService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
-        this.totalContributions = _.get(data, 'result.count') || 0;
-      });
+    const searchParams = {
+      status: ['Live'],
+      contentType: this.configService.appConfig.WORKSPACE.contentType,
+      params: { lastUpdatedOn: 'desc' }
+    };
+    const inputParams = { params: this.configService.appConfig.PROFILE.contentApiQueryParams };
+    this.searchService.searchContentByUserId(searchParams, inputParams).subscribe((data: ServerResponse) => {
+      this.contributions = this.utilService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
+      this.totalContributions = _.get(data, 'result.count') || 0;
+    });
   }
 
   getTrainingAttended() {
@@ -260,10 +262,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-/**
- * @param userId
- *It will fetch certificates of user, other than courses
- */
+  /**
+   * @param userId
+   *It will fetch certificates of user, other than courses
+   */
   getOtherCertificates(userId, certType) {
     this.otherCertificates = [];
     let requestBody = { userId: userId, schemaName: 'certificate' };
@@ -286,7 +288,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadCert(course) {
-    console.log('course====',course)
+    console.log('course====', course)
     if (this.isDesktopApp && !this.isConnected) {
       this.toasterService.error(this.resourceService.messages.desktop.emsg.cannotAccessCertificate);
       return;
@@ -303,32 +305,32 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           templateUrl: _.get(certificateInfo, 'templateUrl'),
           trainingName: courseName
         }
-        console.log('course resp downloadOldAndRCCert====',courseObj)
+        console.log('course resp downloadOldAndRCCert====', courseObj)
         this.downloadOldAndRCCert(courseObj);
       } else if (_.get(certificateInfo, 'identifier')) {
         this.courseCService.getSignedCourseCertificate(_.get(certificateInfo, 'identifier'))
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe((resp) => {
-            console.log('course resp====',resp)
+            console.log('course resp====', resp)
             if (_.get(resp, 'printUri')) {
               this.certDownloadAsPdf.download(resp.printUri, null, courseName);
             } else if (_.get(course, 'certificates.length')) {
-              console.log('course resp certificates====',course.certificates)
+              console.log('course resp certificates====', course.certificates)
               this.downloadPdfCertificate(course.certificates[0]);
             } else {
               this.toasterService.error(this.resourceService.messages.emsg.m0076);
             }
           }, error => {
-            console.log('course resp certificateInfo====',certificateInfo)
+            console.log('course resp certificateInfo====', certificateInfo)
             this.downloadPdfCertificate(certificateInfo);
           });
       } else {
-        console.log('course resp downloadPdfCertificate====',certificateInfo)
+        console.log('course resp downloadPdfCertificate====', certificateInfo)
         this.downloadPdfCertificate(certificateInfo);
       }
     } else if (_.get(course, 'certificates.length')) { // For V1 - backward compatibility
       this.toasterService.success(_.get(this.resourceService, 'messages.smsg.certificateGettingDownloaded'));
-      console.log('course resp downloadPdfCertificate 329====',course.certificates)
+      console.log('course resp downloadPdfCertificate 329====', course.certificates)
       this.downloadPdfCertificate(course.certificates[0]);
     } else {
       this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -336,14 +338,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadOldAndRCCert(courseObj) {
-    console.log('course downloadOldAndRCCert',courseObj)
+    console.log('course downloadOldAndRCCert', courseObj)
     let requestBody = {
       certificateId: courseObj.id,
       schemaName: 'certificate',
       type: courseObj.type,
       templateUrl: courseObj.templateUrl
     };
-    console.log(requestBody,'requestBody');
+    console.log(requestBody, 'requestBody');
     this.CsCertificateService.getCerificateDownloadURI(requestBody, {
       apiPath: '/learner/certreg/v2',
       apiPathLegacy: '/certreg/v1',
@@ -351,9 +353,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((resp) => {
-        console.log(resp,'resp');
+        console.log(resp, 'resp');
         if (_.get(resp, 'printUri')) {
-          console.log(resp,' afterresp');
+          console.log(resp, ' afterresp');
           this.downloadAsPdf(resp.printUri, courseObj.trainingName);
           // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
@@ -384,23 +386,22 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   // }/
 
   private downloadAsPdf(uri: string, fileName: string) {
-    console.log(uri,fileName,'uri')
+    console.log(uri, fileName, 'uri')
     const xhr = new XMLHttpRequest();
     xhr.open('GET', uri, true);
     xhr.responseType = 'blob';
-    console.log(xhr.status,xhr,'xhr 390')
+    console.log(xhr.status, xhr, 'xhr 390')
     xhr.onload = () => {
-      if (xhr.status === 0) {
-        console.log('inside 394')
-        const blob = xhr.response;
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = `${fileName}.pdf`;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(link.href);
+      console.log('inside 394')
+      const blob = xhr.response;
+      console.log('blob', blob)
+      if (blob && blob.size > 0) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const htmlString = reader.result as string;
+          html2pdf().from(htmlString).save(`${fileName}.pdf`);
+        };
+        reader.readAsText(blob);
       } else {
         console.error('Failed to download PDF');
         this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -416,16 +417,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadPdfCertificate(value) {
-    console.log('course downloadPdfCertificate',value)
+    console.log('course downloadPdfCertificate', value)
     if (_.get(value, 'url')) {
       const request = {
         request: {
           pdfUrl: _.get(value, 'url')
         }
       };
-      console.log('course downloadPdfCertificate request',request)
+      console.log('course downloadPdfCertificate request', request)
       this.profileService.downloadCertificates(request).subscribe((apiResponse) => {
-        console.log('course downloadPdfCertificate apiResponse',apiResponse)
+        console.log('course downloadPdfCertificate apiResponse', apiResponse)
         const signedPdfUrl = _.get(apiResponse, 'result.signedUrl');
         if (signedPdfUrl) {
           window.open(signedPdfUrl, '_blank');
@@ -461,9 +462,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateProfile(data) {
-    console.log("112388 updateProfile ",data);
+    console.log("112388 updateProfile ", data);
     this.profileService.updateProfile({ framework: data }).subscribe(res => {
-      console.log("112388 updateProfile Res ",res);
+      console.log("112388 updateProfile Res ", res);
       this.userProfile.framework = data;
       this.toasterService.success(this.resourceService.messages.smsg.m0046);
       this.profileModal && this.profileModal.deny();
@@ -557,7 +558,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       type: 'click',
       pageid: 'profile-read'
     };
-    this.deleteAccountEdata={
+    this.deleteAccountEdata = {
       id: 'delete-user-account',
       type: 'click',
       pageid: 'profile-read'
@@ -565,13 +566,13 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   navigate(url, formAction) {
-    this.router.navigate([url], {queryParams: {formaction: formAction}});
+    this.router.navigate([url], { queryParams: { formaction: formAction } });
   }
 
   navigatetoRoute(url) {
-    if (_.includes(this.userProfile.userRoles, 'PUBLIC')&& this.userProfile.userRoles.length===1) {
+    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length === 1) {
       this.router.navigate([url]);
-    }else{
+    } else {
       const msg = 'Your role doesnot allow you to delete your account. Please contact support!'
       this.toasterService.warning(msg);
     }
@@ -692,84 +693,84 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       const offsetPosition = elementPosition - 144;
 
       window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
+        top: offsetPosition,
+        behavior: 'smooth'
       });
     });
   }
 
   private getUserLocation(profile: any) {
-    console.log("112388 Profile Page ",profile);
-   const userLocation = {};
+    console.log("112388 Profile Page ", profile);
+    const userLocation = {};
     if (profile && profile.userLocations && profile.userLocations.length) {
-        profile.userLocations.forEach((d) => {
-            userLocation[d.type] = d;
-        });
+      profile.userLocations.forEach((d) => {
+        userLocation[d.type] = d;
+      });
     }
-    console.log("112388 userLocation ",userLocation);
+    console.log("112388 userLocation ", userLocation);
     return userLocation;
-}
-
-private async getPersonaConfig(persona: string) {
-  const formFields = await this.formService.getFormConfig(ProfilePageComponent.SUPPORTED_PERSONA_LIST_FORM_REQUEST).toPromise();
-  return formFields.find(config => config.code === persona);
-}
-
-private async getSubPersonaConfig(persona: string, userLocation: any): Promise<string[]> {
-  if ((!this.userProfile.profileUserTypes || !this.userProfile.profileUserTypes.length) &&
-  (!this.userProfile.profileUserType || !this.userProfile.profileUserType.subType)) {
-      return undefined;
   }
-  let formFields;
-  try {
+
+  private async getPersonaConfig(persona: string) {
+    const formFields = await this.formService.getFormConfig(ProfilePageComponent.SUPPORTED_PERSONA_LIST_FORM_REQUEST).toPromise();
+    return formFields.find(config => config.code === persona);
+  }
+
+  private async getSubPersonaConfig(persona: string, userLocation: any): Promise<string[]> {
+    if ((!this.userProfile.profileUserTypes || !this.userProfile.profileUserTypes.length) &&
+      (!this.userProfile.profileUserType || !this.userProfile.profileUserType.subType)) {
+      return undefined;
+    }
+    let formFields;
+    try {
       const state = userLocation.state;
       formFields = await this.formService.getFormConfig({
         ...ProfilePageComponent.DEFAULT_PERSONA_LOCATION_CONFIG_FORM_REQUEST,
-        ...(state ? {contentType: state.code} : {})
+        ...(state ? { contentType: state.code } : {})
       }).toPromise();
-  } catch (e) {
+    } catch (e) {
       formFields = await this.formService.getFormConfig(ProfilePageComponent.DEFAULT_PERSONA_LOCATION_CONFIG_FORM_REQUEST).toPromise();
-  }
+    }
 
-  const personaConfig = formFields.find(formField => formField.code === 'persona');
-  const personaChildrenConfig: FieldConfig<any>[] = personaConfig['children'][persona];
-  const subPersonaConfig = personaChildrenConfig.find(formField => formField.code === 'subPersona');
-  if (!subPersonaConfig) {
+    const personaConfig = formFields.find(formField => formField.code === 'persona');
+    const personaChildrenConfig: FieldConfig<any>[] = personaConfig['children'][persona];
+    const subPersonaConfig = personaChildrenConfig.find(formField => formField.code === 'subPersona');
+    if (!subPersonaConfig) {
       return undefined;
-   }
-  const subPersonaList = [];
-  if (_.get(subPersonaConfig, 'templateOptions.multiple')) {
-    if (this.userProfile.profileUserTypes && this.userProfile.profileUserTypes.length) {
-      this.userProfile.profileUserTypes.forEach(ele => {
-        if (_.get(ele, 'subType')) {
-          subPersonaList.push(ele.subType);
-        }
-      });
+    }
+    const subPersonaList = [];
+    if (_.get(subPersonaConfig, 'templateOptions.multiple')) {
+      if (this.userProfile.profileUserTypes && this.userProfile.profileUserTypes.length) {
+        this.userProfile.profileUserTypes.forEach(ele => {
+          if (_.get(ele, 'subType')) {
+            subPersonaList.push(ele.subType);
+          }
+        });
+      } else {
+        subPersonaList.push(this.userProfile.profileUserType.subType);
+      }
     } else {
       subPersonaList.push(this.userProfile.profileUserType.subType);
     }
-  } else {
-    subPersonaList.push(this.userProfile.profileUserType.subType);
+
+    const subPersonaFieldConfigOption = [];
+    subPersonaList.forEach((ele) => {
+      subPersonaFieldConfigOption.push((subPersonaConfig.templateOptions.options as FieldConfigOption<any>[]).
+        find(option => option.value === ele).label);
+    });
+
+    return subPersonaFieldConfigOption;
   }
 
-   const subPersonaFieldConfigOption = [];
-   subPersonaList.forEach((ele) => {
-    subPersonaFieldConfigOption.push((subPersonaConfig.templateOptions.options as FieldConfigOption<any>[]).
-    find(option => option.value === ele).label);
-   });
-
-  return subPersonaFieldConfigOption;
-}
-
-public onLocationModalClose(event) {
-  this.showEditUserDetailsPopup = !this.showEditUserDetailsPopup;
-  this.showFullScreenLoader = !event?.isSubmitted ? false : true;
-  setTimeout(() => {
-    if (this.showFullScreenLoader) {
-      this.showFullScreenLoader = false;
-      this.toasterService.error(this.resourceService.messages.emsg.m0005);
-    }
-  }, 5000);
-}
+  public onLocationModalClose(event) {
+    this.showEditUserDetailsPopup = !this.showEditUserDetailsPopup;
+    this.showFullScreenLoader = !event?.isSubmitted ? false : true;
+    setTimeout(() => {
+      if (this.showFullScreenLoader) {
+        this.showFullScreenLoader = false;
+        this.toasterService.error(this.resourceService.messages.emsg.m0005);
+      }
+    }, 5000);
+  }
 
 }
