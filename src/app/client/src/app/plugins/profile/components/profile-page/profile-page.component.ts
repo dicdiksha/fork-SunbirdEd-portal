@@ -302,6 +302,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           templateUrl: _.get(certificateInfo, 'templateUrl'),
           trainingName: courseName
         }
+        console.log('course resp downloadOldAndRCCert====',courseObj)
         this.downloadOldAndRCCert(courseObj);
       } else if (_.get(certificateInfo, 'identifier')) {
         this.courseCService.getSignedCourseCertificate(_.get(certificateInfo, 'identifier'))
@@ -334,12 +335,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadOldAndRCCert(courseObj) {
+    console.log('course downloadOldAndRCCert',courseObj)
     let requestBody = {
       certificateId: courseObj.id,
       schemaName: 'certificate',
       type: courseObj.type,
       templateUrl: courseObj.templateUrl
     };
+    console.log(requestBody,'requestBody');
     this.CsCertificateService.getCerificateDownloadURI(requestBody, {
       apiPath: '/learner/certreg/v2',
       apiPathLegacy: '/certreg/v1',
@@ -347,7 +350,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((resp) => {
+        console.log(resp,'resp');
         if (_.get(resp, 'printUri')) {
+          console.log(resp,' afterresp');
           this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
           this.toasterService.error(this.resourceService.messages.emsg.m0076);
