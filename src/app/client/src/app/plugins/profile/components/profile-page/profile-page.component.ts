@@ -383,23 +383,32 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   // }/
 
   private downloadAsPdf(uri: string, fileName: string) {
-    console.log(uri,'uri')
+    console.log(uri,fileName,'uri')
     const xhr = new XMLHttpRequest();
     xhr.open('GET', uri, true);
     xhr.responseType = 'blob';
-    
+    console.log(xhr,'xhr 390')
     xhr.onload = () => {
       if (xhr.status === 200) {
+        console.log('inside 200')
         const blob = xhr.response;
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = `${fileName}.pdf`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
         window.URL.revokeObjectURL(link.href);
       } else {
         console.error('Failed to download PDF');
         this.toasterService.error(this.resourceService.messages.emsg.m0076);
       }
+    };
+
+    xhr.onerror = () => {
+      console.error('Error during the request');
+      this.toasterService.error(this.resourceService.messages.emsg.m0076);
     };
 
     xhr.send();
