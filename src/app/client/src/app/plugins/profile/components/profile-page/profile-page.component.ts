@@ -13,8 +13,7 @@ import { CsCourseService } from '@project-sunbird/client-services/services/cours
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 // import fs from 'fs';
-// import puppeteer from 'puppeteer'
-import html2pdf from 'html2pdf.js';
+import { jsPDF } from 'jspdf';
 
 @Component({
   templateUrl: './profile-page.component.html',
@@ -385,36 +384,46 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     );
   // }/
 
-  private downloadAsPdf(uri: string, fileName: string) {
-    console.log(uri, fileName, 'uri')
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', uri, true);
-    xhr.responseType = 'blob';
-    console.log(xhr.status, xhr, 'xhr 390')
-    xhr.onload = () => {
-      console.log('inside 394')
-      const blob = xhr.response;
-      console.log('blob', blob)
-      if (blob && blob.size > 0) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const htmlString = reader.result as string;
-          html2pdf().from(htmlString).save(`${fileName}.pdf`);
+  private async downloadAsPdf(uri: string, fileName: string) {
+    try {
+        const response = await fetch(uri); // Fetch the SVG content
+        if (!response.ok) {
+            throw new Error('Failed to fetch SVG');
+        }
+
+        const svgString = await response.text(); // Get the SVG content as text
+
+        // Create a DOMParser instance and parse the SVG string
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+
+        // Create a canvas element to render the SVG
+        const canvas = document.createElement('canvas');
+        canvas.width = svgDoc.documentElement.clientWidth;
+        canvas.height = svgDoc.documentElement.clientHeight;
+
+        // Get the canvas context
+        const context = canvas.getContext('2d');
+        if (!context) {
+            throw new Error('Failed to get canvas context');
+        }
+
+        // Draw the SVG onto the canvas
+        const svgImage = new Image();
+        svgImage.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+        svgImage.onload = () => {
+            context.drawImage(svgImage, 0, 0);
+            // Convert the canvas to PDF
+            const pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            pdf.addImage(imgData, 'JPEG', 0, 0);
+            pdf.save(`${fileName}.pdf`);
         };
-        reader.readAsText(blob);
-      } else {
-        console.error('Failed to download PDF');
+    } catch (error) {
+        console.error('Error during PDF conversion:', error);
         this.toasterService.error(this.resourceService.messages.emsg.m0076);
-      }
-    };
-
-    xhr.onerror = () => {
-      console.error('Error during the request');
-      this.toasterService.error(this.resourceService.messages.emsg.m0076);
-    };
-
-    xhr.send();
-  }
+    }
+}
 
   downloadPdfCertificate(value) {
     console.log('course downloadPdfCertificate', value)
