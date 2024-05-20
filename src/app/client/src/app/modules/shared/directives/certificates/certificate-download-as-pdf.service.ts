@@ -5,15 +5,14 @@ import {CertificateDirectivesUtility} from '../certificates/certificate-directiv
 export class CertificateDownloadAsPdfService {
 
   constructor(
-    @Inject('DOMTOIMAGE') private domtoimageModule,
     @Inject('JSPDF') private jsPDFModule,
-  ) {
-  }
+  ) {}
 
   async download(template: string, handlePdfData?: (fileName: string, pdfData: Blob) => void, fileName?: string) {
     if (template.startsWith('data:image/svg+xml,')) {
-      template = decodeURIComponent(template.replace(/data:image\/svg\+xml,/, '')).replace(/\<!--\s*[a-zA-Z0-9\-]*\s*--\>/g, '');
+      template = decodeURIComponent(template.replace('data:image/svg+xml,', ''));
     }
+
     const canvasElement = CertificateDirectivesUtility.appendGhostDiv(
       'sbCertificateDownloadAsPdfCanvas' + Date.now(),
       {
@@ -72,6 +71,16 @@ export class CertificateDownloadAsPdfService {
       });
       pdf.addImage(blob, 'PNG', 0, 0);
 
+    // const JsPDF = await this.jsPDFModule;
+    // const pdf = new JsPDF({
+    //   orientation: 'landscape',
+    //   unit: 'pt',
+    //   format: [1060 / 1.33, 750 / 1.33]
+    // });
+
+    // const img = new Image();
+    // img.onload = () => {
+    //   pdf.addImage(img, 'SVG', 0, 0);
       fileName = fileName || CertificateDirectivesUtility.extractFileName(template);
 
       if (handlePdfData) {
@@ -81,6 +90,9 @@ export class CertificateDownloadAsPdfService {
       }
 
       canvasElement.remove();
-    });
-  }
+    //   URL.revokeObjectURL(url);
+    // };
+    // img.src = url;
+  })
+    }
 }
