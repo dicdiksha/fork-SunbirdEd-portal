@@ -390,7 +390,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     xhr.responseType = 'blob';
     console.log(xhr.status,xhr,'xhr 390')
     xhr.onload = () => {
-      if (xhr.status === 200) {
+      if (xhr.status === 0) {
         console.log('inside 394')
         const blob = xhr.response;
         const link = document.createElement('a');
