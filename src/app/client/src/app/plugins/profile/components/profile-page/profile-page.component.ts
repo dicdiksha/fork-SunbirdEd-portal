@@ -386,7 +386,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async downloadAsPdf(uri: string, fileName: string) {
     try {
+      console.log(uri,'uri')
         const response = await fetch(uri); // Fetch the SVG content
+        console.log(response,'res')
         if (!response.ok) {
             throw new Error('Failed to fetch SVG');
         }
