@@ -12,7 +12,8 @@ import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
-
+// import fs from 'fs';
+// import puppeteer from 'puppeteer'
 @Component({
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.scss'],
@@ -387,10 +388,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', uri, true);
     xhr.responseType = 'blob';
-    console.log(xhr,'xhr 390')
+    console.log(xhr.status,xhr,'xhr 390')
     xhr.onload = () => {
       if (xhr.status === 200) {
-        console.log('inside 200')
+        console.log('inside 394')
         const blob = xhr.response;
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
