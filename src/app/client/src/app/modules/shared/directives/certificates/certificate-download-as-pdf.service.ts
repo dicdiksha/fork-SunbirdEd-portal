@@ -1,19 +1,19 @@
-import {Inject, Injectable} from '@angular/core';
-import {CertificateDirectivesUtility} from './certificate-directives-utility';
+import { Inject, Injectable } from '@angular/core';
+import { CertificateDirectivesUtility } from '../certificates/certificate-directives-utility';
+import { jsPDF } from 'jspdf';
 
 @Injectable()
 export class CertificateDownloadAsPdfService {
 
   constructor(
-    @Inject('DOMTOIMAGE') private domtoimageModule,
     @Inject('JSPDF') private jsPDFModule,
-  ) {
-  }
+  ) {}
 
   async download(template: string, handlePdfData?: (fileName: string, pdfData: Blob) => void, fileName?: string) {
     if (template.startsWith('data:image/svg+xml,')) {
-      template = decodeURIComponent(template.replace(/data:image\/svg\+xml,/, '')).replace(/\<!--\s*[a-zA-Z0-9\-]*\s*--\>/g, '');
+      template = decodeURIComponent(template.replace('data:image/svg+xml,', ''));
     }
+
     const canvasElement = CertificateDirectivesUtility.appendGhostDiv(
       'sbCertificateDownloadAsPdfCanvas' + Date.now(),
       {
@@ -24,27 +24,26 @@ export class CertificateDownloadAsPdfService {
 
     canvasElement.innerHTML = template;
 
-    const domtoimage = await this.domtoimageModule;
+    const svgElement = canvasElement.querySelector('svg');
+    if (!svgElement) {
+      console.error('No SVG element found in template');
+      return;
+    }
 
-    domtoimage.toPng(canvasElement, {
-      style: {
-        left: '0',
-        right: '0',
-        bottom: '0',
-        top: '0'
-      }
-    })
-    .then(async (blob) => {
-      const JsPDF = await this.jsPDFModule;
-      const pdf = new JsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: [
-          1060 / 1.33, 750 / 1.33
-        ]
-      });
-      pdf.addImage(blob, 'PNG', 0, 0);
+    const svgString = new XMLSerializer().serializeToString(svgElement);
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
 
+    const JsPDF = await this.jsPDFModule;
+    const pdf = new JsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [1060 / 1.33, 750 / 1.33]
+    });
+
+    const img = new Image();
+    img.onload = () => {
+      pdf.addImage(img, 'SVG', 0, 0);
       fileName = fileName || CertificateDirectivesUtility.extractFileName(template);
 
       if (handlePdfData) {
@@ -54,6 +53,8 @@ export class CertificateDownloadAsPdfService {
       }
 
       canvasElement.remove();
-    });
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
   }
 }
