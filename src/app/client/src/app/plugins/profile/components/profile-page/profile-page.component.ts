@@ -8,11 +8,10 @@ import {IImpressionEventInput, IInteractEventEdata, TelemetryService} from '@sun
 import {ActivatedRoute, Router} from '@angular/router';
 import {CacheService} from 'ng2-cache-service';
 import {takeUntil} from 'rxjs/operators';
-import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
-
+import {CertificateDownloadAsPdfService} from '../../../../modules/shared/directives/certificates/certificate-download-as-pdf.service'
 @Component({
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.scss'],
@@ -310,7 +309,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe((resp) => {
             console.log('course resp====',resp)
             if (_.get(resp, 'printUri')) {
-              this.certDownloadAsPdf.download(resp.printUri, null, courseName);
+              this.certDownloadAsPdf.download(resp.printUri, null, courseName)
+              // this.certDownloadAsPdf.download(resp.printUri, null, courseName);
             } else if (_.get(course, 'certificates.length')) {
               console.log('course resp certificates====',course.certificates)
               this.downloadPdfCertificate(course.certificates[0]);
@@ -333,6 +333,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.toasterService.error(this.resourceService.messages.emsg.m0076);
     }
   }
+
+
+
 
   downloadOldAndRCCert(courseObj) {
     console.log('course downloadOldAndRCCert',courseObj)
