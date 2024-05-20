@@ -366,6 +366,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
+
+  
+
   // private downloadAsPdf(uri: string, fileName: string) {
   //   console.log(uri)
   //   this.certDownloadAsPdf.download(uri, null, fileName)
