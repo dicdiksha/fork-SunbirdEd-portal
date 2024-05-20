@@ -8,10 +8,11 @@ import {IImpressionEventInput, IInteractEventEdata, TelemetryService} from '@sun
 import {ActivatedRoute, Router} from '@angular/router';
 import {CacheService} from 'ng2-cache-service';
 import {takeUntil} from 'rxjs/operators';
+import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
-import {CertificateDownloadAsPdfService} from '../../../../modules/shared/directives/certificates/certificate-download-as-pdf.service'
+
 @Component({
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.scss'],
@@ -309,8 +310,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe((resp) => {
             console.log('course resp====',resp)
             if (_.get(resp, 'printUri')) {
-              this.certDownloadAsPdf.download(resp.printUri, null, courseName)
-              // this.certDownloadAsPdf.download(resp.printUri, null, courseName);
+              this.certDownloadAsPdf.download(resp.printUri, null, courseName);
             } else if (_.get(course, 'certificates.length')) {
               console.log('course resp certificates====',course.certificates)
               this.downloadPdfCertificate(course.certificates[0]);
@@ -334,9 +334,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-
-
-
   downloadOldAndRCCert(courseObj) {
     console.log('course downloadOldAndRCCert',courseObj)
     let requestBody = {
@@ -356,13 +353,56 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log(resp,'resp');
         if (_.get(resp, 'printUri')) {
           console.log(resp,' afterresp');
-          this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
+          this.downloadAsPdf(resp.printUri, courseObj.trainingName);
+          // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
           this.toasterService.error(this.resourceService.messages.emsg.m0076);
         }
       }, error => {
         console.log('Portal :: CSL : Download certificate CSL API failed ', error);
       });
+  }
+
+
+  // private downloadAsPdf(uri: string, fileName: string) {
+  //   console.log(uri)
+  //   this.certDownloadAsPdf.download(uri, null, fileName)
+  //     .subscribe(
+  //       (pdfBlob) => {
+  //         const link = document.createElement('a');
+  //         link.href = window.URL.createObjectURL(pdfBlob);
+  //         link.download = `${fileName}.pdf`;
+  //         link.click();
+  //         window.URL.revokeObjectURL(link.href);
+  //       },
+  //       (error) => {
+  //         console.log('Error downloading the PDF', error);
+  //         this.toasterService.error(this.resourceService.messages.emsg.m0076);
+  //       }
+  //     );
+  // }/
+
+  private downloadAsPdf(uri: string, fileName: string) {
+    console.log(uri,'uri')
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', uri, true);
+    xhr.responseType = 'blob';
+    
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const blob = xhr.response;
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${fileName}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      } else {
+        console.error('Failed to download PDF');
+        this.toasterService.error(this.resourceService.messages.emsg.m0076);
+      }
+    };
+
+    xhr.send();
   }
 
   downloadPdfCertificate(value) {
