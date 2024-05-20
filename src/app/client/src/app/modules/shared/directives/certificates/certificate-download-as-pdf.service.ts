@@ -9,8 +9,15 @@ export class CertificateDownloadAsPdfService {
   ) {}
 
   async download(template: string, handlePdfData?: (fileName: string, pdfData: Blob) => void, fileName?: string) {
-    if (template.startsWith('data:image/svg+xml,')) {
-      template = decodeURIComponent(template.replace('data:image/svg+xml,', ''));
+    if (typeof template === 'string' && template.startsWith('data:image/svg+xml,')) {
+      // template = decodeURIComponent(template.replace('data:image/svg+xml,', ''));
+      try {
+        template = decodeURIComponent(template.replace('data:image/svg+xml,', ''));
+      } catch (error) {
+        console.error("Error decoding template:", error);
+        // Handle the error gracefully, such as logging and fallback behavior
+        return; // Exit the function if decoding fails
+      }
     }
 
     const canvasElement = CertificateDirectivesUtility.appendGhostDiv(
