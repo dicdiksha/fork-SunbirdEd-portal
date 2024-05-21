@@ -389,45 +389,45 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async downloadAsPdf(uri: string, fileName: string) {
     try {
-      console.log(uri,'uri')
-        const response = await fetch(uri); // Fetch the SVG content
-        console.log(response,'res')
-        if (!response.ok) {
-            throw new Error('Failed to fetch SVG');
-        }
+      console.log(uri,"uri")
+      // Create a DOMParser instance and parse the SVG string
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(uri, 'image/svg+xml');
 
-        const svgString = await response.text(); // Get the SVG content as text
+      // Create a canvas element to render the SVG
+      const canvas = document.createElement('canvas');
+      canvas.width = svgDoc.documentElement.clientWidth;
+      canvas.height = svgDoc.documentElement.clientHeight;
 
-        // Create a DOMParser instance and parse the SVG string
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+      // Get the canvas context
+      // console.log(context,'contex')
 
-        // Create a canvas element to render the SVG
-        const canvas = document.createElement('canvas');
-        canvas.width = svgDoc.documentElement.clientWidth;
-        canvas.height = svgDoc.documentElement.clientHeight;
+      const context = canvas.getContext('2d');
+      console.log(context,'contec')
+      if (!context) {
+          throw new Error('Failed to get canvas context');
+      }
 
-        // Get the canvas context
-        const context = canvas.getContext('2d');
-        if (!context) {
-            throw new Error('Failed to get canvas context');
-        }
-
-        // Draw the SVG onto the canvas
-        const svgImage = new Image();
-        svgImage.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
-        svgImage.onload = () => {
-            context.drawImage(svgImage, 0, 0);
-            // Convert the canvas to PDF
-            const pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            pdf.addImage(imgData, 'JPEG', 0, 0);
-            pdf.save(`${fileName}.pdf`);
-        };
-    } catch (error) {
-        console.error('Error during PDF conversion:', error);
+      // Draw the SVG onto the canvas
+      const svgImage = new Image();
+      svgImage.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(uri)));
+      svgImage.onload = () => {
+          context.drawImage(svgImage, 0, 0);
+          // Convert the canvas to PDF
+          const pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          pdf.addImage(imgData, 'JPEG', 0, 0);
+          pdf.save(`${fileName}.pdf`);
+      };
+      svgImage.onerror = () => {
+        console.error('Error loading SVG image');
         this.toasterService.error(this.resourceService.messages.emsg.m0076);
+      };
+    } catch (error) {
+      console.error('Error during PDF conversion:', error);
+      this.toasterService.error(this.resourceService.messages.emsg.m0076);
     }
+
 }
 
   downloadPdfCertificate(value) {
