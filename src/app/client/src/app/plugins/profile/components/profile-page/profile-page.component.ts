@@ -12,8 +12,9 @@ import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
-// import fs from 'fs';
-// import { jsPDF } from 'jspdf';
+import * as jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 
 @Component({
   templateUrl: './profile-page.component.html',
@@ -389,55 +390,30 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     );
   // }/
 
-  private async downloadAsPdf(svgString: string, fileName: string) {
-    try {
-      console.log(svgString, 'svgString')
-      // Create a DOMParser instance and parse the SVG string
-      const parser = new DOMParser();
-      const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+  
 
-      // Create a canvas element to render the SVG
-      const canvas = document.createElement('canvas');
-      canvas.width = svgDoc.documentElement.clientWidth;
-      canvas.height = svgDoc.documentElement.clientHeight;
-
-      // Get the canvas context
-      const context = canvas.getContext('2d');
-      if (!context) {
-        throw new Error('Failed to get canvas context');
-      }
-
-      // Convert the SVG string to a Blob
-      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-      console.log(blob, 'blob')
-      // Create an object URL from the Blob
-      const url = URL.createObjectURL(blob);
-      console.log(url, 'url')
-      // Draw the SVG onto the canvas
-      const svgImage = new Image();
-      svgImage.src = url;
-      svgImage.onload = async () => {
-        context.drawImage(svgImage, 0, 0);
-        const JsPDF = await this.jsPDFModule;
-        // Convert the canvas to PDF
-        const pdf = new JsPDF('p', 'pt', [canvas.width, canvas.height]);
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        pdf.addImage(imgData, 'JPEG', 0, 0);
-        pdf.save(`${fileName}.pdf`);
-        // Revoke the object URL after the image is loaded
-        URL.revokeObjectURL(url);
-      };
-
-      svgImage.onerror = () => {
-        console.error('Error loading SVG image');
-        this.toasterService.error(this.resourceService.messages.emsg.m0076);
-      };
-    } catch (error) {
-      console.error('Error during PDF conversion:', error);
-      this.toasterService.error(this.resourceService.messages.emsg.m0076);
+  downloadAsPdf(svgElementId: string, trainingName: string) {
+    console.log(svgElementId,trainingName,'svgElementId')
+    const svgElement = document.getElementById(svgElementId);
+    if (!svgElement) {
+      console.error('SVG element not found');
+      return;
     }
-
+    // Convert SVG to a canvas element
+    html2canvas(svgElement).then((canvas) => {
+      // Create a new PDF document
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      // Add the canvas to the PDF document
+      const width = canvas.width;
+      const height = canvas.height;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (pdfWidth / width) * height;
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
+      // Save the PDF file
+      pdf.save(`${trainingName}.pdf`);
+    });
   }
+  
 
   downloadPdfCertificate(value) {
     console.log('course downloadPdfCertificate', value)
