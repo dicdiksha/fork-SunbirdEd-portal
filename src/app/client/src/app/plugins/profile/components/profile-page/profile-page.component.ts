@@ -387,12 +387,12 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     );
   // }/
 
-  private async downloadAsPdf(uri: string, fileName: string) {
+  private async downloadAsPdf(svgString: string, fileName: string) {
     try {
-      console.log(uri,"uri")
+      console.log(svgString,'svgString')
       // Create a DOMParser instance and parse the SVG string
       const parser = new DOMParser();
-      const svgDoc = parser.parseFromString(uri, 'image/svg+xml');
+      const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
 
       // Create a canvas element to render the SVG
       const canvas = document.createElement('canvas');
@@ -400,17 +400,20 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       canvas.height = svgDoc.documentElement.clientHeight;
 
       // Get the canvas context
-      // console.log(context,'contex')
-
       const context = canvas.getContext('2d');
-      console.log(context,'contec')
       if (!context) {
           throw new Error('Failed to get canvas context');
       }
 
+      // Convert the SVG string to a Blob
+      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+console.log(blob,'blob')
+      // Create an object URL from the Blob
+      const url = URL.createObjectURL(blob);
+      console.log(url,'url')
       // Draw the SVG onto the canvas
       const svgImage = new Image();
-      svgImage.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(uri)));
+      svgImage.src = url;
       svgImage.onload = () => {
           context.drawImage(svgImage, 0, 0);
           // Convert the canvas to PDF
@@ -418,6 +421,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           const imgData = canvas.toDataURL('image/jpeg', 1.0);
           pdf.addImage(imgData, 'JPEG', 0, 0);
           pdf.save(`${fileName}.pdf`);
+          // Revoke the object URL after the image is loaded
+          URL.revokeObjectURL(url);
       };
       svgImage.onerror = () => {
         console.error('Error loading SVG image');
