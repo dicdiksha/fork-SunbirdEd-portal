@@ -13,7 +13,9 @@ import { CsCourseService } from '@project-sunbird/client-services/services/cours
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 // import fs from 'fs';
-import { jsPDF } from 'jspdf';
+import * as puppeteer from 'puppeteer';
+import { saveAs } from 'file-saver';
+
 
 @Component({
   templateUrl: './profile-page.component.html',
@@ -85,6 +87,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   subPersona: string[];
   isConnected = true;
   showFullScreenLoader = false;
+  private browser: puppeteer.Browser;
 
   constructor(@Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
     public resourceService: ResourceService, public coursesService: CoursesService,
@@ -95,12 +98,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService, private connectionService: ConnectionService,
     @Inject('CS_CERTIFICATE_SERVICE') private CsCertificateService: CsCertificateService) {
-    this.getNavParams();
+      this.getNavParams();
+      
   }
 
   getNavParams() {
     this.scrollToId = _.get(this.router.getCurrentNavigation(), 'extras.state.scrollToId');
   }
+
+
+ 
 
   ngOnInit() {
     this.isDesktopApp = this.utilService.isDesktopApp;
@@ -155,6 +162,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.setInteractEventData();
   }
 
+  // ngOnDestroy(): void {
+  //   this.closeBrowser();
+  // }
+
+  async closeBrowser() {
+    if (this.browser) {
+      await this.browser.close();
+    }
+  }
+  
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
     this.layoutService.switchableLayout().pipe(takeUntil(this.unsubscribe$)).subscribe(layoutConfig => {
@@ -183,6 +200,45 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
+
+
+  async generatePdfFromSvg(svgContent: string, trainingName: string) {
+    try {
+      if (!this.browser) {
+        this.browser = await puppeteer.launch({
+          headless: true,
+          args: [
+            "--no-sandbox",
+            "--disable-gpu",
+          ]
+        });
+      }
+
+      const page = await this.browser.newPage();
+      await page.setContent(svgContent, { waitUntil: 'domcontentloaded' });
+      await page.evaluateHandle('document.fonts.ready');
+
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        scale: 1,
+        margin: {
+          top: '10px',
+          right: '10px',
+          bottom: '10px',
+          left: '10px'
+        }
+      });
+
+      await page.close();
+
+      return pdfBuffer;
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      return null;
+    }
+  }
+
 
   getOrgDetails() {
     let orgList = [];
@@ -351,11 +407,32 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       rcApiPath: '/learner/rc/${schemaName}/v1',
     })
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((resp) => {
+      .subscribe(async (resp) => {
         console.log(resp, 'resp');
         if (_.get(resp, 'printUri')) {
           console.log(resp, ' afterresp');
-          this.downloadAsPdf(resp.printUri, courseObj.trainingName);
+          if (resp && resp.printUri) {
+            console.log(resp.printUri,'uri')
+            try {
+              const svgContent = resp.printUri
+              console.log(svgContent,'uri')
+              if (svgContent) {
+                const pdfBuffer = await this.generatePdfFromSvg(svgContent, courseObj.trainingName);
+                if (pdfBuffer) {
+                  const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
+                  saveAs(blob, `${courseObj.trainingName}.pdf`);
+                } else {
+                  this.toasterService.error('Failed to generate PDF.');
+                }
+              } else {
+                this.toasterService.error('Failed to fetch SVG content.');
+              }
+            } catch (error) {
+              console.error('Error generating PDF:', error);
+              this.toasterService.error('Error generating PDF.');
+            }
+          }
+          // this.downloadAsPdf(resp.printUri, courseObj.trainingName);
           // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
           this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -367,7 +444,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  
+
 
   // private downloadAsPdf(uri: string, fileName: string) {
   //   console.log(uri)
@@ -387,48 +464,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     );
   // }/
 
-  private async downloadAsPdf(uri: string, fileName: string) {
-    try {
-      console.log(uri,'uri')
-        const response = await fetch(uri); // Fetch the SVG content
-        console.log(response,'res')
-        if (!response.ok) {
-            throw new Error('Failed to fetch SVG');
-        }
-
-        const svgString = await response.text(); // Get the SVG content as text
-
-        // Create a DOMParser instance and parse the SVG string
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
-
-        // Create a canvas element to render the SVG
-        const canvas = document.createElement('canvas');
-        canvas.width = svgDoc.documentElement.clientWidth;
-        canvas.height = svgDoc.documentElement.clientHeight;
-
-        // Get the canvas context
-        const context = canvas.getContext('2d');
-        if (!context) {
-            throw new Error('Failed to get canvas context');
-        }
-
-        // Draw the SVG onto the canvas
-        const svgImage = new Image();
-        svgImage.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
-        svgImage.onload = () => {
-            context.drawImage(svgImage, 0, 0);
-            // Convert the canvas to PDF
-            const pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            pdf.addImage(imgData, 'JPEG', 0, 0);
-            pdf.save(`${fileName}.pdf`);
-        };
-    } catch (error) {
-        console.error('Error during PDF conversion:', error);
-        this.toasterService.error(this.resourceService.messages.emsg.m0076);
-    }
-}
+ 
 
   downloadPdfCertificate(value) {
     console.log('course downloadPdfCertificate', value)
@@ -584,14 +620,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   navigatetoRoute(url) {
-    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length===1) {
-      if(this.userProfile.stateValidated){
+    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length === 1) {
+      if (this.userProfile.stateValidated) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
       } else {
         this.router.navigate([url]);
       }
-    }else{
+    } else {
       const msg = 'Your role does not allow you to delete your account. Please contact support!'
       this.toasterService.warning(msg);
     }
@@ -623,6 +659,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+    this.closeBrowser();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
@@ -658,6 +695,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryService.interact(interactData);
     this.router.navigate([`learn/course/${courseId}/batch/${batchId}`]);
   }
+// 
+
+// 
+
 
   toggleOtherCertific(showMore) {
     if (showMore) {
