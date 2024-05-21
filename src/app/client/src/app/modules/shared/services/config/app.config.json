@@ -1482,7 +1482,7 @@
   },
   "OTPTemplate": {
     "updateContactTemplate": "otpContactUpdateTemplate",
-    "userDeleteTemplate": "otpDeleteUserTemplate"
+    "userDeleteTemplate": "deleteUserAccountTemplate"
       
   }
 }
