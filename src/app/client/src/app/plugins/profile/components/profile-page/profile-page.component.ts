@@ -425,33 +425,34 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   convertSvgToPdf(svgContent: string, fileName: string): void {
    
-    console.log(svgContent,fileName,'fileName')
+    console.log('svgContent', svgContent,fileName,'fileName');
     const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
-    
-    console.log(svgElement,'svgElement')
+    // Create a high-resolution canvas
     const canvas = document.createElement('canvas');
-    
     const context = canvas.getContext('2d');
-    
+    const scale = 10; // High scale for high quality
+    const width = parseFloat(svgElement.getAttribute('width') || '210mm');
+    const height = parseFloat(svgElement.getAttribute('height') || '297mm');
+    const dpi = 300; // Set high DPI for better quality
+    // Convert mm to pixels for canvas dimensions
+    canvas.width = width * scale;
+    canvas.height = height * scale;
     const svgString = new XMLSerializer().serializeToString(svgElement);
-    
     const img = new Image();
-    
     const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-    
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
+      context.scale(scale, scale); // Scale the context for high-resolution rendering
       context.drawImage(img, 0, 0);
 
-      const pdf = new jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
+      const pdf = new jsPDF('landscape', 'pt', [canvas.width / scale, canvas.height / scale]);
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width / scale, canvas.height / scale);
       pdf.save(`${fileName}.pdf`);
       URL.revokeObjectURL(url);
     };
     img.src = url;
+
   }
 
 
