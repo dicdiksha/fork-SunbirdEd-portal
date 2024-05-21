@@ -460,6 +460,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         //   URL.revokeObjectURL(url);
         // };
         // img.src = url;
+        
       })
       .catch(error => {
         console.error('Error converting SVG to PDF', error);
