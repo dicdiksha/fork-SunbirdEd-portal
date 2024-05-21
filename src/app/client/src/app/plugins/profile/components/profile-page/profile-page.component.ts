@@ -434,6 +434,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       const units = value.match(/[a-zA-Z%]+/);
       const number = parseFloat(value);
 
+      console.log(number,'number')
       if (!units) return number; // No units, return as pixels
 
       switch (units[0]) {
@@ -455,11 +456,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     // Determine SVG dimensions
-    const svgWidth = unitToPixels(svgElement.getAttribute('width') || '210mm');
-    const svgHeight = unitToPixels(svgElement.getAttribute('height') || '297mm');
+    const svgWidth = unitToPixels(svgElement.getAttribute('width') || '381mm');
+    const svgHeight = unitToPixels(svgElement.getAttribute('height') || '238.125mm');
 
     // Create a high-resolution canvas
-    const scale = 50; // Adjust scale as needed for higher quality
+    const scale = 10; // Adjust scale as needed for higher quality
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
