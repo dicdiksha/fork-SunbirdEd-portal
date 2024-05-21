@@ -466,7 +466,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const svgHeightPt = this.pixelsToPoints(svgHeight);
 
     // Create a high-resolution canvas
-    const scale = 30; // Adjust scale for highest resolution
+    const scale = 40; // Adjust scale for highest resolution
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
