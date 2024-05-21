@@ -99,11 +99,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService,
-     
+
     private connectionService: ConnectionService,
     @Inject('CS_CERTIFICATE_SERVICE')
     private CsCertificateService: CsCertificateService) {
-      this.getNavParams();
+    this.getNavParams();
   }
 
   getNavParams() {
@@ -172,7 +172,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     await this.browser.close();
   //   }
   // }
-  
+
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
     this.layoutService.switchableLayout().pipe(takeUntil(this.unsubscribe$)).subscribe(layoutConfig => {
@@ -413,8 +413,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         if (_.get(resp, 'printUri')) {
           console.log(resp, ' afterresp');
           const fileType = this.getFileTypeFromUri(resp.printUri);
-        const fileName = `${courseObj.trainingName}.${fileType}`;
-        this.downloadFile(resp.printUri, fileName, fileType);
+          const fileName = `${courseObj.trainingName}.${fileType}`;
+          this.downloadFile(resp.printUri, fileName, fileType);
 
           // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
@@ -430,35 +430,33 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     return extension ? extension : 'pdf'; // Default to 'pdf' if no extension is found
   }
 
-  downloadFile(svgUri: string, fileName: string, fileType: string): void {
-    fetch(svgUri)
-      .then(response => response.text())
-      .then(svgText => {
-        const svgElement = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
 
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        const svgString = new XMLSerializer().serializeToString(svgElement);
-        const img = new Image();
-        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(svgBlob);
 
-        img.onload = () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          context.drawImage(img, 0, 0);
 
-          const pdf = new jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
-          pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
-          pdf.save(fileName);
-          URL.revokeObjectURL(url);
-        };
-        img.src = url;
-      })
-      .catch(error => {
-        console.error('Error converting SVG to PDF', error);
-      });
+  downloadFile(svgContent: string, fileName: string, fileType: string): void {
+    console.log(svgContent,'svgContent',fileName,'fileName',fileType,'fileType')
+    const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
+    console.log(svgElement,'svgElement')
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const svgString = new XMLSerializer().serializeToString(svgElement);
+    const img = new Image();
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      context.drawImage(img, 0, 0);
+
+      const pdf = new jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(fileName);
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
   }
+
 
 
   downloadPdfCertificate(value) {
@@ -654,7 +652,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-//    this.closeBrowser();
+    //    this.closeBrowser();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
