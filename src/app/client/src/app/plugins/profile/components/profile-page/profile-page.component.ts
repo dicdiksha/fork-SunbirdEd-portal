@@ -13,6 +13,7 @@ import { CsCourseService } from '@project-sunbird/client-services/services/cours
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 import { HttpClient } from '@angular/common/http';
+import { jsPDF } from 'jspdf';
 
 
 
@@ -429,22 +430,34 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     return extension ? extension : 'pdf'; // Default to 'pdf' if no extension is found
   }
 
-  downloadFile(fileUri: string, fileName: string, fileType: string): void {
-    console.log(fileUri,'uri', fileName, 'fileName', fileType, 'fileType');
-    this.http.get(fileUri, { responseType: 'blob' }).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
-      console.log(url,'urk')
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
+  downloadFile(svgUri: string, fileName: string, fileType: string): void {
+    fetch(svgUri)
+      .then(response => response.text())
+      .then(svgText => {
+        const svgElement = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
 
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, error => {
-      console.error('Error downloading file', error);
-    });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const svgString = new XMLSerializer().serializeToString(svgElement);
+        const img = new Image();
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          context.drawImage(img, 0, 0);
+
+          const pdf = new jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
+          pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
+          pdf.save(fileName);
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
+      })
+      .catch(error => {
+        console.error('Error converting SVG to PDF', error);
+      });
   }
 
 
