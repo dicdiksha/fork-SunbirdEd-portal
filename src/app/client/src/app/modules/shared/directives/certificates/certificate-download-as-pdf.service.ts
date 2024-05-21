@@ -66,7 +66,8 @@ export class CertificateDownloadAsPdfService {
           }
         });
       };
-      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+      // img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURI(svgString)));
+      img.src = 'data:image/svg+xml;base64,' + btoa(encodeURI(svgString));
     });
 
     svgToPng.then(async (blob) => {
