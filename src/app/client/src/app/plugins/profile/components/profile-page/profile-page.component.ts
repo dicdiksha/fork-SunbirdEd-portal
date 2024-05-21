@@ -13,7 +13,7 @@ import { CsCourseService } from '@project-sunbird/client-services/services/cours
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 // import fs from 'fs';
-import { jsPDF } from 'jspdf';
+// import { jsPDF } from 'jspdf';
 
 @Component({
   templateUrl: './profile-page.component.html',
@@ -94,8 +94,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService, private connectionService: ConnectionService,
-    @Inject('CS_CERTIFICATE_SERVICE') private CsCertificateService: CsCertificateService) {
-    this.getNavParams();
+    @Inject('CS_CERTIFICATE_SERVICE')
+    @Inject('JSPDF') private jsPDFModule,
+    private CsCertificateService: CsCertificateService) {
+      this.getNavParams();
   }
 
   getNavParams() {
@@ -367,7 +369,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  
+
 
   // private downloadAsPdf(uri: string, fileName: string) {
   //   console.log(uri)
@@ -389,7 +391,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async downloadAsPdf(svgString: string, fileName: string) {
     try {
-      console.log(svgString,'svgString')
+      console.log(svgString, 'svgString')
       // Create a DOMParser instance and parse the SVG string
       const parser = new DOMParser();
       const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
@@ -402,29 +404,30 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       // Get the canvas context
       const context = canvas.getContext('2d');
       if (!context) {
-          throw new Error('Failed to get canvas context');
+        throw new Error('Failed to get canvas context');
       }
 
       // Convert the SVG string to a Blob
       const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-console.log(blob,'blob')
+      console.log(blob, 'blob')
       // Create an object URL from the Blob
       const url = URL.createObjectURL(blob);
-      console.log(url,'url')
+      console.log(url, 'url')
       // Draw the SVG onto the canvas
       const svgImage = new Image();
       svgImage.src = url;
-      svgImage.onload = () => {
-          context.drawImage(svgImage, 0, 0);
-          // Convert the canvas to PDF
-          const pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
-          const imgData = canvas.toDataURL('image/jpeg', 1.0);
-          pdf.addImage(imgData, 'JPEG', 0, 0);
-          pdf.save(`${fileName}.pdf`);
-          // Revoke the object URL after the image is loaded
-          URL.revokeObjectURL(url);
+      svgImage.onload = async () => {
+        context.drawImage(svgImage, 0, 0);
+        const JsPDF = await this.jsPDFModule;
+        // Convert the canvas to PDF
+        const pdf = new JsPDF('p', 'pt', [canvas.width, canvas.height]);
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        pdf.save(`${fileName}.pdf`);
+        // Revoke the object URL after the image is loaded
+        URL.revokeObjectURL(url);
       };
-      
+
       svgImage.onerror = () => {
         console.error('Error loading SVG image');
         this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -434,7 +437,7 @@ console.log(blob,'blob')
       this.toasterService.error(this.resourceService.messages.emsg.m0076);
     }
 
-}
+  }
 
   downloadPdfCertificate(value) {
     console.log('course downloadPdfCertificate', value)
@@ -590,14 +593,14 @@ console.log(blob,'blob')
   }
 
   navigatetoRoute(url) {
-    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length===1) {
-      if(this.userProfile.stateValidated){
+    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length === 1) {
+      if (this.userProfile.stateValidated) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
       } else {
         this.router.navigate([url]);
       }
-    }else{
+    } else {
       const msg = 'Your role does not allow you to delete your account. Please contact support!'
       this.toasterService.warning(msg);
     }
