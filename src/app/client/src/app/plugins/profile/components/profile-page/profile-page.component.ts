@@ -8,12 +8,12 @@ import { IImpressionEventInput, IInteractEventEdata, TelemetryService } from '@s
 import { ActivatedRoute, Router } from '@angular/router';
 import { CacheService } from 'ng2-cache-service';
 import { takeUntil } from 'rxjs/operators';
-import { CertificateDownloadAsPdfService } from '../../../../modules/shared/directives/certificates/certificate-download-as-pdf.service';
+import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { HttpClient } from '@angular/common/http';
+
 
 
 @Component({
@@ -94,7 +94,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     private playerService: PlayerService, private activatedRoute: ActivatedRoute, public orgDetailsService: OrgDetailsService,
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
-    private certDownloadAsPdf: CertificateDownloadAsPdfService, private connectionService: ConnectionService,
+    private certDownloadAsPdf: CertificateDownloadAsPdfService,
+    private http: HttpClient, 
+    private connectionService: ConnectionService,
     @Inject('CS_CERTIFICATE_SERVICE')
     @Inject('JSPDF') private jsPDFModule,
     private CsCertificateService: CsCertificateService) {
@@ -358,7 +360,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log(resp, 'resp');
         if (_.get(resp, 'printUri')) {
           console.log(resp, ' afterresp');
-          this.downloadAsPdf(resp.printUri, courseObj.trainingName);
+          const fileType = this.getFileTypeFromUri(resp.printUri);
+        const fileName = `${courseObj.trainingName}.${fileType}`;
+        this.downloadFile(resp.printUri, fileName, fileType);
+
           // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
           this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -368,54 +373,28 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+  getFileTypeFromUri(uri: string): string {
+    const extension = uri.split('.').pop();
+    return extension ? extension : 'pdf'; // Default to 'pdf' if no extension is found
+  }
 
-
-
-
-  // private downloadAsPdf(uri: string, fileName: string) {
-  //   console.log(uri)
-  //   this.certDownloadAsPdf.download(uri, null, fileName)
-  //     .subscribe(
-  //       (pdfBlob) => {
-  //         const link = document.createElement('a');
-  //         link.href = window.URL.createObjectURL(pdfBlob);
-  //         link.download = `${fileName}.pdf`;
-  //         link.click();
-  //         window.URL.revokeObjectURL(link.href);
-  //       },
-  //       (error) => {
-  //         console.log('Error downloading the PDF', error);
-  //         this.toasterService.error(this.resourceService.messages.emsg.m0076);
-  //       }
-  //     );
-  // }/
-
-  
-
-
-  downloadAsPdf(svgElementId: string, trainingName: string) {
-    console.log(svgElementId,trainingName,'svgElementId')
-    const svgElement = document.getElementById(svgElementId);
-    if (!svgElement) {
-      console.error('SVG element not found');
-      return;
-    }
-    // Convert SVG to a canvas element
-    html2canvas(svgElement).then((canvas) => {
-      // Create a new PDF document
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      // Add the canvas to the PDF document
-      const width = canvas.width;
-      const height = canvas.height;
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (pdfWidth / width) * height;
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
-      // Save the PDF file
-      pdf.save(`${trainingName}.pdf`);
+  downloadFile(fileUri: string, fileName: string, fileType: string): void {
+    console.log(fileUri,'uri', fileName, 'fileName', fileType, 'fileType');
+    this.http.get(fileUri, { responseType: 'blob' }).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      console.log(url,'urk')
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, error => {
+      console.error('Error downloading file', error);
     });
   }
-  
-  
+
 
   downloadPdfCertificate(value) {
     console.log('course downloadPdfCertificate', value)
