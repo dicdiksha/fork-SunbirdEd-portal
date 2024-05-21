@@ -14,7 +14,7 @@ import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elemen
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 import { HttpClient } from '@angular/common/http';
 import { jsPDF } from 'jspdf';
-import * as d3 from 'd3';
+import * as d3 from 'd3'; 
  
 
 
