@@ -13,7 +13,7 @@ import { CsCourseService } from '@project-sunbird/client-services/services/cours
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 import { HttpClient } from '@angular/common/http';
-import jsPDF  from 'jspdf';
+import jsPDF from 'jspdf';
 
 
 
@@ -424,24 +424,47 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   convertSvgToPdf(svgContent: string, fileName: string): void {
-    console.log(fileName,'filneame',svgContent)
+
+    console.log(fileName, 'filename', svgContent);
+
     const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
+    console.log(svgElement, 'svgelment')
+    // Function to convert units to pixels
+    const unitToPixels = (value: string): number => {
+      const units = value.match(/[a-zA-Z%]+/);
+      const number = parseFloat(value);
+
+      if (!units) return number; // No units, return as pixels
+
+      switch (units[0]) {
+        case 'px':
+          return number;
+        case 'mm':
+          return number * 3.7795275591; // 1 mm = 3.7795275591 px
+        case 'cm':
+          return number * 37.795275591; // 1 cm = 37.795275591 px
+        case 'in':
+          return number * 96; // 1 inch = 96 px
+        case 'pt':
+          return number * 1.3333333333; // 1 point = 1.3333333333 px
+        case 'pc':
+          return number * 16; // 1 pica = 16 px
+        default:
+          return number;
+      }
+    };
 
     // Determine SVG dimensions
-    console.log(svgElement.getAttribute,'da')
-    const svgWidth = parseFloat(svgElement.getAttribute('width'));
-    const svgHeight = parseFloat(svgElement.getAttribute('height'));
+    const svgWidth = unitToPixels(svgElement.getAttribute('width') || '210mm');
+    const svgHeight = unitToPixels(svgElement.getAttribute('height') || '297mm');
 
     // Create a high-resolution canvas
-    const scale = 10; // Adjust scale as needed
+    const scale = 3; // Adjust scale as needed for higher quality
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    // Convert mm to pixels for canvas dimensions, assuming 96 pixels per inch (ppi)
-    const widthPx = svgWidth * scale;
-    const heightPx = svgHeight * scale;
-    canvas.width = widthPx;
-    canvas.height = heightPx;
+    canvas.width = svgWidth * scale;
+    canvas.height = svgHeight * scale;
 
     const svgString = new XMLSerializer().serializeToString(svgElement);
     const img = new Image();
@@ -449,16 +472,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
-      context.drawImage(img, 0, 0, widthPx, heightPx);
+      context.scale(scale, scale); // Scale the context to maintain high resolution
+      context.drawImage(img, 0, 0, svgWidth, svgHeight);
 
-      const pdf = new jsPDF('landscape', 'pt', [widthPx / scale, heightPx / scale]);
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, widthPx / scale, heightPx / scale);
+      const pdf = new jsPDF('landscape', 'pt', [svgWidth, svgHeight]);
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, svgWidth, svgHeight);
       pdf.save(`${fileName}.pdf`);
       URL.revokeObjectURL(url);
     };
     img.src = url;
   }
-
 
 
   downloadPdfCertificate(value) {
