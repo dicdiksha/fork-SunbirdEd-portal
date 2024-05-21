@@ -13,8 +13,8 @@ import { CsCourseService } from '@project-sunbird/client-services/services/cours
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 // import fs from 'fs';
-import * as puppeteer from 'puppeteer';
-import { saveAs } from 'file-saver';
+// import * as puppeteer from 'puppeteer';
+// import { saveAs } from 'file-saver';
 
 
 @Component({
@@ -87,7 +87,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   subPersona: string[];
   isConnected = true;
   showFullScreenLoader = false;
-  private browser: puppeteer.Browser;
+  // private browser: puppeteer.Browser;
 
   constructor(@Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
     public resourceService: ResourceService, public coursesService: CoursesService,
@@ -166,11 +166,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //   this.closeBrowser();
   // }
 
-  async closeBrowser() {
-    if (this.browser) {
-      await this.browser.close();
-    }
-  }
+  // async closeBrowser() {
+  //   if (this.browser) {
+  //     await this.browser.close();
+  //   }
+  // }
   
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
@@ -202,42 +202,42 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  async generatePdfFromSvg(svgContent: string, trainingName: string) {
-    try {
-      if (!this.browser) {
-        this.browser = await puppeteer.launch({
-          headless: true,
-          args: [
-            "--no-sandbox",
-            "--disable-gpu",
-          ]
-        });
-      }
+  // async generatePdfFromSvg(svgContent: string, trainingName: string) {
+  //   try {
+  //     if (!this.browser) {
+  //       this.browser = await puppeteer.launch({
+  //         headless: true,
+  //         args: [
+  //           "--no-sandbox",
+  //           "--disable-gpu",
+  //         ]
+  //       });
+  //     }
 
-      const page = await this.browser.newPage();
-      await page.setContent(svgContent, { waitUntil: 'domcontentloaded' });
-      await page.evaluateHandle('document.fonts.ready');
+  //     const page = await this.browser.newPage();
+  //     await page.setContent(svgContent, { waitUntil: 'domcontentloaded' });
+  //     await page.evaluateHandle('document.fonts.ready');
 
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        scale: 1,
-        margin: {
-          top: '10px',
-          right: '10px',
-          bottom: '10px',
-          left: '10px'
-        }
-      });
+  //     const pdfBuffer = await page.pdf({
+  //       format: 'A4',
+  //       printBackground: true,
+  //       scale: 1,
+  //       margin: {
+  //         top: '10px',
+  //         right: '10px',
+  //         bottom: '10px',
+  //         left: '10px'
+  //       }
+  //     });
 
-      await page.close();
+  //     await page.close();
 
-      return pdfBuffer;
-    } catch (error) {
-      console.error('PDF generation failed:', error);
-      return null;
-    }
-  }
+  //     return pdfBuffer;
+  //   } catch (error) {
+  //     console.error('PDF generation failed:', error);
+  //     return null;
+  //   }
+  // }
 
 
   getOrgDetails() {
@@ -413,25 +413,28 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           console.log(resp, ' afterresp');
           if (resp && resp.printUri) {
             console.log(resp.printUri,'uri')
-            try {
-              const svgContent = resp.printUri
-              console.log(svgContent,'uri')
-              if (svgContent) {
-                const pdfBuffer = await this.generatePdfFromSvg(svgContent, courseObj.trainingName);
-                if (pdfBuffer) {
-                  const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
-                  saveAs(blob, `${courseObj.trainingName}.pdf`);
-                } else {
-                  this.toasterService.error('Failed to generate PDF.');
-                }
-              } else {
-                this.toasterService.error('Failed to fetch SVG content.');
-              }
-            } catch (error) {
-              console.error('Error generating PDF:', error);
-              this.toasterService.error('Error generating PDF.');
-            }
+            this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName)
           }
+          
+          //   try {
+          //     const svgContent = resp.printUri
+          //     console.log(svgContent,'uri')
+          //     if (svgContent) {
+          //       const pdfBuffer = await this.generatePdfFromSvg(svgContent, courseObj.trainingName);
+          //       if (pdfBuffer) {
+          //         const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
+          //         saveAs(blob, `${courseObj.trainingName}.pdf`);
+          //       } else {
+          //         this.toasterService.error('Failed to generate PDF.');
+          //       }
+          //     } else {
+          //       this.toasterService.error('Failed to fetch SVG content.');
+          //     }
+          //   } catch (error) {
+          //     console.error('Error generating PDF:', error);
+          //     this.toasterService.error('Error generating PDF.');
+          //   }
+          // }
           // this.downloadAsPdf(resp.printUri, courseObj.trainingName);
           // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
@@ -659,7 +662,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-    this.closeBrowser();
+//    this.closeBrowser();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
