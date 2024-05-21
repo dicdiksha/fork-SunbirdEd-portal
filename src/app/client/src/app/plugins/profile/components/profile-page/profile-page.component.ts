@@ -589,10 +589,15 @@ console.log(blob,'blob')
   }
 
   navigatetoRoute(url) {
-    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length === 1) {
-      this.router.navigate([url]);
-    } else {
-      const msg = 'Your role doesnot allow you to delete your account. Please contact support!'
+    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length===1) {
+      if(this.userProfile.stateValidated){
+        const msg = 'Your role does not allow you to delete your account. Please contact support!'
+        this.toasterService.warning(msg);
+      } else {
+        this.router.navigate([url]);
+      }
+    }else{
+      const msg = 'Your role does not allow you to delete your account. Please contact support!'
       this.toasterService.warning(msg);
     }
   }
