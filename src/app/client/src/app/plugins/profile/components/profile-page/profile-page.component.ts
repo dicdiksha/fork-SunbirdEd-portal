@@ -440,10 +440,18 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('svgText----', svgText)
 
         const svgElement = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
+    console.log('svgElement----', svgElement)
+
         const svgData = d3.select(svgElement).html();
+    console.log('svgData----', svgData)
+
  
         const pdf = new jsPDF();
+    console.log('pdf----', pdf)
+
         pdf.addImage(svgData, 'JPEG', 0, 0, 500, 500);
+    console.log('pdf addimage----', pdf)
+        
         pdf.save('my-svg.pdf');
         // const canvas = document.createElement('canvas');
         // const context = canvas.getContext('2d');
