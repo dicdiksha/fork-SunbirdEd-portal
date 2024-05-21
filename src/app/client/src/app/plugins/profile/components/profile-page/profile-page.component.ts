@@ -86,6 +86,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   subPersona: string[];
   isConnected = true;
   showFullScreenLoader = false;
+  // private browser: puppeteer.Browser;
 
   constructor(@Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
     public resourceService: ResourceService, public coursesService: CoursesService,
@@ -160,6 +161,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.setInteractEventData();
   }
 
+  // ngOnDestroy(): void {
+  //   this.closeBrowser();
+  // }
+
+  // async closeBrowser() {
+  //   if (this.browser) {
+  //     await this.browser.close();
+  //   }
+  // }
+  
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
     this.layoutService.switchableLayout().pipe(takeUntil(this.unsubscribe$)).subscribe(layoutConfig => {
@@ -188,6 +199,45 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
+
+
+  // async generatePdfFromSvg(svgContent: string, trainingName: string) {
+  //   try {
+  //     if (!this.browser) {
+  //       this.browser = await puppeteer.launch({
+  //         headless: true,
+  //         args: [
+  //           "--no-sandbox",
+  //           "--disable-gpu",
+  //         ]
+  //       });
+  //     }
+
+  //     const page = await this.browser.newPage();
+  //     await page.setContent(svgContent, { waitUntil: 'domcontentloaded' });
+  //     await page.evaluateHandle('document.fonts.ready');
+
+  //     const pdfBuffer = await page.pdf({
+  //       format: 'A4',
+  //       printBackground: true,
+  //       scale: 1,
+  //       margin: {
+  //         top: '10px',
+  //         right: '10px',
+  //         bottom: '10px',
+  //         left: '10px'
+  //       }
+  //     });
+
+  //     await page.close();
+
+  //     return pdfBuffer;
+  //   } catch (error) {
+  //     console.error('PDF generation failed:', error);
+  //     return null;
+  //   }
+  // }
+
 
   getOrgDetails() {
     let orgList = [];
@@ -589,6 +639,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+//    this.closeBrowser();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
