@@ -424,6 +424,7 @@ console.log(blob,'blob')
           // Revoke the object URL after the image is loaded
           URL.revokeObjectURL(url);
       };
+      
       svgImage.onerror = () => {
         console.error('Error loading SVG image');
         this.toasterService.error(this.resourceService.messages.emsg.m0076);
