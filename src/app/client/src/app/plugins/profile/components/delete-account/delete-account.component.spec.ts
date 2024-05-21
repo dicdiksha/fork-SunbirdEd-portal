@@ -80,7 +80,7 @@ describe('DeleteAccountComponent', () => {
 	const configService :Partial<ConfigService> ={
         appConfig:{
             OTPTemplate:{
-                userDeleteTemplate:'otpEmailDeleteUserTemplate'
+                userDeleteTemplate:'deleteUserAccountTemplate'
             }
         }
     };

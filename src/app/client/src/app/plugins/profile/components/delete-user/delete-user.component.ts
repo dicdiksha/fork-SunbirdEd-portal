@@ -127,7 +127,6 @@ export class DeleteUserComponent implements OnInit {
         element.nativeElement.checked = false;
       });
     }else{
-      console.log('onSubmitForm warning msg')
       this.toasterService.warning(this.resourceService.messages.imsg.m0092)
     }
   }
@@ -155,15 +154,5 @@ export class DeleteUserComponent implements OnInit {
     }
     this.validateModal();
   }
-
-  /**
-   * This method helps to redirect to the parent component
-   * page, i.e, outbox listing page with proper page number
-	 *
-	 */
-  // redirect(): void {
-  //   this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-  // }
-
 
 }
