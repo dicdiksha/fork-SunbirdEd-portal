@@ -437,6 +437,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       a.href = url;
       a.download = fileName;
       document.body.appendChild(a);
+      
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
