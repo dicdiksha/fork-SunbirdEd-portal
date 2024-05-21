@@ -74,6 +74,28 @@ module.exports = function (app) {
     })
   )
 
+  app.patch('/learner/user/v1/block',
+    proxyUtils.verifyToken(),
+    proxy(envHelper.learner_Service_Local_BaseUrl, {
+      proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(envHelper.learner_Service_Local_BaseUrl),
+      proxyReqPathResolver: (req) => {
+        return '/api/user/v1/block';
+      },
+      userResDecorator: (proxyRes, proxyResData, req, res) => {
+        logger.info({ msg: '/learner/user/v1/block called upstream url /api/user/v1/block' });
+        try {
+          const data = JSON.parse(proxyResData.toString('utf8'));
+          if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
+          else return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, data);
+        } catch (err) {
+          logger.error({ msg: 'learner route : userResDecorator json parse error:', proxyResData });
+          logger.error({ msg: 'learner route : error for /learner/user/v1/block upstram url is /api/user/v1/block ', err });
+          return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, null);
+        }
+      }
+    })
+  )
+
 
   app.get('/learner/user/v1/managed/*', proxyManagedUserRequest());
 

@@ -2,7 +2,7 @@
   [config]="{disableClose: false, panelClass: ['overflow-visible', 'material-modal']}"
   (dismiss)="showContactPopup = !showContactPopup">
   <ng-template sbModalContent let-data>
-    <app-delete-account [dialogProps]="data" (close)="showContactPopup = !showContactPopup" [contactType]="contactType"
+    <app-delete-account [dialogProps]="data" (close)="showContactPopup=!showContactPopup" [contactType]="contactType"
       [userProfile]="userProfile">
     </app-delete-account>
   </ng-template>
@@ -45,12 +45,12 @@
           <div class="conditions">
             <ul>
               <li>
-                <div class="ui list" *ngFor="let item of list">
+                <div class="ui list" *ngFor="let item of list;let i= index">
                   <div class="item">
                     <div class="ui checkbox checklist">
                       <input type="checkbox" #inputFields class="listItem" tabindex="0"
                         (click)="createCheckedArray(item)">
-                      <label>{{item}}</label>
+                      <label>{{item}} <a *ngIf="i==7" target="_blank" href="{{appBaseUrl}}/term-of-use.html">{{appBaseUrl}}/term-of-use.html</a></label>
                     </div>
                   </div>
                 </div>

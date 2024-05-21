@@ -1,18 +1,23 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
-import { UserService, OtpService } from '@sunbird/core';
+import { UserService, OtpService,LearnerService } from '@sunbird/core';
 import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
-import { ProfileService } from '../../services';
+// import { ProfileService } from '../../services';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
-import { DeviceDetectorService } from 'ngx-device-detector';
+// import { DeviceDetectorService } from 'ngx-device-detector';
+import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
+import { ActivatedRoute, Router } from '@angular/router';
+// import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
+import { map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-delete-account',
   templateUrl: './delete-account.component.html',
-  styleUrls: ['./delete-account.component.scss']
+  styleUrls: ['./delete-account.component.scss'],
+  providers: [UserSearchService]
 })
 export class DeleteAccountComponent implements OnInit, OnDestroy {
   public unsubscribe = new Subject<void>();
@@ -23,18 +28,28 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   contactTypeForm: FormGroup;
   enableSubmitBtn = false;
   showUniqueError = '';
-
+  
   otpData: any;
   submitInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
   verifiedUser = false;
-  templateId: any = 'otpaccontDeleteTemplate';
+  templateId: any = 'otpContactUpdateTemplate';
 
-  constructor(public resourceService: ResourceService, public userService: UserService,
-    public otpService: OtpService, public toasterService: ToasterService,
-    public profileService: ProfileService, private matDialog: MatDialog,
-    public configService: ConfigService,private cacheService:CacheService,
-    public deviceDetectorService: DeviceDetectorService) { }
+  constructor(
+    public resourceService: ResourceService, 
+    public userService: UserService,
+    public otpService: OtpService, 
+    public toasterService: ToasterService,
+    // public profileService: ProfileService, 
+    private matDialog: MatDialog,
+    public configService: ConfigService,
+    // private cacheService:CacheService,
+    // public deviceDetectorService: DeviceDetectorService,
+    private userSearchService: UserSearchService,
+    public route: Router,
+    private activatedRoute: ActivatedRoute,
+    public learnerService: LearnerService,
+  ) { }
 
   ngOnInit() {
     this.validateAndEditContact();
@@ -45,7 +60,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       const request: any = {
         key: this.userProfile.email || this.userProfile.phone || this.userProfile.recoveryEmail,
         userId: this.userProfile.userId,
-        templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+       // templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+       templateId: 'otpContactUpdateTemplate',
         type: ''
       };
       if ((this.userProfile.email) || this.userProfile.recoveryEmail) {
@@ -62,8 +78,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
           this.resourceService.frmelmnts.lbl.wrongEmailOTP
       };
       this.verifiedUser = false;
-
-      this.generateOTP({ request }, otpData);
+    this.generateOTP({ request }, otpData);
     }
   }
 
@@ -108,34 +123,39 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         this.toasterService.error(failedgenerateOTPMessage);
         this.enableSubmitBtn = true;
         if (!this.verifiedUser) {
-          this.closeModal();
+          // this.closeModal();
         }
       }
     );
   }
 
   verificationSuccess(data) {
-    this.userService.deleteUser().subscribe(
-      (data: ServerResponse) => {
-        if(_.get(data, 'result.response') === 'SUCCESS'){
-          window.location.replace('/logoff');
-          this.cacheService.removeAll();
-          if(this.deviceDetectorService.isMobile()){
-            //TODO changes need to be done on the Mobile Deeplink
-            const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-            window.open(url, '_blank');
-          }
-          window.location.replace('/logoff');
-          this.cacheService.removeAll();
-        }
-      },
-      (err) => {
-        //TODO we need to update the error 
-        const errorMessage =  this.resourceService.messages.fmsg.m0085;
-        this.toasterService.error(errorMessage);
-      }
-    );
+    // this.userService.deleteUser().subscribe(
+    //   (data: ServerResponse) => {
+    //     if(_.get(data, 'result.response') === 'SUCCESS'){
+    //       window.location.replace('/logoff');
+    //       this.cacheService.removeAll();
+    //       if(this.deviceDetectorService.isMobile()){
+    //         //TODO changes need to be done on the Mobile Deeplink
+    //         const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
+    //         window.open(url, '_blank');
+    //       }
+    //       window.location.replace('/logoff');
+    //       this.cacheService.removeAll();
+    //     }
+    //   },
+    //   (err) => {
+    //     //TODO we need to update the error 
+    //     const errorMessage =  this.resourceService.messages.fmsg.m0085;
+    //     this.toasterService.error(errorMessage);
+    //   }
+    // );
+
+    this.updateProfile();
+    
   }
+
+
 
   setInteractEventData() {
     const id = 'delete-account';
@@ -161,5 +181,60 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   closeMatDialog() {
     const dialogRef = this.dialogProps && this.dialogProps.id && this.matDialog.getDialogById(this.dialogProps.id);
     dialogRef && dialogRef.close();
+  }
+
+  updateProfile(){
+     const optionData = {
+      url: `${this.configService.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`,
+      param: this.configService.urlConFig.params.userReadParam
+    };
+    this.learnerService.getWithHeaders(optionData).subscribe(
+      (data: ServerResponse) => {
+        if(data?.result && (data?.result?.response?.phone || data?.result?.response?.email)){
+          //user update
+          let updateData = {"request":{userDeleteCalled:true, userId:this.userProfile.userId}};
+          if(data?.result?.response?.phone && data?.result?.response?.phone != "")
+          {
+            updateData['request']['phone'] = data?.result?.response?.phone + '-'+ Date.now()
+          } else if(data?.result?.response?.email && data?.result?.response?.email !="")
+          {
+            updateData['request']['email'] = data?.result?.response?.email.slice(0, data?.result?.response?.email.indexOf('@')) + '-'+Date.now() + data?.result?.response?.email.slice(data?.result?.response?.email.indexOf('@'));
+          }
+          const updateOptions = {
+            url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
+            data: updateData
+          };
+            console.log("profile API key",updateOptions);
+            this.learnerService.patch(updateOptions).subscribe(
+              (res: ServerResponse) => {
+                console.log("profile API update result",res);
+                this.blockUser();
+              }
+            );
+        }
+      },
+      (err: ServerResponse) => {
+        console.log("getDecriptedUserProfile error ",err);
+        // this.toasterService.error(err);
+      }
+    )
+  }
+
+  blockUser(){
+    const deleteOption = { userId: this.userProfile.identifier };
+    this.userSearchService.deleteUser(deleteOption).subscribe(
+      (apiResponse: ServerResponse) => {
+        console.log("delete account userSearchService.deleteUser==")
+        this.toasterService.success(this.resourceService.messages.smsg.m0029);
+        localStorage.clear();
+        sessionStorage.clear();
+        setTimeout(() => {
+          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+        }, 800);
+      },
+      err => {
+        this.toasterService.error(this.resourceService.messages.emsg.m0005);
+      }
+    );
   }
 }

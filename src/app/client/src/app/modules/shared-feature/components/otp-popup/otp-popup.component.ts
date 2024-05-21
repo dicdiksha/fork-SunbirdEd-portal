@@ -17,6 +17,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
   @Input() otpData: any;
   @Input() redirectToLogin: boolean;
   @Input() delete=false
+  @Input() deleteUser=false
   @Output() redirectToParent = new EventEmitter();
   @Output() verificationSuccess = new EventEmitter();
   @Output() closeContactForm = new EventEmitter();
@@ -144,8 +145,12 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         'key': this.otpData.value,
         'type': this.otpData.type,
         ...( this.otpData.value && this.otpData.value.match(/(([a-z]|[A-Z])+[*]{1,}([a-z]*[A-Z]*[0-9]*)*@)|([*]{1,})+/g) &&
-        { userId: this.userService.userid, templateId: this.configService.appConfig.OTPTemplate.updateContactTemplate })
-      }
+        { 
+          userId: this.userService.userid, 
+          //templateId: this.configService.appConfig.OTPTemplate.updateContactTemplate 
+          templateId: 'otpContactUpdateTemplate'
+        })
+        }
     };
     this.otpService.generateOTP(request).subscribe(
       (data: ServerResponse) => {

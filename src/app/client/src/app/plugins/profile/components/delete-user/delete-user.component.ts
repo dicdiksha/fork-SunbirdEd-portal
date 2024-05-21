@@ -1,16 +1,18 @@
 import { Component, EventEmitter, OnInit, Output, ViewChildren } from '@angular/core';
-import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData } from '@sunbird/shared';
+import { ResourceService, ToasterService, NavigationHelperService, LayoutService, IUserData,ServerResponse,RequestParam,UtilService } from '@sunbird/shared';
 import * as _ from 'lodash-es';
 import { takeUntil } from 'rxjs/operators';
 import { IInteractEventEdata, IImpressionEventInput } from '@sunbird/telemetry';
 import { UserService } from '@sunbird/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 
 @Component({
   selector: 'app-delete-user',
   templateUrl: './delete-user.component.html',
-  styleUrls: ['./delete-user.component.scss']
+  styleUrls: ['./delete-user.component.scss'],
+  providers: [UserSearchService]
 })
 export class DeleteUserComponent implements OnInit {
 
@@ -27,21 +29,20 @@ export class DeleteUserComponent implements OnInit {
   public unsubscribe = new Subject<void>();
   pageId = 'delete-user';
   userProfile: any;
-
+  appBaseUrl: string;
   constructor(public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
-    public userService: UserService,
+    public userService: UserService,  private userSearchService: UserSearchService,public route: Router,
     private activatedRoute: ActivatedRoute, public navigationhelperService: NavigationHelperService,
-    public layoutService: LayoutService) {
+    public layoutService: LayoutService,private utilService: UtilService) {
     this.userService.userData$.subscribe((user: IUserData) => {
       this.userProfile = user.userProfile;
     })
   }
 
   ngOnInit() {
+    this.appBaseUrl = this.utilService.getAppBaseUrl();
     let obj = this.resourceService.frmelmnts.lbl
-    this.list = Object.keys(obj)
-      .filter(key => key.includes('condition'))
-      .map(key => obj[key]);
+    this.list = Object.keys(obj).filter(key => key.includes('condition')).map(key => obj[key]);
     this.navigationhelperService.setNavigationUrl();
     this.setTelemetryData();
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
@@ -89,9 +90,7 @@ export class DeleteUserComponent implements OnInit {
   }
 
   onSubmitForm() {
-    console.log('onSubmitForm clicked')
     if (this.enableSubmitBtn) {
-      console.log('onSubmitForm clicked')
       this.enableSubmitBtn = false;
       this.showContactPopup = true;
       this.conditions = []
@@ -99,7 +98,6 @@ export class DeleteUserComponent implements OnInit {
         element.nativeElement.checked = false;
       });
     }else{
-      console.log('onSubmitForm warning msg')
       this.toasterService.warning(this.resourceService.messages.imsg.m0092)
     }
   }
@@ -127,4 +125,5 @@ export class DeleteUserComponent implements OnInit {
     }
     this.validateModal();
   }
+
 }

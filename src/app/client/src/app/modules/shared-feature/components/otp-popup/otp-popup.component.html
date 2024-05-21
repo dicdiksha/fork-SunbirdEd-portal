@@ -28,7 +28,7 @@
 <!--/Content-->
 
 <!--Actions-->
-<div class="sb-mat__modal__actions flex-jc-center">
+<div *ngIf="!deleteUser" class="sb-mat__modal__actions flex-jc-center">
   <button appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject"
   [telemetryInteractEdata]="submitInteractEdata"
     [ngClass]="{'sb-btn-disabled':!enableSubmitBtn}" 
@@ -39,7 +39,7 @@
 
 
 <!-- Delete user functionality popup -->
-<div *ngIf="delete">
+<div *ngIf="delete && deleteUser">
   <!--Content-->
   <div class="sb-mat__modal__content">
     <div class="d-flex flex-jc-center py-16 px-16 ">
