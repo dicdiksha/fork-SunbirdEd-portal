@@ -286,7 +286,7 @@
                 <!-- <span class="fmedium font-w-bold pl-4">Delete Account</span> -->
               </div>
             </div>
-            <button class="sb-btn sb-btn-normal computer only" appTelemetryInteract appOnlineOnly
+            <button class="sb-btn sb-btn-normal sb-btn-warning computer only" appTelemetryInteract appOnlineOnly
               [telemetryInteractEdata]="deleteAccountEdata" (click)="navigatetoRoute('/profile/delete-user')" tabindex="0"
               [class.sb-btn-gray]="disableDelete" [class.sb-btn-outline-primary]="!disableDelete">
               {{resourceService?.frmelmnts.lbl.deleteAccount|uppercase}}</button>
