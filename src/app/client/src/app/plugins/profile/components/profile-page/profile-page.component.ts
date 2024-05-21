@@ -391,6 +391,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   // }/
 
   
+  
 
   downloadAsPdf(svgElementId: string, trainingName: string) {
     console.log(svgElementId,trainingName,'svgElementId')
@@ -413,6 +414,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       pdf.save(`${trainingName}.pdf`);
     });
   }
+  
   
 
   downloadPdfCertificate(value) {
