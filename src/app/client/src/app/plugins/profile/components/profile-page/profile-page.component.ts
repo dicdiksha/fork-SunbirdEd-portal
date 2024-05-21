@@ -88,7 +88,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   showFullScreenLoader = false;
   // private browser: puppeteer.Browser;
 
-  constructor(@Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
+  constructor(
+    private http: HttpClient,
+    @Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
     public resourceService: ResourceService, public coursesService: CoursesService,
     public toasterService: ToasterService, public profileService: ProfileService, public userService: UserService,
     public configService: ConfigService, public router: Router, public utilService: UtilService, public searchService: SearchService,
@@ -96,10 +98,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService,
-    private http: HttpClient, 
+     
     private connectionService: ConnectionService,
     @Inject('CS_CERTIFICATE_SERVICE')
-    @Inject('JSPDF') private jsPDFModule,
     private CsCertificateService: CsCertificateService) {
       this.getNavParams();
   }
@@ -437,7 +438,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       a.href = url;
       a.download = fileName;
       document.body.appendChild(a);
-      
+
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
