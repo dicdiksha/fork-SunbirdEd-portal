@@ -424,43 +424,49 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   convertSvgToPdf(svgContent: string, fileName: string): void {
-
     console.log(fileName, 'filename', svgContent);
-
     const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
-    console.log(svgElement, 'svgelment')
+
     // Function to convert units to pixels
     const unitToPixels = (value: string): number => {
-      const units = value.match(/[a-zA-Z%]+/);
-      const number = parseFloat(value);
+        const units = value.match(/[a-zA-Z%]+/);
+        const number = parseFloat(value);
 
-      console.log(number,'number')
-      if (!units) return number; // No units, return as pixels
+        if (!units) return number; // No units, return as pixels
 
-      switch (units[0]) {
-        case 'px':
-          return number;
-        case 'mm':
-          return number * 3.7795275591; // 1 mm = 3.7795275591 px
-        case 'cm':
-          return number * 37.795275591; // 1 cm = 37.795275591 px
-        case 'in':
-          return number * 96; // 1 inch = 96 px
-        case 'pt':
-          return number * 1.3333333333; // 1 point = 1.3333333333 px
-        case 'pc':
-          return number * 16; // 1 pica = 16 px
-        default:
-          return number;
-      }
+        switch (units[0]) {
+            case 'px':
+                return number;
+            case 'mm':
+                return number * 3.7795275591; // 1 mm = 3.7795275591 px
+            case 'cm':
+                return number * 37.795275591; // 1 cm = 37.795275591 px
+            case 'in':
+                return number * 96; // 1 inch = 96 px
+            case 'pt':
+                return number * 1.3333333333; // 1 point = 1.3333333333 px
+            case 'pc':
+                return number * 16; // 1 pica = 16 px
+            default:
+                return number;
+        }
+    };
+
+    // Function to convert inches to points
+    const inchesToPoints = (inches: number): number => {
+        return inches * 72; // 1 inch = 72 points
     };
 
     // Determine SVG dimensions
-    const svgWidth = unitToPixels(svgElement.getAttribute('width') || '381mm');
-    const svgHeight = unitToPixels(svgElement.getAttribute('height') || '238.125mm');
+    const svgWidth = unitToPixels(svgElement.getAttribute('width') || '210mm');
+    const svgHeight = unitToPixels(svgElement.getAttribute('height') || '297mm');
+
+    // Convert dimensions to points
+    const svgWidthPt = this.pixelsToPoints(svgWidth);
+    const svgHeightPt = this.pixelsToPoints(svgHeight);
 
     // Create a high-resolution canvas
-    const scale = 10; // Adjust scale as needed for higher quality
+    const scale = 10; // Adjust scale for highest resolution
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
@@ -473,17 +479,28 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
-      context.scale(scale, scale); // Scale the context to maintain high resolution
-      context.drawImage(img, 0, 0, svgWidth, svgHeight);
+        context.scale(scale, scale); // Scale the context to maintain high resolution
+        context.drawImage(img, 0, 0, svgWidth, svgHeight);
 
-      const pdf = new jsPDF('landscape', 'pt', [svgWidth, svgHeight]);
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, svgWidth, svgHeight);
-      pdf.save(`${fileName}.pdf`);
-      URL.revokeObjectURL(url);
+        const pdfWidth = inchesToPoints(11.66); // Convert width to points
+        const pdfHeight = inchesToPoints(8); // Convert height to points
+
+        const pdf = new jsPDF('landscape', 'pt', [pdfWidth, pdfHeight]);
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${fileName}.pdf`);
+        URL.revokeObjectURL(url);
     };
     img.src = url;
   }
 
+  private pixelsToPoints(px: number): number {
+    return px * 72 / 96; // 1 point = 1/72 inch, 1 inch = 96 pixels
+  }
+
+  // Function to convert pixels to points
+  // const pixelsToPoints = (px: number): number => {
+  //   return px * 72 / 96; // 1 point = 1/72 inch, 1 inch = 96 pixels
+  // };
 
   downloadPdfCertificate(value) {
     console.log('course downloadPdfCertificate', value)
