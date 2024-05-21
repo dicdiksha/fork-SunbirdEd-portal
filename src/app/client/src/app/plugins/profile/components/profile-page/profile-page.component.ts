@@ -8,7 +8,7 @@ import { IImpressionEventInput, IInteractEventEdata, TelemetryService } from '@s
 import { ActivatedRoute, Router } from '@angular/router';
 import { CacheService } from 'ng2-cache-service';
 import { takeUntil } from 'rxjs/operators';
-import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
+import { CertificateDownloadAsPdfService } from '../../../../modules/shared/directives/certificates/certificate-download-as-pdf.service';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
