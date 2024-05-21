@@ -12,7 +12,7 @@ import { CertificateDownloadAsPdfService } from '../../../../modules/shared/dire
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
-import * as jsPDF from 'jspdf';
+import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 
@@ -391,7 +391,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   // }/
 
   
-  
+
 
   downloadAsPdf(svgElementId: string, trainingName: string) {
     console.log(svgElementId,trainingName,'svgElementId')
