@@ -14,7 +14,7 @@ import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elemen
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 import { HttpClient } from '@angular/common/http';
 import { jsPDF } from 'jspdf';
-import * as d3 from 'd3'; 
+import * as d3 from 'd3';
  
 
 
@@ -101,11 +101,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService,
-
+     
     private connectionService: ConnectionService,
     @Inject('CS_CERTIFICATE_SERVICE')
     private CsCertificateService: CsCertificateService) {
-    this.getNavParams();
+      this.getNavParams();
   }
 
   getNavParams() {
@@ -174,7 +174,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     await this.browser.close();
   //   }
   // }
-
+  
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
     this.layoutService.switchableLayout().pipe(takeUntil(this.unsubscribe$)).subscribe(layoutConfig => {
@@ -415,8 +415,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         if (_.get(resp, 'printUri')) {
           console.log(resp, ' afterresp');
           const fileType = this.getFileTypeFromUri(resp.printUri);
-          const fileName = `${courseObj.trainingName}.${fileType}`;
-          this.downloadFile(resp.printUri, fileName, fileType);
+        const fileName = `${courseObj.trainingName}.${fileType}`;
+        this.downloadFile(resp.printUri, fileName, fileType);
 
           // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
@@ -433,9 +433,12 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadFile(svgUri: string, fileName: string, fileType: string): void {
+    console.log('svgUri----', svgUri)
     fetch(svgUri)
       .then(response => response.text())
       .then(svgText => {
+    console.log('svgText----', svgText)
+
         const svgElement = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
         const svgData = d3.select(svgElement).html();
  
@@ -465,7 +468,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.error('Error converting SVG to PDF', error);
       });
   }
-
 
 
   downloadPdfCertificate(value) {
@@ -661,7 +663,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-    //    this.closeBrowser();
+//    this.closeBrowser();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
