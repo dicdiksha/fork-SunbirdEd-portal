@@ -428,8 +428,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
 
     // Determine SVG dimensions
-    const svgWidth = parseFloat(svgElement.getAttribute('width') || '210mm');
-    const svgHeight = parseFloat(svgElement.getAttribute('height') || '297mm');
+    console.log(svgElement.getAttribute,'da')
+    const svgWidth = parseFloat(svgElement.getAttribute('width'));
+    const svgHeight = parseFloat(svgElement.getAttribute('height'));
 
     // Create a high-resolution canvas
     const scale = 10; // Adjust scale as needed
