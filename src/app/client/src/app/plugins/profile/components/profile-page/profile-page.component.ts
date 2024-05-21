@@ -97,17 +97,15 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService, private connectionService: ConnectionService,
-    @Inject('CS_CERTIFICATE_SERVICE') private CsCertificateService: CsCertificateService) {
+    @Inject('CS_CERTIFICATE_SERVICE')
+    @Inject('JSPDF') private jsPDFModule,
+    private CsCertificateService: CsCertificateService) {
       this.getNavParams();
-      
   }
 
   getNavParams() {
     this.scrollToId = _.get(this.router.getCurrentNavigation(), 'extras.state.scrollToId');
   }
-
-
- 
 
   ngOnInit() {
     this.isDesktopApp = this.utilService.isDesktopApp;
@@ -407,7 +405,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       rcApiPath: '/learner/rc/${schemaName}/v1',
     })
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(async (resp) => {
+      .subscribe((resp) => {
         console.log(resp, 'resp');
         if (_.get(resp, 'printUri')) {
           console.log(resp, ' afterresp');
@@ -467,7 +465,32 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     );
   // }/
 
- 
+  
+
+
+  // downloadAsPdf(svgElementId: string, trainingName: string) {
+  //   console.log(svgElementId,trainingName,'svgElementId')
+  //   const svgElement = document.getElementById(svgElementId);
+  //   if (!svgElement) {
+  //     console.error('SVG element not found');
+  //     return;
+  //   }
+  //   // Convert SVG to a canvas element
+  //   html2canvas(svgElement).then((canvas) => {
+  //     // Create a new PDF document
+  //     const pdf = new jsPDF('p', 'mm', 'a4');
+  //     // Add the canvas to the PDF document
+  //     const width = canvas.width;
+  //     const height = canvas.height;
+  //     const pdfWidth = pdf.internal.pageSize.getWidth();
+  //     const pdfHeight = (pdfWidth / width) * height;
+  //     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
+  //     // Save the PDF file
+  //     pdf.save(`${trainingName}.pdf`);
+  //   });
+  // }
+  
+  
 
   downloadPdfCertificate(value) {
     console.log('course downloadPdfCertificate', value)
@@ -698,10 +721,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.telemetryService.interact(interactData);
     this.router.navigate([`learn/course/${courseId}/batch/${batchId}`]);
   }
-// 
-
-// 
-
 
   toggleOtherCertific(showMore) {
     if (showMore) {
