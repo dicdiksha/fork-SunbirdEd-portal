@@ -153,8 +153,8 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
         userId: _.get(this.userService, 'userid'),
         profileLocation: locationDetails,
         profileUserTypes: userTypes,
-        gender: 'Male',
-        email: 'abc@yopmail.com'
+        // gender: 'Male',
+        // email: 'abc@yopmail.com'
       };
       this.locationService.updateProfile(payload).toPromise()
         .then((res) => {
