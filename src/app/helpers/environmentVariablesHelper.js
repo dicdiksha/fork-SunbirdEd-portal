@@ -35,7 +35,7 @@ let envVariables = {
   sunbird_theme: env.sunbird_theme || 'default',
   BUILD_NUMBER: packageObj.version + '.' + packageObj.buildHash,
   sunbird_portal_log_level: env.sunbird_portal_log_level || 'debug',
-  sunbird_extcont_whitelisted_domains: env.sunbird_extcont_whitelisted_domains || 'youtube.com,youtu.be',
+  sunbird_extcont_whitelisted_domains: 'youtube.com,youtu.be, https://diksha.katbook.com/',
   sunbird_explore_button_visibility: env.sunbird_explore_button_visibility || 'true',
   sunbird_help_link_visibility: env.sunbird_help_link_visibility || 'false',
   sunbird_portal_user_upload_ref_link: env.sunbird_portal_user_upload_ref_link || 'http://www.sunbird.org/features-documentation/register_user',
