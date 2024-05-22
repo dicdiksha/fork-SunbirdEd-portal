@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormGroup, FormControl, Validators  } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { OtpService } from '@sunbird/core';
-import { ResourceService, ServerResponse, ToasterService, ConfigService, CacheService } from '@sunbird/shared';
+import { ResourceService, ServerResponse, ToasterService, ConfigService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,7 +34,7 @@ export class AnonymousDeleteAccountComponent implements OnInit, OnDestroy {
   constructor(public resourceService: ResourceService,
     public otpService: OtpService, public toasterService: ToasterService,
     private matDialog: MatDialog,
-    public configService: ConfigService, private cacheService: CacheService,
+    public configService: ConfigService,
     public deviceDetectorService: DeviceDetectorService) { }
 
   ngOnInit() {
