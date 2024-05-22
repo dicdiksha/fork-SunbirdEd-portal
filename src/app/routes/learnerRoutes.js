@@ -45,6 +45,28 @@ module.exports = function (app) {
     })
   )
 
+  app.patch('/learner/user/v1/block',
+  proxyUtils.verifyToken(),
+  proxy(envHelper.learner_Service_Local_BaseUrl, {
+    proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(envHelper.learner_Service_Local_BaseUrl),
+    proxyReqPathResolver: (req) => {
+      return '/api/user/v1/block';
+    },
+    userResDecorator: (proxyRes, proxyResData, req, res) => {
+      logger.info({ msg: '/learner/user/v1/block called upstream url /api/user/v1/block' });
+      try {
+        const data = JSON.parse(proxyResData.toString('utf8'));
+        if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
+        else return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, data);
+      } catch (err) {
+        logger.error({ msg: 'learner route : userResDecorator json parse error:', proxyResData });
+        logger.error({ msg: 'learner route : error for /learner/user/v1/block upstram url is /api/user/v1/block ', err });
+        return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, null);
+      }
+    }
+    })
+  )
+
   app.get('/learner/user/v1/managed/*', proxyManagedUserRequest());
 
   // Route to check user email id exists (or) already registered
@@ -85,6 +107,7 @@ module.exports = function (app) {
         let urlParam = req.params['0']
         let query = require('url').parse(req.url).query
         if (urlParam.indexOf('anonymous') > -1) urlParam = urlParam.replace('anonymous/', '');
+        if (urlParam.indexOf('delete/otp') > -1) urlParam = urlParam.replace('delete/otp', 'otp/');
         if (req.url.indexOf('/otp/') > 0) {
           proxyUtils.addReqLog(req);
         }

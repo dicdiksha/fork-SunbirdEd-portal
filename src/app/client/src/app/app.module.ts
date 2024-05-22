@@ -24,7 +24,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateStore } from '@ngx-translate/core';
 import { SbSearchFilterModule } from '@dicdikshaorg/common-form-elements';
 import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { DeviceDetectorService } from 'ngx-device-detector';
 import { AngularFireAnalyticsModule, ScreenTrackingService } from '@angular/fire/analytics';
 import { AngularFireModule } from '@angular/fire';
 
@@ -77,6 +77,7 @@ const firebaseConfig = {
     CacheService,
     ChatLibService,
     TranslateStore,
+    DeviceDetectorService,
     { provide: CacheStorageAbstract, useClass: CacheSessionStorage },
     { provide: HTTP_INTERCEPTORS, useClass: SessionExpiryInterceptor, multi: true },
     { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
