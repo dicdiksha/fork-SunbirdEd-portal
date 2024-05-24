@@ -119,6 +119,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isDesktopApp = this.utilService.isDesktopApp;
     let mm = this.managedUserService.fetchManagedUserList();
     console.log('managedUserService===============',mm)
+    const requests = [this.managedUserService.managedUserList$];
+    console.log('requests===============',requests)
     this.activatedRoute.queryParams.subscribe((params) => {
       console.log("112388 ngOnInit param ", params);
       if (params['showEditUserDetailsPopup']) {
