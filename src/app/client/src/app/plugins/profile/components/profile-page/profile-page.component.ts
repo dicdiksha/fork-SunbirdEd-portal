@@ -3,7 +3,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Inject } from '
 import { CertRegService, CoursesService, OrgDetailsService, PlayerService, SearchService, UserService, FormService } from '@sunbird/core';
 import { ConfigService, IUserData, LayoutService, NavigationHelperService, ResourceService, ServerResponse, ToasterService, UtilService, ConnectionService } from '@sunbird/shared';
 import * as _ from 'lodash-es';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription,zip} from 'rxjs';
 import { IImpressionEventInput, IInteractEventEdata, TelemetryService } from '@sunbird/telemetry';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CacheService } from 'ng2-cache-service';
@@ -16,12 +16,6 @@ import { HttpClient } from '@angular/common/http';
 import { jsPDF } from 'jspdf';
 import * as d3 from 'd3';
 import { ManagedUserService } from '../../../../modules/core/services/managed-user/managed-user.service';
-
-
-
-
-
-
 @Component({
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.scss'],
@@ -117,9 +111,19 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.isDesktopApp = this.utilService.isDesktopApp;
-    let mm = this.managedUserService.fetchManagedUserList();
-    console.log('managedUserService===============',mm)
     const requests = [this.managedUserService.managedUserList$];
+    zip(...requests).subscribe((data) => {
+      let userListToProcess = _.get(data[0], 'result.response.content');
+      console.log("userListToProcess=====",userListToProcess)
+      if (data && data[1]) {
+        console.log("inside userListToProcess=====",userListToProcess)
+        userListToProcess = [data[1]].concat(userListToProcess);
+        console.log("inside userListToProcess concat=====",userListToProcess)
+      }
+    }, (err) => {
+      this.toasterService.error(_.get(this.resourceService, 'messages.emsg.m0005'));
+    }
+    );
     console.log('requests===============',requests)
     this.activatedRoute.queryParams.subscribe((params) => {
       console.log("112388 ngOnInit param ", params);
