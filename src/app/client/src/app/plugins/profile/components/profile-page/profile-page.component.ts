@@ -86,6 +86,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   subPersona: string[];
   isConnected = true;
   showFullScreenLoader = false;
+  subUserAccount = 0;
   // private browser: puppeteer.Browser;
 
   constructor(
@@ -115,10 +116,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     zip(...requests).subscribe((data) => {
       let userListToProcess = _.get(data[0], 'result.response.content');
       console.log("userListToProcess=====",userListToProcess)
-      if (data && data[1]) {
-        console.log("inside userListToProcess=====",userListToProcess)
-        userListToProcess = [data[1]].concat(userListToProcess);
-        console.log("inside userListToProcess concat=====",userListToProcess)
+      if (userListToProcess) {
+        this.subUserAccount = userListToProcess.length
       }
     }, (err) => {
       this.toasterService.error(_.get(this.resourceService, 'messages.emsg.m0005'));
@@ -646,7 +645,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.userProfile.stateValidated) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
-      } else {
+      } else if(this.subUserAccount){
+        const msg = 'Your role does not allow you to delete your account. Please contact support!'
+        this.toasterService.warning(msg);
+       }
+       else {
         this.router.navigate([url]);
       }
     } else {
