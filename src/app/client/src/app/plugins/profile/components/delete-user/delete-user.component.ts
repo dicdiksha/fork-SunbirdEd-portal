@@ -41,8 +41,8 @@ export class DeleteUserComponent implements OnInit {
 
   ngOnInit() {
     this.appBaseUrl = this.utilService.getAppBaseUrl();
-    let obj = this.resourceService.frmelmnts.lbl
-    this.list = Object.keys(obj).filter(key => key.includes('condition')).map(key => obj[key]);
+    let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
+    this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
     this.navigationhelperService.setNavigationUrl();
     this.setTelemetryData();
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
@@ -124,6 +124,17 @@ export class DeleteUserComponent implements OnInit {
       this.conditions.splice(_.indexOf(this.conditions, checkedItem), 1);
     }
     this.validateModal();
+  }
+
+  ngAfterViewChecked() {
+    this.enableSubmitBtn = false;
+    this.showContactPopup = true;
+    this.conditions = []
+    this.inputFields.forEach((element) => {
+      element.nativeElement.checked = false;
+    });
+    let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
+    this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
   }
 
 }
