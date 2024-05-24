@@ -158,7 +158,7 @@ export class DeleteUserComponent implements OnInit {
 
   ngAfterViewChecked() {
     this.enableSubmitBtn = false;
-    this.showContactPopup = true;
+    this.showContactPopup = false;
     this.conditions = []
     this.inputFields.forEach((element) => {
       element.nativeElement.checked = false;
