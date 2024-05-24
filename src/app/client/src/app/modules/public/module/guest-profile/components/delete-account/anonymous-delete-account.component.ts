@@ -30,7 +30,7 @@ export class AnonymousDeleteAccountComponent implements OnInit, OnDestroy {
   telemetryInteractObject: IInteractEventObject;
   verifiedUser = false;
   templateId: any = 'deleteUserAccountTemplate';
-  templateIdMobile: any = 'otpContactUpdateTemplate';
+  templateIdMobile: any = '1307171619784284292';
 
   constructor(public resourceService: ResourceService,
     public otpService: OtpService, public toasterService: ToasterService,
