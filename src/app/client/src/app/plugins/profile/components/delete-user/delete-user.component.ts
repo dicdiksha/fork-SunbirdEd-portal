@@ -42,9 +42,8 @@ export class DeleteUserComponent implements OnInit {
 
   ngOnInit() {
     this.appBaseUrl = this.utilService.getAppBaseUrl();
-    let LangObj = _.get(this.resourceService, 'frmelmnts.lbl');
-    console.log("LangObj=====",LangObj)
-    this.list = Object.keys(LangObj).filter(key => key.includes('condition')).map(key => LangObj[key]);
+    let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
+    this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
     this.navigationhelperService.setNavigationUrl();
     this.setTelemetryData();
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
@@ -158,9 +157,9 @@ export class DeleteUserComponent implements OnInit {
   }
 
   ngOnChanges() {
-    let LangObj = _.get(this.resourceService, 'frmelmnts.lbl');
-    console.log("ngOnChanges LangObj=====",LangObj)
-    this.list = Object.keys(LangObj).filter(key => key.includes('condition')).map(key => LangObj[key]);
+    let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
+    console.log("ngOnChanges langObj=====",langObj)
+    this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
   }
 
 }
