@@ -85,6 +85,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
     };
     this.certificateService.validateCertificate(request).subscribe(
       (data: ServerResponse) => {
+        console.log('certificateVerify data-----', data)
         if (_.get(data, 'result.response.related.certVideoUrl')) {
           this.watchVideoLink = _.get(data, 'result.response.related.certVideoUrl');
           this.processVideoUrl(this.watchVideoLink);
@@ -92,6 +93,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
           this.getCourseVideoUrl(_.get(data, 'result.response.related.courseId'));
         }
         const certData = _.get(data, 'result.response.json');
+        console.log('certificateVerify certData-----', certData)
         this.loader = false;
         this.viewCertificate = true;
         this.recipient = _.get(certData, 'recipient.name');
@@ -217,9 +219,13 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
           rcApiPath: '/learner/rc/${schemaName}/v1',
         }).subscribe(
           (data) => {
+        console.log('validateCertificate data-----', data)
             const certData = _.get(data, 'certificateData');
+        console.log('validateCertificate certData-----', certData)
+
             this.loader = false;
             if (_.get(data, 'verified')) {
+              console.log('validateCertificate if-----', data)
               this.viewCertificate = true;
               this.recipient = _.get(certData, 'issuedTo');
               this.courseName = _.get(certData, 'trainingName');
@@ -256,9 +262,11 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
       rcApiPath: '/learner/rc/${schemaName}/v1',
     }).subscribe(
       (data) => {
+        console.log('validataTCertificate-----', data)
         const certData = _.get(data, 'certificateData');
         this.loader = false;
         if (_.get(data, 'verified')) {
+        console.log('validataTCertificate if-----', data)
           this.viewCertificate = true;
           this.recipient = _.get(certData, 'issuedTo');
           this.courseName = _.get(certData, 'trainingName');
