@@ -15,7 +15,7 @@ import { CsCertificateService } from '@project-sunbird/client-services/services/
 import { HttpClient } from '@angular/common/http';
 import { jsPDF } from 'jspdf';
 import * as d3 from 'd3';
- 
+import { sessionKeys } from '../../../../modules/groups';
 
 
 
@@ -114,7 +114,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.isDesktopApp = this.utilService.isDesktopApp;
-
+    console.log('session Data===============',sessionStorage.getItem(sessionKeys.GROUPDATA));
     this.activatedRoute.queryParams.subscribe((params) => {
       console.log("112388 ngOnInit param ", params);
       if (params['showEditUserDetailsPopup']) {

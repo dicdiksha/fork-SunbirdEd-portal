@@ -73,10 +73,10 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
       this.enableResendButton = true;
     }, 22000);
     const interval = setInterval(() => {
-      this.resendOTPbtn =this.delete ? this.resourceService.frmelmnts.lbl.resendOTP + ' in ' + this.counter + ' seconds' : this.resourceService.frmelmnts.lbl.resendOTP + ' (' + this.counter + ')';
+      this.resendOTPbtn =this.delete ?  _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP') + ' in ' + this.counter + ' seconds' : _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP') + ' (' + this.counter + ')';
       this.counter--;
       if (this.counter < 0) {
-        this.resendOTPbtn = this.resourceService.frmelmnts.lbl.resendOTP;
+        this.resendOTPbtn = _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP');
         clearInterval(interval);
       }
     }, 1000);
