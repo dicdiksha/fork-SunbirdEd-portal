@@ -20,7 +20,7 @@ import {
   ConnectionService
 } from '@sunbird/shared';
 import * as _ from 'lodash-es';
-import {Subject, Subscription} from 'rxjs';
+import {Subject, Subscription, zip} from 'rxjs';
 import {IImpressionEventInput, IInteractEventEdata, TelemetryService} from '@sunbird/telemetry';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CacheService} from 'ng2-cache-service';
@@ -29,7 +29,7 @@ import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
-
+import { ManagedUserService } from '../../../../modules/core/services/managed-user/managed-user.service';
 @Component({
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.scss'],
@@ -100,7 +100,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   subPersona: string[];
   isConnected = true;
   showFullScreenLoader = false;
-
+  subUserAccount = 0;
   constructor(@Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
   public resourceService: ResourceService, public coursesService: CoursesService,
     public toasterService: ToasterService, public profileService: ProfileService, public userService: UserService,
@@ -109,7 +109,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService, private connectionService: ConnectionService,
-    @Inject('CS_CERTIFICATE_SERVICE') private CsCertificateService: CsCertificateService) {
+    @Inject('CS_CERTIFICATE_SERVICE') private CsCertificateService: CsCertificateService,private managedUserService: ManagedUserService,) {
     this.getNavParams();
   }
 
@@ -119,7 +119,17 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.isDesktopApp = this.utilService.isDesktopApp;
-
+    const requests = [this.managedUserService.managedUserList$];
+    zip(...requests).subscribe((data) => {
+      let userListToProcess = _.get(data[0], 'result.response.content');
+      console.log("userListToProcess=====",userListToProcess)
+      if (userListToProcess) {
+        this.subUserAccount = userListToProcess.length
+      }
+    }, (err) => {
+      this.toasterService.error(_.get(this.resourceService, 'messages.emsg.m0005'));
+    }
+    );
     this.activatedRoute.queryParams.subscribe((params) => {
       if (params['showEditUserDetailsPopup']) {
         this.showEditUserDetailsPopup = true;
@@ -510,14 +520,18 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   navigatetoRoute(url) {
-    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length===1) {
-      if(this.userProfile.stateValidated){
+    if (_.includes(this.userProfile.userRoles, 'PUBLIC') && this.userProfile.userRoles.length === 1) {
+      if (this.userProfile.stateValidated) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
-        } else {
-          this.router.navigate([url]);
-        }
-      } else{
+      } else if(this.subUserAccount){
+        const msg = 'Your role does not allow you to delete your account. Please contact support!'
+        this.toasterService.warning(msg);
+       }
+       else {
+        this.router.navigate([url]);
+      }
+    } else {
       const msg = 'Your role does not allow you to delete your account. Please contact support!'
       this.toasterService.warning(msg);
     }
