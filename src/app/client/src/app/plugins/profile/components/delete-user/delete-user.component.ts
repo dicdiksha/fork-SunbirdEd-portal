@@ -157,4 +157,10 @@ export class DeleteUserComponent implements OnInit {
     this.validateModal();
   }
 
+  ngOnChanges() {
+    let LangObj = _.get(this.resourceService, 'frmelmnts.lbl');
+    console.log("ngOnChanges LangObj=====",LangObj)
+    this.list = Object.keys(LangObj).filter(key => key.includes('condition')).map(key => LangObj[key]);
+  }
+
 }
