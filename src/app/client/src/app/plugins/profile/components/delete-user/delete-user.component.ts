@@ -30,6 +30,7 @@ export class DeleteUserComponent implements OnInit {
   pageId = 'delete-user';
   userProfile: any;
   appBaseUrl: string;
+  LangObj = _.get(this.resourceService, 'frmelmnts.lbl');
   constructor(public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
     public userService: UserService,  private userSearchService: UserSearchService,public route: Router,
     private activatedRoute: ActivatedRoute, public navigationhelperService: NavigationHelperService,
@@ -41,8 +42,9 @@ export class DeleteUserComponent implements OnInit {
 
   ngOnInit() {
     this.appBaseUrl = this.utilService.getAppBaseUrl();
-    let obj = _.get(this.resourceService, 'frmelmnts.lbl')
-    this.list = Object.keys(obj).filter(key => key.includes('condition')).map(key => obj[key]);
+    // let obj = _.get(this.resourceService, 'frmelmnts.lbl')
+    // console.log('obj==========',obj)
+    this.list = Object.keys(this.LangObj).filter(key => key.includes('condition')).map(key => this.LangObj[key]);
     this.navigationhelperService.setNavigationUrl();
     this.setTelemetryData();
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
