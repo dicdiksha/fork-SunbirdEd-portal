@@ -29,7 +29,7 @@ export class AnonymousDeleteAccountComponent implements OnInit, OnDestroy {
   submitInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
   verifiedUser = false;
-  templateId: any = 'deleteUserAccountTemplate';
+  templateId: any = 'otpContactUpdateTemplate';
 
   constructor(public resourceService: ResourceService,
     public otpService: OtpService, public toasterService: ToasterService,
@@ -46,7 +46,8 @@ export class AnonymousDeleteAccountComponent implements OnInit, OnDestroy {
       const request: any = {
         key: this.contactType,
         userId: this.userId,
-        templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+        //templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+        templateId: "otpContactUpdateTemplate",
         type: ''
       };
       if ((this.contactType === 'email') || this.contactType === 'recoveryEmail') {

@@ -33,7 +33,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   submitInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
   verifiedUser = false;
-  templateId: any = 'deleteUserAccountTemplate';
+  templateId: any = 'otpContactUpdateTemplate';
 
   constructor(
     public resourceService: ResourceService, 
@@ -60,7 +60,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       const request: any = {
         key: this.userProfile.email || this.userProfile.phone || this.userProfile.recoveryEmail,
         userId: this.userProfile.userId,
-       templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+        // templateId: this.configService.appConfig.OTPTemplate.userDeleteTemplate,
+        templateId: "otpContactUpdateTemplate",
         type: ''
       };
       if ((this.userProfile.email) || this.userProfile.recoveryEmail) {
