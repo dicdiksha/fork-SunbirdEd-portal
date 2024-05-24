@@ -155,7 +155,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         ...( this.otpData.value && this.otpData.value.match(/(([a-z]|[A-Z])+[*]{1,}([a-z]*[A-Z]*[0-9]*)*@)|([*]{1,})+/g) &&
         { 
           userId: this.userService.userid, 
-          templateId: this.configService.appConfig.OTPTemplate.updateContactTemplate 
+          templateId: this.deleteUser ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.configService.appConfig.OTPTemplate.updateContactTemplate
         })
         }
     };

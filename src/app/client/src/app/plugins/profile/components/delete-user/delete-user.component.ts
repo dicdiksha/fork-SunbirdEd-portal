@@ -156,9 +156,9 @@ export class DeleteUserComponent implements OnInit {
     this.validateModal();
   }
 
-  ngOnChanges() {
+  ngAfterViewChecked() {
     let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
-    console.log("ngOnChanges langObj=====",langObj)
+    console.log("ngAfterViewChecked langObj=====",langObj)
     this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
   }
 
