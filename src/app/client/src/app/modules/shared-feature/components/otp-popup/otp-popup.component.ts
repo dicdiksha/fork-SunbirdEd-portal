@@ -41,6 +41,8 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
   cancelInteractEdata: IInteractEventEdata;
   submitUserDeleteInteractEdata:IInteractEventEdata;
   remainingAttempt: 'string';
+  templateId: any = 'deleteUserAccountTemplate';
+  templateIdMobile: any = 'otpContactUpdateTemplate';
   constructor(public resourceService: ResourceService, public tenantService: TenantService,
               public deviceDetectorService: DeviceDetectorService, public otpService: OtpService, public userService: UserService,
               public utilService: UtilService, public configService: ConfigService,
@@ -155,8 +157,8 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         ...( this.otpData.value && this.otpData.value.match(/(([a-z]|[A-Z])+[*]{1,}([a-z]*[A-Z]*[0-9]*)*@)|([*]{1,})+/g) &&
         { 
           userId: this.userService.userid, 
-          //templateId: this.deleteUser ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.configService.appConfig.OTPTemplate.updateContactTemplate
-          templateId: this.deleteUser ? "deleteUserAccountTemplate" : this.configService.appConfig.OTPTemplate.updateContactTemplate
+          templateId: this.deleteUser ? (this.otpData.type === 'email' || this.otpData.type === 'recoveryEmail' ) ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.templateIdMobile
+          : this.configService.appConfig.OTPTemplate.updateContactTemplate
         })
         }
     };
