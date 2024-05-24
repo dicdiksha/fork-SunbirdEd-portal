@@ -15,7 +15,10 @@ import { CsCertificateService } from '@project-sunbird/client-services/services/
 import { HttpClient } from '@angular/common/http';
 import { jsPDF } from 'jspdf';
 import * as d3 from 'd3';
-import { sessionKeys } from '../../../../modules/groups';
+import { ManagedUserService } from '../../../../modules/core/services/managed-user/managed-user.service';
+
+
+
 
 
 
@@ -101,7 +104,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
     private certDownloadAsPdf: CertificateDownloadAsPdfService,
-     
+    private managedUserService: ManagedUserService,
     private connectionService: ConnectionService,
     @Inject('CS_CERTIFICATE_SERVICE')
     private CsCertificateService: CsCertificateService) {
@@ -114,7 +117,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.isDesktopApp = this.utilService.isDesktopApp;
-    console.log('session Data===============',sessionStorage.getItem(sessionKeys.GROUPDATA));
+    let mm = this.managedUserService.fetchManagedUserList();
+    console.log('managedUserService===============',mm)
     this.activatedRoute.queryParams.subscribe((params) => {
       console.log("112388 ngOnInit param ", params);
       if (params['showEditUserDetailsPopup']) {
