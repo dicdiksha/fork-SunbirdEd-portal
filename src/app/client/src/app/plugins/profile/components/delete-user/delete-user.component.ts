@@ -41,7 +41,7 @@ export class DeleteUserComponent implements OnInit {
 
   ngOnInit() {
     this.appBaseUrl = this.utilService.getAppBaseUrl();
-    let obj = this.resourceService.frmelmnts.lbl
+    let obj = _.get(this.resourceService, 'frmelmnts.lbl')
     this.list = Object.keys(obj).filter(key => key.includes('condition')).map(key => obj[key]);
     this.navigationhelperService.setNavigationUrl();
     this.setTelemetryData();
