@@ -61,7 +61,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       const request: any = {
         key: this.userProfile.email || this.userProfile.phone || this.userProfile.recoveryEmail,
         userId: this.userProfile.userId,
-        templateId: ((this.contactType === 'email') || (this.contactType === 'recoveryEmail')) ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.templateIdMobile,
+        templateId: ((this.userProfile.email == 'email') || (this.userProfile.email == 'recoveryEmail')) ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.templateIdMobile,
         type: ''
       };
       if ((this.userProfile.email) || this.userProfile.recoveryEmail) {
