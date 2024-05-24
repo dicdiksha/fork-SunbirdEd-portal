@@ -156,15 +156,15 @@ export class DeleteUserComponent implements OnInit {
     this.validateModal();
   }
 
-  ngAfterViewChecked() {
-    this.enableSubmitBtn = false;
-    this.showContactPopup = false;
-    this.conditions = []
-    this.inputFields.forEach((element) => {
-      element.nativeElement.checked = false;
-    });
-    let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
-    this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
-  }
+  // ngAfterViewChecked() {
+  //   this.enableSubmitBtn = false;
+  //   this.showContactPopup = false;
+  //   this.conditions = []
+  //   this.inputFields.forEach((element) => {
+  //     element.nativeElement.checked = false;
+  //   });
+  //   let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
+  //   this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
+  // }
 
 }
