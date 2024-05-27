@@ -216,10 +216,10 @@ export class CreateBatchComponent implements OnInit, OnDestroy, AfterViewInit {
       description: new FormControl(''),
       enrollmentType: new FormControl('open', [Validators.required]),
       startDate: new FormControl(null, [Validators.required]),
-      endDate: new FormControl(),
+      endDate: new FormControl([Validators.required]),
       mentors: new FormControl(),
       users: new FormControl(),
-      enrollmentEndDate: new FormControl(),
+      enrollmentEndDate: new FormControl([Validators.required]),
       issueCertificate: new FormControl(null, [Validators.required]),
       tncCheck: new FormControl(false, [Validators.requiredTrue]),
       enableDiscussions: new FormControl('false', [Validators.required])
