@@ -6,7 +6,7 @@ import { SlickModule } from 'ngx-slick';
 import { ProfileRoutingModule } from './profile-routing.module';
 import {
   ProfilePageComponent, ProfileBadgeComponent, UpdateContactDetailsComponent,
-  AccountRecoveryInfoComponent, CreateUserComponent, ChooseUserComponent, SubmitTeacherDetailsComponent
+  AccountRecoveryInfoComponent, CreateUserComponent, DeleteUserComponent,DeleteAccountComponent, ChooseUserComponent, SubmitTeacherDetailsComponent
 } from './components';
 import { SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule,
   SuiProgressModule, SuiRatingModule, SuiCollapseModule } from 'ng2-semantic-ui-v9';
@@ -64,6 +64,8 @@ export const csCertificateServiceFactory = (csLibInitializerService: CsLibInitia
   declarations: [ProfilePageComponent, ProfileBadgeComponent, UpdateContactDetailsComponent,
    AccountRecoveryInfoComponent,
    CreateUserComponent,
+   DeleteUserComponent,
+   DeleteAccountComponent,
    ChooseUserComponent,
    SubmitTeacherDetailsComponent],
   providers: [

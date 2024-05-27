@@ -330,6 +330,21 @@ export class UserService {
     ));
   }
 
+   /**
+   * This method invokes learner service to delete tthe user account
+   */
+   public deleteUser() {
+    const options = {
+      url: this.config.urlConFig.URLS.USER.DELETE,
+        data: {
+          request: {
+            'userId': this.userid
+          }
+        }
+    };
+    return this.learnerService.post(options);
+  }
+  
   get orgIdNameMap() {
     const mapOrgIdNameData = {};
     _.forEach(this.organizationsDetails, (orgDetails) => {

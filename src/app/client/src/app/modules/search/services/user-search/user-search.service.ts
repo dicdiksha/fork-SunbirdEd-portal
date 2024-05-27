@@ -3,6 +3,7 @@ import {map} from 'rxjs/operators';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ConfigService } from '@sunbird/shared';
 import { LearnerService } from '@sunbird/core';
+import { PublicDataService } from '../../../../modules/core/services/public-data/public-data.service'
 
 /**
  * Service to get course consumption dashboard
@@ -29,12 +30,12 @@ export class UserSearchService {
    */
   public config: ConfigService;
 
-  constructor(private learnerService: LearnerService,
+  constructor(private learnerService: LearnerService, private publicDataService: PublicDataService,
   config: ConfigService) {
     this.config = config;
   }
 
-  deleteUser(requestParam) {
+  deleteUser(requestParam) { 
     const option = {
       url: this.config.urlConFig.URLS.ADMIN.DELETE_USER,
       data: {
@@ -45,6 +46,23 @@ export class UserSearchService {
     };
 
     return this.learnerService.post(option).pipe(map(data => {
+      this.userDeleteEvent.emit(requestParam.userId);
+      return data;
+    }));
+  }
+
+
+  blockUser(requestParam) {
+    const option = {
+      url: this.config.urlConFig.URLS.ADMIN.DELETE_USER,
+      data: {
+        'request': {
+          'userId': requestParam.userId
+        }
+      }
+    };
+    console.log("blockUser option=====",option)
+    return this.publicDataService.post(option).pipe(map(data => {
       this.userDeleteEvent.emit(requestParam.userId);
       return data;
     }));

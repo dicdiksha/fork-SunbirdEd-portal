@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import {ResourceService, ServerResponse, UtilService, ConfigService, ToasterService} from '@sunbird/shared';
+import {ResourceService, ServerResponse, UtilService, ConfigService, ToasterService,NavigationHelperService} from '@sunbird/shared';
 import { Validators, FormGroup, FormControl } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -16,6 +16,8 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
 
   @Input() otpData: any;
   @Input() redirectToLogin: boolean;
+  @Input() delete=false
+  @Input() deleteUser=false
   @Output() redirectToParent = new EventEmitter();
   @Output() verificationSuccess = new EventEmitter();
   @Output() closeContactForm = new EventEmitter();
@@ -36,11 +38,15 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
   submitInteractEdata: IInteractEventEdata;
   resendOtpInteractEdata: IInteractEventEdata;
   telemetryInteractObject: IInteractEventObject;
+  cancelInteractEdata: IInteractEventEdata;
+  submitUserDeleteInteractEdata:IInteractEventEdata;
   remainingAttempt: 'string';
+  templateId: any = 'deleteUserAccountTemplate';
+  templateIdMobile: any = '1307171619784284292';
   constructor(public resourceService: ResourceService, public tenantService: TenantService,
               public deviceDetectorService: DeviceDetectorService, public otpService: OtpService, public userService: UserService,
               public utilService: UtilService, public configService: ConfigService,
-              public toasterService: ToasterService) {
+              public toasterService: ToasterService,public navigationhelperService: NavigationHelperService) {
   }
 
   ngOnInit() {
@@ -69,10 +75,10 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
       this.enableResendButton = true;
     }, 22000);
     const interval = setInterval(() => {
-      this.resendOTPbtn = this.resourceService.frmelmnts.lbl.resendOTP + ' (' + this.counter + ')';
+      this.resendOTPbtn =this.delete ?  _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP') + ' in ' + this.counter + ' seconds' : _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP') + ' (' + this.counter + ')';
       this.counter--;
       if (this.counter < 0) {
-        this.resendOTPbtn = this.resourceService.frmelmnts.lbl.resendOTP;
+        this.resendOTPbtn = _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP');
         clearInterval(interval);
       }
     }, 1000);
@@ -89,7 +95,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         'type': this.otpData.type,
         'otp': this.otpForm.controls.otp.value,
         ...( this.otpData.value && this.otpData.value.match(/(([a-z]|[A-Z])+[*]{1,}([a-z]*[A-Z]*[0-9]*)*@)|([*]{1,})+/g) &&
-        { 'userId': this.userService.userid })
+        { 'userId': this.otpData.userId||this.userService.userid })
       }
     };
     this.otpService.verifyOTP(request).subscribe(
@@ -141,8 +147,11 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         'key': this.otpData.value,
         'type': this.otpData.type,
         ...( this.otpData.value && this.otpData.value.match(/(([a-z]|[A-Z])+[*]{1,}([a-z]*[A-Z]*[0-9]*)*@)|([*]{1,})+/g) &&
-        { userId: this.userService.userid, templateId: this.configService.appConfig.OTPTemplate.updateContactTemplate })
-      }
+        { 
+          userId: this.userService.userid, 
+          templateId:this.deleteUser ? ((this.otpData.type == 'email' || this.otpData.type == 'recoveryEmail' ) ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.templateIdMobile ) : this.configService.appConfig.OTPTemplate.updateContactTemplate
+        })
+        }
     };
     this.otpService.generateOTP(request).subscribe(
       (data: ServerResponse) => {
@@ -187,11 +196,25 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
       type: 'click',
       pageid: 'profile-read'
     };
-
+    this.cancelInteractEdata = {
+      id: 'cancel-otp-delete-user',
+      type: 'click',
+      pageid: 'user-delete-otp-popup'
+    };
+    this.submitUserDeleteInteractEdata = {
+      id: 'submit-otp-delete-user',
+      type: 'click',
+      pageid: 'user-delete-otp-popup'
+    };
     this.telemetryInteractObject = {
       id: this.userService.userid,
       type: 'User',
       ver: '1.0'
     };
   }
+
+  onCancel() {
+    this.navigationhelperService.navigateToLastUrl();
+  }
+  
 }
