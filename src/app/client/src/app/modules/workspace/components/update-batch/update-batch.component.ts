@@ -195,10 +195,10 @@ export class UpdateBatchComponent implements OnInit, OnDestroy, AfterViewInit {
       description: new FormControl(this.batchDetails.description),
       enrollmentType: new FormControl(this.batchDetails.enrollmentType, [Validators.required]),
       startDate: new FormControl(new Date(this.batchDetails.startDate), [Validators.required]),
-      endDate: new FormControl(endDate,[Validators.required]),
+      endDate: new FormControl(endDate),
       mentors: new FormControl(),
       users: new FormControl(),
-      enrollmentEndDate: new FormControl(enrollmentEndDate,[Validators.required])
+      enrollmentEndDate: new FormControl(enrollmentEndDate)
     });
     this.batchUpdateForm.valueChanges.subscribe(val => {
       if (this.batchUpdateForm.status === 'VALID') {

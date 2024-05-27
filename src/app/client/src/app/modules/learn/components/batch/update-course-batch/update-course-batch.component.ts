@@ -275,10 +275,10 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
       description: new FormControl(this.batchDetails.description),
       enrollmentType: new FormControl(this.batchDetails.enrollmentType, [Validators.required]),
       startDate: new FormControl(new Date(this.batchDetails.startDate), [Validators.required]),
-      endDate: new FormControl(endDate),
+      endDate: new FormControl(endDate,[Validators.required]),
       mentors: new FormControl(this.batchDetails.mentors || []),
       users: new FormControl(this.batchDetails.participants || []),
-      enrollmentEndDate: new FormControl(enrollmentEndDate),
+      enrollmentEndDate: new FormControl(enrollmentEndDate,[Validators.required]),
       issueCertificate: new FormControl(this.isCertificateIssued, [Validators.required]),
       enableDiscussions: new FormControl(this.isEnableDiscussions, [Validators.required])
     });
