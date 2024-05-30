@@ -35,6 +35,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
   /** To store the certificate details data */
   recipient: string;
   courseName: string;
+  courseDuration: string;
   issuedOn: string;
   watchVideoLink: string;
   validateRCCertificate: boolean = false;
@@ -229,6 +230,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
               this.viewCertificate = true;
               this.recipient = _.get(certData, 'issuedTo');
               this.courseName = _.get(certData, 'trainingName');
+              this.courseDuration = _.get(certData, 'courseDuration');
               this.issuedOn = dayjs(new Date(_.get(certData, 'issuanceDate'))).format('DD MMM YYYY');
             } else {
               this.viewCertificate = false;
@@ -270,6 +272,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
           this.viewCertificate = true;
           this.recipient = _.get(certData, 'issuedTo');
           this.courseName = _.get(certData, 'trainingName');
+          this.courseDuration = _.get(certData, 'courseDuration');
           this.issuedOn = dayjs(new Date(_.get(certData, 'issuanceDate'))).format('DD MMM YYYY');
         } else {
           this.viewCertificate = false;
