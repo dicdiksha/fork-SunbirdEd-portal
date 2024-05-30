@@ -253,6 +253,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         }]
       },
       edata: {
+        id: 'account-delete',
         type: _.get(this.activatedRoute, 'snapshot.data.telemetry.type'),
         pageid: _.get(this.activatedRoute, 'snapshot.data.telemetry.pageid'),
         subtype: _.get(this.activatedRoute, 'snapshot.data.telemetry.subtype'),
