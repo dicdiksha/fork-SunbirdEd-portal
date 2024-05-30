@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { UserService, OtpService,LearnerService } from '@sunbird/core';
-import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService } from '@sunbird/shared';
+import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService,NavigationHelperService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
 // import { ProfileService } from '../../services';
-import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
+import { IInteractEventObject, IInteractEventEdata ,TelemetryService} from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
 // import { DeviceDetectorService } from 'ngx-device-detector';
 import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
@@ -50,6 +50,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     public route: Router,
     private activatedRoute: ActivatedRoute,
     public learnerService: LearnerService,
+    private telemetryService: TelemetryService,
+    private navigationhelperService: NavigationHelperService,
   ) { }
 
   ngOnInit() {
@@ -226,6 +228,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       (apiResponse: ServerResponse) => {
         console.log("delete account userSearchService.deleteUser==")
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
+        this.handleDeleteUser()
         localStorage.clear();
         sessionStorage.clear();
         setTimeout(() => {
@@ -237,4 +240,27 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+
+  handleDeleteUser() {
+    const telemetryData = {
+      context: {
+        env:  this.activatedRoute.snapshot.data.telemetry.env,
+        cdata: [{
+          id: this.userService.userid,
+          type: 'User',
+          ver: '1.0'
+        }]
+      },
+      edata: {
+        type: _.get(this.activatedRoute, 'snapshot.data.telemetry.type'),
+        pageid: _.get(this.activatedRoute, 'snapshot.data.telemetry.pageid'),
+        subtype: _.get(this.activatedRoute, 'snapshot.data.telemetry.subtype'),
+        uri: this.route.url,
+        duration: this.navigationhelperService.getPageLoadTime()
+      }
+    };
+    this.telemetryService.interact(telemetryData);
+  }
+
 }

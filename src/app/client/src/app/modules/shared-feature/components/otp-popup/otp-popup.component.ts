@@ -42,7 +42,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
   submitUserDeleteInteractEdata:IInteractEventEdata;
   remainingAttempt: 'string';
   templateId: any = 'deleteUserAccountTemplate';
-  templateIdMobile: any = 'otpContactUpdateTemplate';
+  templateIdMobile: any = '1307171619784284292';
   constructor(public resourceService: ResourceService, public tenantService: TenantService,
               public deviceDetectorService: DeviceDetectorService, public otpService: OtpService, public userService: UserService,
               public utilService: UtilService, public configService: ConfigService,
@@ -75,10 +75,10 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
       this.enableResendButton = true;
     }, 22000);
     const interval = setInterval(() => {
-      this.resendOTPbtn = this.delete ? this.resourceService.frmelmnts.lbl.resendOTP + ' in ' + this.counter + ' seconds' : this.resourceService.frmelmnts.lbl.resendOTP + ' (' + this.counter + ')';
+      this.resendOTPbtn =this.delete ?  _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP') + ' in ' + this.counter + ' seconds' : _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP') + ' (' + this.counter + ')';
       this.counter--;
       if (this.counter < 0) {
-        this.resendOTPbtn = this.resourceService.frmelmnts.lbl.resendOTP;
+        this.resendOTPbtn = _.get(this.resourceService.frmelmnts.lbl.resendOTP, 'frmelmnts.lbl.resendOTP');
         clearInterval(interval);
       }
     }, 1000);
@@ -108,22 +108,14 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         } else if (this.otpData.type === 'email') {
           emitData = {'email': this.otpData.value, 'emailVerified': true};
         }
-        console.log("OTP POPUP otpService.verifyOTP")
         this.verificationSuccess.emit(emitData);
       },
       (err) => {
         if (_.get(err, 'error.result.remainingAttempt') === 0) {
-
-          let dynamicKey = Math.random().toString(36).substring(2, 15);
-          let messageValue = this.resourceService.messages.emsg.m0050;
-          let final_value = `${dynamicKey} value${messageValue} second ${dynamicKey}`;
-          let encodedValue = btoa(final_value);
-          console.log("popup encodedValue", encodedValue);
-
           if (this.redirectToLogin) {
-            this.utilService.redirectToLogin(encodedValue); // this.resourceService.messages.emsg.m0050
+            this.utilService.redirectToLogin(this.resourceService.messages.emsg.m0050);
           } else {
-            this.toasterService.error(encodedValue); // this.resourceService.messages.emsg.m0050
+            this.toasterService.error(this.resourceService.messages.emsg.m0050);
             this.closeContactForm.emit('true');
           }
         } else {
@@ -150,7 +142,6 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
       return false;
     }
     this.otpForm.controls['otp'].setValue('');
-    console.log('otp popup===',this.otpData.type)
     const request = {
       'request': {
         'key': this.otpData.value,
@@ -158,7 +149,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         ...( this.otpData.value && this.otpData.value.match(/(([a-z]|[A-Z])+[*]{1,}([a-z]*[A-Z]*[0-9]*)*@)|([*]{1,})+/g) &&
         { 
           userId: this.userService.userid, 
-          templateId: this.deleteUser ? ((this.otpData.type == 'email' || this.otpData.type == 'recoveryEmail' ) ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.configService.appConfig.OTPTemplate.updateContactTemplate ) : this.configService.appConfig.OTPTemplate.updateContactTemplate
+          templateId:this.deleteUser ? ((this.otpData.type == 'email' || this.otpData.type == 'recoveryEmail' ) ? this.configService.appConfig.OTPTemplate.userDeleteTemplate : this.templateIdMobile ) : this.configService.appConfig.OTPTemplate.updateContactTemplate
         })
         }
     };
