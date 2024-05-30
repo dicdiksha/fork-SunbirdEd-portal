@@ -459,4 +459,10 @@ export class CreateBatchComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     return new Date(this.pickerMinDate.getTime() + oneDayMs);
   }
+
+  resetForm(){
+    this.createBatchForm.reset();
+    this.createBatchForm.controls['enrollmentType'].setValue('open');
+     
+  }
 }
