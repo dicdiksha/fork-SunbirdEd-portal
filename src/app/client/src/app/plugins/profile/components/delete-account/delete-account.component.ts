@@ -262,7 +262,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         duration: this.navigationhelperService.getPageLoadTime()
       }
     };
-    console.log("delete account telemetryData====",telemetryData)
+    console.log("delete account telemetryData====",JSON.stringify(telemetryData))
     this.telemetryService.interact(telemetryData);
   }
 
