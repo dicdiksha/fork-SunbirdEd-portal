@@ -2,16 +2,14 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { UserService, OtpService,LearnerService } from '@sunbird/core';
-import { ResourceService, ServerResponse, ToasterService, ConfigService } from '@sunbird/shared';
+import { ResourceService, ServerResponse, ToasterService, ConfigService,NavigationHelperService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
-// import { ProfileService } from '../../services';
-import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
+import { IInteractEventObject, IInteractEventEdata,TelemetryService  } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
-// import { DeviceDetectorService } from 'ngx-device-detector';
 import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 import { ActivatedRoute, Router } from '@angular/router';
-// import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
 import { map} from 'rxjs/operators';
+import { CacheService } from 'ng2-cache-service';
 
 @Component({
   selector: 'app-delete-account',
@@ -41,14 +39,15 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     public userService: UserService,
     public otpService: OtpService, 
     public toasterService: ToasterService,
-    // public profileService: ProfileService, 
     private matDialog: MatDialog,
     public configService: ConfigService,
-    // public deviceDetectorService: DeviceDetectorService,
+    private cacheService:CacheService,
     private userSearchService: UserSearchService,
     public route: Router,
     private activatedRoute: ActivatedRoute,
     public learnerService: LearnerService,
+    private telemetryService: TelemetryService,
+    private navigationhelperService: NavigationHelperService,
   ) { }
 
   ngOnInit() {
@@ -129,29 +128,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   verificationSuccess(data) {
-    // this.userService.deleteUser().subscribe(
-    //   (data: ServerResponse) => {
-    //     if(_.get(data, 'result.response') === 'SUCCESS'){
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //       if(this.deviceDetectorService.isMobile()){
-    //         //TODO changes need to be done on the Mobile Deeplink
-    //         const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-    //         window.open(url, '_blank');
-    //       }
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //     }
-    //   },
-    //   (err) => {
-    //     //TODO we need to update the error 
-    //     const errorMessage =  this.resourceService.messages.fmsg.m0085;
-    //     this.toasterService.error(errorMessage);
-    //   }
-    // );
-
     this.updateProfile();
-    
   }
 
 
@@ -223,17 +200,39 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     const deleteOption = { userId: this.userProfile.identifier };
     this.userSearchService.deleteUser(deleteOption).subscribe(
       (apiResponse: ServerResponse) => {
-        console.log("delete account userSearchService.deleteUser==")
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
-        localStorage.clear();
-        sessionStorage.clear();
-        setTimeout(() => {
-          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-        }, 800);
+        this.handleDeleteUser()
+        window.location.replace('/logoff');
+        this.cacheService.removeAll();
+
       },
       err => {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
       }
     );
   }
+
+  handleDeleteUser() {
+    const telemetryData = {
+      context: {
+        env:  this.activatedRoute.snapshot.data.telemetry.env,
+        cdata: [{
+          id: this.userService.userid,
+          type: 'User',
+          ver: '1.0'
+        }]
+      },
+      edata: {
+        id: 'account-delete',
+        type: _.get(this.activatedRoute, 'snapshot.data.telemetry.type'),
+        pageid: _.get(this.activatedRoute, 'snapshot.data.telemetry.pageid'),
+        subtype: _.get(this.activatedRoute, 'snapshot.data.telemetry.subtype'),
+        uri: this.route.url,
+        duration: this.navigationhelperService.getPageLoadTime()
+      }
+    };
+    this.telemetryService.interact(telemetryData);
+  }
+
+
 }
