@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { UserService, OtpService,LearnerService } from '@sunbird/core';
-import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService,NavigationHelperService } from '@sunbird/shared';
+import { ResourceService, ServerResponse, ToasterService, ConfigService,NavigationHelperService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
 // import { ProfileService } from '../../services';
 import { IInteractEventObject, IInteractEventEdata ,TelemetryService} from '@sunbird/telemetry';
@@ -12,6 +12,7 @@ import { UserSearchService } from '../../../../modules/search/services/user-sear
 import { ActivatedRoute, Router } from '@angular/router';
 // import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
 import { map} from 'rxjs/operators';
+import { CacheService } from 'ng2-cache-service';
 
 @Component({
   selector: 'app-delete-account',
@@ -45,6 +46,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     public configService: ConfigService,
     // private cacheService:CacheService,
+    private cacheService: CacheService,
     // public deviceDetectorService: DeviceDetectorService,
     private userSearchService: UserSearchService,
     public route: Router,
@@ -229,6 +231,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         console.log("delete account userSearchService.deleteUser==")
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         this.handleDeleteUser()
+        window.location.replace('/logoff');
+        this.cacheService.removeAll();
         // localStorage.clear();
         // sessionStorage.clear();
         // setTimeout(() => {
