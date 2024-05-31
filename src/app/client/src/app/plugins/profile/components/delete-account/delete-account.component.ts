@@ -229,11 +229,11 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         console.log("delete account userSearchService.deleteUser==")
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         this.handleDeleteUser()
-        localStorage.clear();
-        sessionStorage.clear();
-        setTimeout(() => {
-          this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-        }, 800);
+        // localStorage.clear();
+        // sessionStorage.clear();
+        // setTimeout(() => {
+        //   this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
+        // }, 800);
       },
       err => {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
