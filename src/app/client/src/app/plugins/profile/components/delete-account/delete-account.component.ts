@@ -243,6 +243,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 
 
   handleDeleteUser() {
+    console.log("handleDeleteUser====")
     const telemetryData = {
       context: {
         env:  this.activatedRoute.snapshot.data.telemetry.env,
@@ -261,6 +262,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         duration: this.navigationhelperService.getPageLoadTime()
       }
     };
+    console.log("delete account telemetryData====",telemetryData)
     this.telemetryService.interact(telemetryData);
   }
 
