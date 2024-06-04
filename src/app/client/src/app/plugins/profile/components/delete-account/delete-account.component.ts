@@ -225,12 +225,12 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   blockUser(){
+    this.handleDeleteUser()
     const deleteOption = { userId: this.userProfile.identifier };
     this.userSearchService.deleteUser(deleteOption).subscribe(
       (apiResponse: ServerResponse) => {
         console.log("delete account userSearchService.deleteUser==")
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
-        this.handleDeleteUser()
         setTimeout(() => {
           window.location.replace('/logoff');
           this.cacheService.removeAll();
