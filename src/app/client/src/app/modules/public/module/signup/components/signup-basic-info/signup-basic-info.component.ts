@@ -34,10 +34,11 @@ export class SignupBasicInfoComponent implements OnInit {
     public resourceService: ResourceService, public telemetryService: TelemetryService,
     public utilService: UtilService, public configService: ConfigService, private _fb: FormBuilder) { }
   
-    noWhitespaceValidator(control: FormControl): ValidationErrors | null {
+     noWhitespaceValidator(control: FormControl): Promise<ValidationErrors | null> {
       const isWhitespace = (control.value || '').trim().length === 0;
-      return isWhitespace ? { whitespace: true } : null;
+      return Promise.resolve(isWhitespace ? { whitespace: true } : null);
     }
+    
 
   ngOnInit(): void {
     const endYear = new Date().getFullYear();
