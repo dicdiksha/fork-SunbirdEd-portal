@@ -5,7 +5,7 @@ import {
   TenantService,
   OrgDetailsService,
   FormService,
-  ManagedUserService, CoursesService, DeviceRegisterService, ElectronService, ObservationUtilService
+  ManagedUserService, CoursesService, DeviceRegisterService, ElectronService, ObservationUtilService, userLMSToken
 } from './../../services';
 import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
 import {
@@ -167,6 +167,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   showSwitchTheme = false
   nishthaDashboard: Array<string>;
   lmsDashboard: Array<string>;
+  token: any;
   constructor(public config: ConfigService, public resourceService: ResourceService, public router: Router,
     public permissionService: PermissionService, public userService: UserService, public tenantService: TenantService,
     public orgDetailsService: OrgDetailsService, public formService: FormService,
@@ -175,7 +176,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     private courseService: CoursesService, private utilService: UtilService, public layoutService: LayoutService,
     public activatedRoute: ActivatedRoute, private cacheService: CacheService, private cdr: ChangeDetectorRef,
     public navigationHelperService: NavigationHelperService, private deviceRegisterService: DeviceRegisterService,
-    private connectionService: ConnectionService, public electronService: ElectronService, private observationUtilService: ObservationUtilService) {
+    private connectionService: ConnectionService, public electronService: ElectronService, private observationUtilService: ObservationUtilService, private userLMSToken: userLMSToken) {
     try {
       this.exploreButtonVisibility = document.getElementById('exploreButtonVisibility')?(<HTMLInputElement>document.getElementById('exploreButtonVisibility')).value:'true';
       this.reportsListVersion = document.getElementById('reportsListVersion')?(<HTMLInputElement>document.getElementById('reportsListVersion')).value as reportsListVersionType:'v1';
@@ -844,12 +845,40 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateToLMSWeb() {
-    console.log("navigateToLMSWeb", this.userService);
-    console.log("this.userProfile", this.userProfile);
-    // write servie here to get token
-    let token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjMGI3YzUzNS1iZTM4LTQzMmUtYjBjMS0yODBhZGVjNzhhZjMiLCJpc3MiOiJla3N0ZXAiLCJzdWIiOiI1MTUxNTIiLCJhdWQiOiJodHRwczovL2Rpa3NoYS5nb3YuaW4vIiwibmFtZSI6InNzb3Rlc3RfbmV3Iiwic3RhdGVfaWQiOiJla3N0ZXAiLCJzY2hvb2xfaWQiOiIyMzQzODExMDMwOCIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vZGlrc2hhLmdvdi5pbi9yZXNvdXJjZXMiLCJpYXQiOjE3MTQwNTY3MzIsIm5iZiI6MTcxNDA1NjczMiwiZXhwIjoxNzE0MDYwMzMyfQ.iPaKeakNAeOcVB828wE7oGYvS8B2PjFvVMwnMpbczHKd_7N1jL4M3MFBo-TekBHdRLLogkAGuNhNNulF1H85a9-T3l4KD1PlC5SlULDdQL7_iQWWEQ7n5zYGfLgzggHHfg9zyF7PulX8N4hSwrahT26319D7lRenc4_KkD2DlZB3y8Jdn9YZ4yuxYZ2JE_9WsMdRwPAkPNPhHYBzSxm-Y58KD6jm4MudE_mCdsuBU1LFjQdGFdRsmNDcB3gp195uB0TnlbUMzQYsi5_EPenMrnjv7c3R-sS8JS6nf5LO9DliegvtJM8jhLrxpgckuyIFTbjlyyEXKxSXpXrSjFOksQ';
-    if (this.userService.loggedIn) {
-      this.navigateByUrl(`https://dev-mylearn.diksha.gov.in/diksha/diksha_sso.php?token=${token}`);
+
+    const _userProfile = this.userService?._userProfile;
+    const userData = {
+      fname: _userProfile?.firstName,
+      lname: _userProfile?.lastName,
+      email: _userProfile?.email,
+      phone: _userProfile?.phone,
+      userId: _userProfile?.userId,
+      profileUserType: _userProfile?.profileUserType?.type,
     }
+
+    // console.log("navigateToLMSWeb", this.userService);
+    // console.log("this.userProfile", this.userProfile);
+    // // write servie here to get token
+    // let token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjMGI3YzUzNS1iZTM4LTQzMmUtYjBjMS0yODBhZGVjNzhhZjMiLCJpc3MiOiJla3N0ZXAiLCJzdWIiOiI1MTUxNTIiLCJhdWQiOiJodHRwczovL2Rpa3NoYS5nb3YuaW4vIiwibmFtZSI6InNzb3Rlc3RfbmV3Iiwic3RhdGVfaWQiOiJla3N0ZXAiLCJzY2hvb2xfaWQiOiIyMzQzODExMDMwOCIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vZGlrc2hhLmdvdi5pbi9yZXNvdXJjZXMiLCJpYXQiOjE3MTQwNTY3MzIsIm5iZiI6MTcxNDA1NjczMiwiZXhwIjoxNzE0MDYwMzMyfQ.iPaKeakNAeOcVB828wE7oGYvS8B2PjFvVMwnMpbczHKd_7N1jL4M3MFBo-TekBHdRLLogkAGuNhNNulF1H85a9-T3l4KD1PlC5SlULDdQL7_iQWWEQ7n5zYGfLgzggHHfg9zyF7PulX8N4hSwrahT26319D7lRenc4_KkD2DlZB3y8Jdn9YZ4yuxYZ2JE_9WsMdRwPAkPNPhHYBzSxm-Y58KD6jm4MudE_mCdsuBU1LFjQdGFdRsmNDcB3gp195uB0TnlbUMzQYsi5_EPenMrnjv7c3R-sS8JS6nf5LO9DliegvtJM8jhLrxpgckuyIFTbjlyyEXKxSXpXrSjFOksQ';
+    // if (this.userService.loggedIn) {
+    //   this.navigateByUrl(`https://dev-mylearn.diksha.gov.in/diksha/diksha_sso.php?token=${token}`);
+    // }
+
+    // let payload = {
+    //   userid: '12345',
+    //   firstname: 'Diksha',
+    //   lastname: 'Student',
+    //   emailid: 'diksha.s@ncert.in',
+    //   phone: '9986859449'
+    // }
+
+    this.userLMSToken.getToken(userData)
+      .then(data => {
+        this.token = data;
+        console.log('JWT USER Token:', this.token);
+      })
+      .catch(error => {
+        console.error('Error fetching token:', error);
+      });
   }
 }

@@ -33,3 +33,4 @@ export * from './observation/observation.service';
 export * from './cloud/cloud.service';
 export * from './segmentation-tag/segmentation-tag.service';
 export * from './observation-util/observation-util.service';
+export * from './userTokenForLMS/userLMSToken';
