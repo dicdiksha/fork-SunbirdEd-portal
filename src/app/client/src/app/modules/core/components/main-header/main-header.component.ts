@@ -848,11 +848,11 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
 
     const _userProfile = this.userService?._userProfile;
     const userData = {
-      fname: _userProfile?.firstName,
-      lname: _userProfile?.lastName,
-      email: _userProfile?.email,
+      firstname: _userProfile?.firstName,
+      lastname: _userProfile?.lastName,
+      emailid: _userProfile?.email,
       phone: _userProfile?.phone,
-      userId: _userProfile?.userId,
+      userid: _userProfile?.userId,
       // profileUserType: _userProfile?.profileUserType?.type,
     }
 
