@@ -853,7 +853,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
       email: _userProfile?.email,
       phone: _userProfile?.phone,
       userId: _userProfile?.userId,
-      profileUserType: _userProfile?.profileUserType?.type,
+      // profileUserType: _userProfile?.profileUserType?.type,
     }
 
     // console.log("navigateToLMSWeb", this.userService);
