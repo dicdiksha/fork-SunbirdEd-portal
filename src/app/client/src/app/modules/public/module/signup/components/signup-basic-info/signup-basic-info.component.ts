@@ -3,7 +3,7 @@ import { ResourceService, UtilService, ConfigService } from '@sunbird/shared';
 import { Observable } from 'rxjs';
 import { TelemetryService } from '@sunbird/telemetry';
 import { IStartEventInput, IImpressionEventInput, IInteractEventEdata } from '@sunbird/telemetry';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormControl, ValidationErrors } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
 import * as _ from 'lodash-es';
 
@@ -34,13 +34,19 @@ export class SignupBasicInfoComponent implements OnInit {
     public resourceService: ResourceService, public telemetryService: TelemetryService,
     public utilService: UtilService, public configService: ConfigService, private _fb: FormBuilder) { }
   
+    noWhitespaceValidator(control: FormControl): ValidationErrors | null {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      return isWhitespace ? { whitespace: true } : null;
+    }
 
   ngOnInit(): void {
     const endYear = new Date().getFullYear();
     const startYear = endYear - this.configService.constants.SIGN_UP.MAX_YEARS;
     this.instance = _.upperCase(this.resourceService.instance || 'SUNBIRD');
     this.personalInfoForm = this._fb.group({
-      name: ['', Validators.required],
+      name: ['', Validators.required,
+      this.noWhitespaceValidator
+      ],
       yearOfBirth: ['', [Validators.required, 
         Validators.pattern(/^-?(0|[1-9]\d*)?$/),
         Validators.min(startYear),
