@@ -202,8 +202,10 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       (apiResponse: ServerResponse) => {
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         this.handleDeleteUser()
-        window.location.replace('/logoff');
-        this.cacheService.removeAll();
+        setTimeout(() => {
+          window.location.replace('/logoff');
+          this.cacheService.removeAll();
+        }, 50);
 
       },
       err => {
@@ -223,7 +225,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         }]
       },
       edata: {
-        id: 'account-delete',
+        id: 'account-deleted',
         type: _.get(this.activatedRoute, 'snapshot.data.telemetry.type'),
         pageid: _.get(this.activatedRoute, 'snapshot.data.telemetry.pageid'),
         subtype: _.get(this.activatedRoute, 'snapshot.data.telemetry.subtype'),
@@ -232,6 +234,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       }
     };
     this.telemetryService.interact(telemetryData);
+    this.telemetryService.syncEvents(false);
   }
 
 
