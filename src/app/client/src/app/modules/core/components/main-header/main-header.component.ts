@@ -15,8 +15,13 @@ import {
   UtilService,
   ToasterService,
   IUserData, LayoutService,
-  NavigationHelperService, ConnectionService, InterpolatePipe
+  NavigationHelperService,
+  ConnectionService,
+  InterpolatePipe,
+  ServerResponse,
 } from '@sunbird/shared';
+
+import { LearnerService } from '@sunbird/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import * as _ from 'lodash-es';
 import { IInteractEventEdata, TelemetryService } from '@sunbird/telemetry';
@@ -176,7 +181,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     private courseService: CoursesService, private utilService: UtilService, public layoutService: LayoutService,
     public activatedRoute: ActivatedRoute, private cacheService: CacheService, private cdr: ChangeDetectorRef,
     public navigationHelperService: NavigationHelperService, private deviceRegisterService: DeviceRegisterService,
-    private connectionService: ConnectionService, public electronService: ElectronService, private observationUtilService: ObservationUtilService, private userLMSToken: userLMSToken) {
+    private connectionService: ConnectionService, public electronService: ElectronService, private observationUtilService: ObservationUtilService, private userLMSToken: userLMSToken, public learnerService: LearnerService,) {
     try {
       this.exploreButtonVisibility = document.getElementById('exploreButtonVisibility')?(<HTMLInputElement>document.getElementById('exploreButtonVisibility')).value:'true';
       this.reportsListVersion = document.getElementById('reportsListVersion')?(<HTMLInputElement>document.getElementById('reportsListVersion')).value as reportsListVersionType:'v1';
@@ -847,14 +852,37 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   navigateToLMSWeb() {
 
     const _userProfile = this.userService?._userProfile;
-    const userData = {
-      firstname: _userProfile?.firstName,
-      lastname: _userProfile?.lastName,
-      emailid: _userProfile?.email,
-      phone: _userProfile?.phone,
-      userid: _userProfile?.userId,
-      // profileUserType: _userProfile?.profileUserType?.type,
-    }
+    const optionData = {
+      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`,
+      param: this.config.urlConFig.params.userReadParam
+    };
+    
+    this.learnerService.getWithHeaders(optionData).subscribe(
+      (data: ServerResponse) => {
+        if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
+          const userData = {
+            firstname: _userProfile?.firstName,
+            lastname: _userProfile?.lastName,
+            emailid: data?.result?.response?.email,
+            phone: data?.result?.response?.phone,
+            userid: _userProfile?.userId,
+            // profileUserType: _userProfile?.profileUserType?.type,
+          }
+          this.userLMSToken.getToken(userData)
+            .then(data => {
+              this.token = data;
+              console.log('JWT USER Token:', this.token);
+            })
+            .catch(error => {
+              console.error('Error fetching token:', error);
+            });
+        }
+      },
+      (err: ServerResponse) => {
+        console.log("getDecriptedUserProfile error ", err);
+        // this.toasterService.error(err);
+      }
+    )
 
     // console.log("navigateToLMSWeb", this.userService);
     // console.log("this.userProfile", this.userProfile);
@@ -872,13 +900,6 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     //   phone: '9986859449'
     // }
 
-    this.userLMSToken.getToken(userData)
-      .then(data => {
-        this.token = data;
-        console.log('JWT USER Token:', this.token);
-      })
-      .catch(error => {
-        console.error('Error fetching token:', error);
-      });
+    
   }
 }
