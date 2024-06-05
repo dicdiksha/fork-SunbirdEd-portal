@@ -225,11 +225,11 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   blockUser(){
-    this.handleDeleteUser()
     const deleteOption = { userId: this.userProfile.identifier };
     this.userSearchService.deleteUser(deleteOption).subscribe(
       (apiResponse: ServerResponse) => {
         console.log("delete account userSearchService.deleteUser==")
+        this.handleDeleteUser()
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         setTimeout(() => {
           window.location.replace('/logoff');
@@ -266,6 +266,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     };
     console.log("delete account telemetryData====",JSON.stringify(telemetryData))
     this.telemetryService.interact(telemetryData);
+    this.telemetryService.syncEvents(false);
   }
 
 }
