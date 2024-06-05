@@ -853,10 +853,10 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
 
     const _userProfile = this.userService?._userProfile;
     const optionData = {
-      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`,
+      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
       param: this.config.urlConFig.params.userReadParam
     };
-    
+
     this.learnerService.getWithHeaders(optionData).subscribe(
       (data: ServerResponse) => {
         if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
@@ -866,40 +866,15 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
             emailid: data?.result?.response?.email,
             phone: data?.result?.response?.phone,
             userid: _userProfile?.userId,
-            // profileUserType: _userProfile?.profileUserType?.type,
           }
-          this.userLMSToken.getToken(userData)
-            .then(data => {
-              this.token = data;
-              console.log('JWT USER Token:', this.token);
-            })
-            .catch(error => {
-              console.error('Error fetching token:', error);
-            });
+          const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
+          const url = `${apiUrl}?userid=${userData.userid}&firstname=${userData.firstname}&lastname=${userData.lastname}&emailid=${userData.emailid}&phone=${userData.phone}`;
+          window.location.href = url;
         }
       },
       (err: ServerResponse) => {
         console.log("getDecriptedUserProfile error ", err);
-        // this.toasterService.error(err);
       }
     )
-
-    // console.log("navigateToLMSWeb", this.userService);
-    // console.log("this.userProfile", this.userProfile);
-    // // write servie here to get token
-    // let token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjMGI3YzUzNS1iZTM4LTQzMmUtYjBjMS0yODBhZGVjNzhhZjMiLCJpc3MiOiJla3N0ZXAiLCJzdWIiOiI1MTUxNTIiLCJhdWQiOiJodHRwczovL2Rpa3NoYS5nb3YuaW4vIiwibmFtZSI6InNzb3Rlc3RfbmV3Iiwic3RhdGVfaWQiOiJla3N0ZXAiLCJzY2hvb2xfaWQiOiIyMzQzODExMDMwOCIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vZGlrc2hhLmdvdi5pbi9yZXNvdXJjZXMiLCJpYXQiOjE3MTQwNTY3MzIsIm5iZiI6MTcxNDA1NjczMiwiZXhwIjoxNzE0MDYwMzMyfQ.iPaKeakNAeOcVB828wE7oGYvS8B2PjFvVMwnMpbczHKd_7N1jL4M3MFBo-TekBHdRLLogkAGuNhNNulF1H85a9-T3l4KD1PlC5SlULDdQL7_iQWWEQ7n5zYGfLgzggHHfg9zyF7PulX8N4hSwrahT26319D7lRenc4_KkD2DlZB3y8Jdn9YZ4yuxYZ2JE_9WsMdRwPAkPNPhHYBzSxm-Y58KD6jm4MudE_mCdsuBU1LFjQdGFdRsmNDcB3gp195uB0TnlbUMzQYsi5_EPenMrnjv7c3R-sS8JS6nf5LO9DliegvtJM8jhLrxpgckuyIFTbjlyyEXKxSXpXrSjFOksQ';
-    // if (this.userService.loggedIn) {
-    //   this.navigateByUrl(`https://dev-mylearn.diksha.gov.in/diksha/diksha_sso.php?token=${token}`);
-    // }
-
-    // let payload = {
-    //   userid: '12345',
-    //   firstname: 'Diksha',
-    //   lastname: 'Student',
-    //   emailid: 'diksha.s@ncert.in',
-    //   phone: '9986859449'
-    // }
-
-    
   }
 }
