@@ -68,7 +68,7 @@ export class NishthaDashboardComponent implements OnInit {
       });
     }
     this.sendInteractDataToTelemetry(generateUniqueId);    
-    this.siteUrl = 'https://course-data.diksha.gov.in/login/?diksha_token='+token;
+    this.siteUrl = 'https://course-data.diksha.gov.in/login/?diksha_token='+token+"&redirect=/bi/dashboard/course-dashboard/?standalone=1&show_filters=0";
     this.getUrl(this.siteUrl);
   }
 
