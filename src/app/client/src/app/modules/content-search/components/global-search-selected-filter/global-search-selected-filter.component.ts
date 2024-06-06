@@ -18,7 +18,9 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
   @Output() filterChange: EventEmitter<{ status: string, filters?: any }> = new EventEmitter();
   private unsubscribe$ = new Subject<void>();
 
-  upperCaseObj = ["igot-health","cbse/ncert","cbse","ncert","cisce","nios","cpd","ut (dnh and dd)"]
+  upperCaseObj = ["igot-health","cbse/ncert","cbse","ncert","cisce","nios","cpd","ut (dnh and dd)", "ict", "nss", "aas pass (evs)", "craft", "ecce", "evs", "gka", "ict", "tamil(at)", "tamil(bt)","spcc", "nyks","nursing", "nep", "manipuri lairik laisu (meetei mayek)", "looking around (evs)", "kannada(bt)", "ircs"];
+  titleCaseObj = ["cbse training","evs part 1","evs part 2","ict in education", "nss volunteers"];
+  
   constructor(private router: Router, private activatedRoute: ActivatedRoute, public resourceService: ResourceService, private utilService: UtilService) { }
 
   ngOnInit() {
@@ -46,15 +48,13 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
       return char.toUpperCase();
     });
   }
+
   formetText(selectedFilters:any):string{
-    if (typeof selectedFilters != "string") {
-      selectedFilters = selectedFilters[0];
-    }
-    
-    if(this.upperCaseObj.includes(selectedFilters)){
+    if(this.upperCaseObj.includes(selectedFilters.toLowerCase())){
       return selectedFilters.toUpperCase();
-    } else if(selectedFilters.toLowerCase() ==='cbse training'){
-      return 'CBSE Training'
+    } else if(this.titleCaseObj.includes(selectedFilters.toLowerCase())){
+      let words = selectedFilters.split(" ");
+      return words[0].toUpperCase() + " " + this.toTitleCase(words[1] + " "+ (words[2] ?? "")) ;
     } else if( selectedFilters.startsWith("ut") || selectedFilters.startsWith("UT")){
       let text1 = selectedFilters.split(' ')
       let firstPart = text1.shift()
@@ -62,7 +62,7 @@ export class GlobalSearchSelectedFilterComponent implements OnInit {
       return (firstPart.toUpperCase()+(' ').concat(this.toTitleCase(secondPart)))
     }
     else {
-      return selectedFilters
+      return this.toTitleCase(selectedFilters);
     }
   }
 
