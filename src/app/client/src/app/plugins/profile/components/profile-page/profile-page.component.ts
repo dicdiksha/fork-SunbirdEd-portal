@@ -13,8 +13,7 @@ import { CsCourseService } from '@project-sunbird/client-services/services/cours
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 import { HttpClient } from '@angular/common/http';
-import { jsPDF } from 'jspdf';
-import * as d3 from 'd3';
+import jsPDF from 'jspdf';
 import { ManagedUserService } from '../../../../modules/core/services/managed-user/managed-user.service';
 @Component({
   templateUrl: './profile-page.component.html',
