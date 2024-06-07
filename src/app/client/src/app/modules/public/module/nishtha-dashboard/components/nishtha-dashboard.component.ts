@@ -50,8 +50,8 @@ export class NishthaDashboardComponent implements OnInit {
     //const URL = "https://diksha.gov.in/auth/realms/sunbird/protocol/openid-connect/token";
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
-    // username=reportadmin@teamdiksha.org  // prod
-    let input=`client_id=ntp-support-tool&username=reportviewer_tn@yopmail.com&grant_type=password&password=&client_secret=58d30df4-c5c7-48d4-906c-aa33b673e3c2`;
+    // client_id=ntp-support-tool&username=reportviewer_tn@yopmail.com&grant_type=password&password=&client_secret=58d30df4-c5c7-48d4-906c-aa33b673e3c2  // prod
+    let input=`client_id=ntp-support-tool&username=reportviewer_tn@yopmail.com&grant_type=password&password=&client_secret=7052d78c-7609-4ddd-958c-420b277307bd`;
     return this.http.post(URL,input,{headers:headers});
   }
 
