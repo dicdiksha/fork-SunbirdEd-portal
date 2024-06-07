@@ -4,7 +4,7 @@ import { PublicPlayerService } from '@sunbird/public';
 import { Component, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
 import {
     ResourceService, ToasterService, ConfigService, NavigationHelperService, LayoutService, COLUMN_TYPE, UtilService,
-    OfflineCardService, BrowserCacheTtlService, IUserData, GenericResourceService
+    OfflineCardService, BrowserCacheTtlService, IUserData, GenericResourceService,ServerResponse
 } from '@sunbird/shared';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { cloneDeep, get, find, map as _map, pick, omit, groupBy, sortBy, replace, uniqBy, forEach, has, uniq, flatten, each, isNumber, toString, partition, toLower, includes } from 'lodash-es';
@@ -17,6 +17,7 @@ import { CacheService } from 'ng2-cache-service';
 import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
 import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
+import { LearnerService } from '@sunbird/core';
 
 @Component({
     selector: 'app-explore-page-component',
@@ -120,7 +121,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         public contentManagerService: ContentManagerService, private cacheService: CacheService,
         private browserCacheTtlService: BrowserCacheTtlService, private profileService: ProfileService,
         private segmentationTagService: SegmentationTagService, private observationUtil: ObservationUtilService,
-        private genericResourceService: GenericResourceService) {
+        private genericResourceService: GenericResourceService,public learnerService: LearnerService,public config: ConfigService) {
             this.genericResourceService.initialize();
             this.instance = (<HTMLInputElement>document.getElementById('instance'))
             ? (<HTMLInputElement>document.getElementById('instance')).value.toUpperCase() : 'SUNBIRD';
@@ -301,6 +302,36 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.addHoverData();
         });
     }
+    
+    navigateToLMSWeb() {
+        
+        const _userProfile = this.userService?._userProfile;
+        console.log(_userProfile,'this is data........')
+        const optionData = {
+          url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+          param: this.config.urlConFig.params.userReadParam
+        };
+    
+        this.learnerService.getWithHeaders(optionData).subscribe(
+          (data: ServerResponse) => {
+            if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
+              const userData = {
+                firstname: _userProfile?.firstName,
+                lastname: _userProfile?.lastName,
+                emailid: data?.result?.response?.email,
+                phone: data?.result?.response?.phone,
+                userid: _userProfile?.userId,
+              }
+              const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
+              const url = `${apiUrl}?userid=${userData.userid}&firstname=${userData.firstname}&lastname=${userData.lastname}&emailid=${userData.emailid}&phone=${userData.phone}`;
+              window.location.href = url;
+            }
+          },
+          (err: ServerResponse) => {
+            console.log("getDecriptedUserProfile error ", err);
+          }
+        )
+      }
 
     public fetchEnrolledCoursesSection() {
         return this.coursesService.enrolledCourseData$

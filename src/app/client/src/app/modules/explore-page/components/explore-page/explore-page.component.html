@@ -92,10 +92,15 @@
                   </span>
                 </p>
               </div>
+              
               <button
                 class="sb-btn sb-btn-primary sb-btn-normal sb-btn-border">{{resourceService?.frmelmnts?.lbl?.changePreferences}}</button>
             </div>
           </div>
+          <div class="personalized_btn" *ngIf="_userProfile?.profileUserType?.type == 'student'">
+            <button class="sb-btn sb-btn-primary sb-btn-normal sb-btn-border" (click)="navigateToLMSWeb()">Start Your Personalized Journey</button>
+          </div>
+          
           <div *ngFor="let section of facetSections">
             <div
               *ngIf="getSelectedTab() === 'home' && section?.section?.facetKey === 'ContinueLearning' && enrolledSection?.contents?.length && isUserLoggedIn()"
