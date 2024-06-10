@@ -162,7 +162,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 
 
   setInteractEventData() {
-    const id = 'delete-account';
+    const id = 'account-deleted-successfully';
     this.submitInteractEdata = {
       id: id,
       type: 'click',
@@ -228,7 +228,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     const deleteOption = { userId: this.userProfile.identifier };
     this.userSearchService.deleteUser(deleteOption).subscribe(
       (apiResponse: ServerResponse) => {
-        console.log("delete account userSearchService.deleteUser==")
+        this.setInteractEventData()
         this.handleDeleteUser()
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         setTimeout(() => {
