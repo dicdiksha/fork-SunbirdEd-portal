@@ -128,47 +128,9 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   verificationSuccess(data) {
-    // this.userService.deleteUser().subscribe(
-    //   (data: ServerResponse) => {
-    //     if(_.get(data, 'result.response') === 'SUCCESS'){
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //       if(this.deviceDetectorService.isMobile()){
-    //         //TODO changes need to be done on the Mobile Deeplink
-    //         const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-    //         window.open(url, '_blank');
-    //       }
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //     }
-    //   },
-    //   (err) => {
-    //     //TODO we need to update the error 
-    //     const errorMessage =  this.resourceService.messages.fmsg.m0085;
-    //     this.toasterService.error(errorMessage);
-    //   }
-    // );
-
     this.updateProfile();
-    
   }
 
-
-
-  setInteractEventData() {
-    const id = 'delete-account';
-    this.submitInteractEdata = {
-      id: id,
-      type: 'click',
-      pageid: 'delete-account'
-    };
-
-    this.telemetryInteractObject = {
-      id: this.userService.userid,
-      type: 'User',
-      ver: '1.0'
-    };
-  }
 
   ngOnDestroy() {
     this.unsubscribe.next();
@@ -202,10 +164,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
             url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
             data: updateData
           };
-            console.log("profile API key",updateOptions);
             this.learnerService.patch(updateOptions).subscribe(
               (res: ServerResponse) => {
-                console.log("profile API update result",res);
                 this.blockUser();
               }
             );
@@ -213,7 +173,6 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       },
       (err: ServerResponse) => {
         console.log("getDecriptedUserProfile error ",err);
-        // this.toasterService.error(err);
       }
     )
   }
@@ -222,11 +181,12 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     const deleteOption = { userId: this.userProfile.identifier };
     this.userSearchService.deleteUser(deleteOption).subscribe(
       (apiResponse: ServerResponse) => {
-        console.log("delete account userSearchService.deleteUser==")
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         this.handleDeleteUser()
         window.location.replace('/logoff');
         this.cacheService.removeAll();
+        localStorage.clear()
+        sessionStorage.clear()
       },
       err => {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
@@ -245,7 +205,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         }]
       },
       edata: {
-        id: 'account-delete',
+        id: 'account-deleted',
         type: _.get(this.activatedRoute, 'snapshot.data.telemetry.type'),
         pageid: _.get(this.activatedRoute, 'snapshot.data.telemetry.pageid'),
         subtype: _.get(this.activatedRoute, 'snapshot.data.telemetry.subtype'),
@@ -254,6 +214,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       }
     };
     this.telemetryService.interact(telemetryData);
+    this.telemetryService.syncEvents(false);
   }
   
 }

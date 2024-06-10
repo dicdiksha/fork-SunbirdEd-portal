@@ -202,7 +202,7 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
       pageid: 'user-delete-otp-popup'
     };
     this.submitUserDeleteInteractEdata = {
-      id: 'submit-otp-delete-user',
+      id: 'account-deleted-successfully',
       type: 'click',
       pageid: 'user-delete-otp-popup'
     };
