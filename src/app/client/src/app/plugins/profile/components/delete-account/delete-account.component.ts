@@ -58,6 +58,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.validateAndEditContact();
+    this.setInteractEventData()
   }
 
   private async validateAndEditContact() {
@@ -228,7 +229,6 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     const deleteOption = { userId: this.userProfile.identifier };
     this.userSearchService.deleteUser(deleteOption).subscribe(
       (apiResponse: ServerResponse) => {
-        this.setInteractEventData()
         this.handleDeleteUser()
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         setTimeout(() => {
