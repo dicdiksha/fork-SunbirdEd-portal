@@ -206,6 +206,9 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           window.location.replace('/logoff');
           this.cacheService.removeAll();
+          localStorage.clear()
+          sessionStorage.clear()
+
         }, 50);
 
       },
