@@ -494,6 +494,18 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
     }
 
+    
+  private generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+  return result;
+}
+
     private fetchContents() {
         const fieldsToAdd = ['me_averageRating', 'me_totalRatingsCount', 'me_totalPlaySessionCount'];
         return this.fetchContents$
@@ -515,7 +527,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.contentSections = [];
                         return this.getExplorePageSections();
                     } else {
-                        const { search: { fields = [], filters = {}, facets = ['subject'] } = {}, metaData: { groupByKey = 'subject' } = {} } = currentPageData || {};
+                        let { search: { fields = [], filters = {}, facets = ['subject'] } = {}, metaData: { groupByKey = 'subject' } = {} } = currentPageData || {};
                     let _reqFilters;
                     // If home or explore page; take filters from user preferences
                     if (_.get(currentPageData, 'contentType') === 'home') {
@@ -527,6 +539,22 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                     } else {
                         _reqFilters = this.contentSearchService.mapCategories({ filters: { ...this.selectedFilters, ...filters } });
                     }
+
+                    // added dummy field in ES query request
+                    let queryFields = fields;
+                    const baseFieldName = "dummy_field_";
+                    const randomString = this.generateRandomString(20);
+                    const dummyFieldName = baseFieldName + randomString;
+
+                    const existingIndex = queryFields.findIndex(field => field.startsWith(baseFieldName));
+
+                    if (existingIndex !== -1) {
+                    queryFields[existingIndex] = dummyFieldName;
+                    } else {
+                    queryFields.push(dummyFieldName);
+                    }
+
+                    fields = queryFields;
                     const request = {
                       filters: _reqFilters,
                         fields,
