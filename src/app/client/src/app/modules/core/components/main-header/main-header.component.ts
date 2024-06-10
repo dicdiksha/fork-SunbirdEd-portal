@@ -873,7 +873,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
           if (ids?.length) {
             this.userLMSToken.getUserLocationData(ids)
               .then(data => {
-                console.log("this?.userData?.result?.response", data?.result?.response)
+                console.log("data?.result?.response", data?.result?.response)
                 this.userData = data;
                 console.log("this?.userData", this.userData);
               })
@@ -883,7 +883,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
           }
 
           const createLocationObject = (locations: any) => {
-            return locations.reduce((acc: any, location: any) => {
+            return locations?.reduce((acc: any, location: any) => {
               acc[location.type] = location.name;
               if (location.type === 'school') {
                 acc.code = location.code;
