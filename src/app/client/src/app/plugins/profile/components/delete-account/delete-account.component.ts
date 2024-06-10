@@ -128,13 +128,14 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   verificationSuccess(data) {
+    this.setInteractEventData()
     this.updateProfile();
   }
 
 
 
   setInteractEventData() {
-    const id = 'delete-account';
+    const id = 'delete-account-successfully';
     this.submitInteractEdata = {
       id: id,
       type: 'click',
