@@ -47,8 +47,15 @@ export class NishthaDashboardComponent implements OnInit {
     const URL = "https://diksha.gov.in/auth/realms/sunbird/protocol/openid-connect/token";
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
-    let input=`client_id=ntp-support-tool&username=reportadmin@teamdiksha.org&grant_type=password&password=&client_secret=58d30df4-c5c7-48d4-906c-aa33b673e3c2`;
-    return this.http.post(URL,input,{headers:headers});
+    const input = new HttpParams()
+            .set('client_id', 'ntp-support-tool')
+            .set('username', 'reportviewer_tn@yopmail.com')
+            .set('grant_type', 'password')
+            .set('password', '') // Assuming the password is intentionally left empty
+            .set('client_secret', '7052d78c-7609-4ddd-958c-420b277307bd');
+    // client_id=ntp-support-tool&username=reportviewer_tn@yopmail.com&grant_type=password&password=&client_secret=58d30df4-c5c7-48d4-906c-aa33b673e3c2  // prod
+    // let input=`client_id=ntp-support-tool&username=reportviewer_tn@yopmail.com&grant_type=password&password=&client_secret=7052d78c-7609-4ddd-958c-420b277307bd`;
+    return this.http.post(URL,input.toString(),{headers:headers});
   }
 
   openWebview() {
@@ -62,14 +69,16 @@ export class NishthaDashboardComponent implements OnInit {
     if(this.isUserLoggedIn) {
       this.getToken().subscribe(res=>{
         console.log("res--->",res);
-        if(res) {
+        if(res.access_token) {
           token = res.access_token;
+          console.log("token--->",token);
+          this.sendInteractDataToTelemetry(generateUniqueId);    
+          this.siteUrl = 'https://course-data.diksha.gov.in/login/?diksha_token='+token+"&redirect=/bi/dashboard/course-dashboard/?standalone=1&show_filters=0";
+          this.getUrl(this.siteUrl);
         }
       });
     }
-    this.sendInteractDataToTelemetry(generateUniqueId);    
-    this.siteUrl = 'https://course-data.diksha.gov.in/login/?diksha_token='+token+"&redirect=/bi/dashboard/course-dashboard/?standalone=1&show_filters=0";
-    this.getUrl(this.siteUrl);
+   
   }
 
   getUrl(url: any) {
