@@ -873,7 +873,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
           if (ids?.length) {
             this.userLMSToken.getUserLocationData(ids)
               .then(data => {
-                console.log("this?.userData?.result?.response", this?.userData?.result?.response)
+                console.log("this?.userData?.result?.response", data?.result?.response)
                 this.userData = data;
                 console.log("this?.userData", this.userData);
               })
