@@ -172,7 +172,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   showSwitchTheme = false
   nishthaDashboard: Array<string>;
   lmsDashboard: Array<string>;
-  token: any;
+  userData: any;
   constructor(public config: ConfigService, public resourceService: ResourceService, public router: Router,
     public permissionService: PermissionService, public userService: UserService, public tenantService: TenantService,
     public orgDetailsService: OrgDetailsService, public formService: FormService,
@@ -860,15 +860,48 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.learnerService.getWithHeaders(optionData).subscribe(
       (data: ServerResponse) => {
         if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
-          const userData = {
+
+          let ids = []; // locations ids -> state, district,block , cluster, school
+
+          data?.result?.response?.profileLocation.forEach((element: any) => {
+            ids.push(element?.id)
+          });
+
+          this.userLMSToken.getUserLocationData(ids)
+            .then(data => {
+              this.userData = data;
+              console.log(this.userData);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+
+          const createLocationObject = (locations: any) => {
+            return locations.reduce((acc: any, location: any) => {
+              acc[location.type] = location.name;
+              if (location.type === 'school') {
+                acc.code = location.code;
+              }
+              return acc;
+            }, {});
+          };
+
+          const locationObject = createLocationObject(this?.userData?.result?.response);
+
+          const userDataObject = {
             firstname: _userProfile?.firstName,
             lastname: _userProfile?.lastName,
             emailid: data?.result?.response?.email,
             phone: data?.result?.response?.phone,
             userid: _userProfile?.userId,
+            profileUserType: data?.result?.response?.profileUserType?.type,
+            profileUserSubType: data?.result?.response?.profileUserType?.subType,
+            rootOrgName: this.userService?.rootOrgName,
+            board: data?.result?.response?.framework?.board[0],
+            ...locationObject, // keys name {board , state, district, block, cluster, school, code}
           }
           const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-          const url = `${apiUrl}?userid=${userData.userid}&firstname=${userData.firstname}&lastname=${userData.lastname}&emailid=${userData.emailid}&phone=${userData.phone}`;
+          const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&schoolCode=${userDataObject?.code}`;
           window.location.href = url;
         }
       },

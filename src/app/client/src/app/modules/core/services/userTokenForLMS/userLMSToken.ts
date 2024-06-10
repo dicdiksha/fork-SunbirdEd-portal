@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 export class userLMSToken {
 
     private apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
+    private uerLocationUrl = 'https://dev.oci.diksha.gov.in/learner/user/v5/read/2f47892e-0de1-409e-8b05-4f5d9db18278?userdelete=true&fields=organisations,roles,locations,declarations,externalIds';
+
 
     constructor(private http: HttpClient) { }
 
@@ -16,4 +18,26 @@ export class userLMSToken {
         console.log("TOKEN URL....", url)
         return this.http.get<any>(url).toPromise();
     }
+
+    getUserLocationData(ids: string[]): Promise<any> {
+        const data = JSON.stringify({
+            "request": {
+                "filters": {
+                    "id": ids,
+                },
+                "sort_by": {
+                    "code": "asc"
+                },
+                "limit": 1000
+            }
+        });
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZUJyTmhjY2djNWNzUnh2ZU02Z2JYMWFuVTZxZGZyYiJ9.PggkeMJjWcV4MEy3J5XnizCCd6qcrFSD5y5rron_G9Y'
+        });
+
+        return this.http.post(this.apiUrl, data, { headers }).toPromise();
+    }
+
 }
