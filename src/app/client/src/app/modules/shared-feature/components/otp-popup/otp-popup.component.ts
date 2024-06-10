@@ -108,6 +108,11 @@ export class OtpPopupComponent implements OnInit, OnDestroy {
         } else if (this.otpData.type === 'email') {
           emitData = {'email': this.otpData.value, 'emailVerified': true};
         }
+        this.submitInteractEdata = {
+          id: 'user-account-deleted-successfully',
+          type: 'click',
+          pageid: 'delete-account'
+        };
         this.verificationSuccess.emit(emitData);
       },
       (err) => {
