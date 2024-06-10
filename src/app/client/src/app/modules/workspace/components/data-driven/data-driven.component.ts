@@ -299,6 +299,7 @@ export class DataDrivenComponent extends WorkSpace implements OnInit, OnDestroy,
     }
     if (this.contentType === 'studymaterial' || this.contentType === 'assessment') {
       requestData.mimeType = this.configService.appConfig.CONTENT_CONST.CREATE_LESSON;
+      console.log('302---', requestData)
     } else {
       requestData.mimeType = this.configService.urlConFig.URLS.CONTENT_COLLECTION;
     }
@@ -330,12 +331,16 @@ export class DataDrivenComponent extends WorkSpace implements OnInit, OnDestroy,
   }
 
   createContent(modal) {
+    console.log('requestData---333', modal)
     let requiredFields = [];
     requiredFields = _.map(_.filter(this.formFieldProperties, { 'required': true }), field => field.code );
+    console.log('requestData---335', requiredFields)
     const requestData = {
       content: this.generateData(_.pickBy(this.formData.formInputData))
     };
+    console.log('requestData---338', requestData)
     for (let i = 0; i < requiredFields.length; i++) {
+    console.log('requiredFields---340', requiredFields[i])
       if (_.isUndefined(requestData.content[requiredFields[i]])) {
         this.toasterService.error(this.resourceService.messages.fmsg.m0101);
         return;
@@ -345,13 +350,17 @@ export class DataDrivenComponent extends WorkSpace implements OnInit, OnDestroy,
       modal.deny();
     }
     if (this.contentType === 'studymaterial' || this.contentType === 'assessment') {
+    console.log('351---', requestData)
       this.editorService.create(requestData).subscribe(res => {
+    console.log('353---', res)
         this.createLockAndNavigateToEditor({identifier: res.result.content_id});
+    console.log('355---', res)
       }, err => {
         this.toasterService.error(this.resourceService.messages.fmsg.m0078);
       });
     } else {
       this.editorService.create(requestData).subscribe(res => {
+    console.log('361---', res)
         this.createLockAndNavigateToEditor({identifier: res.result.content_id});
       }, err => {
         this.toasterService.error(this.resourceService.messages.fmsg.m0010);
@@ -554,6 +563,7 @@ export class DataDrivenComponent extends WorkSpace implements OnInit, OnDestroy,
   getCategoryList(type: string): object {
     const primaryCategoryList = [];
       if (type === 'collection' || type === 'lessonplan') {
+        console.log('565----', type)
         if (!_.isEmpty(this.frameworkService['_channelData'].collectionPrimaryCategories)) {
           _.forEach(this.frameworkService['_channelData'].collectionPrimaryCategories, (field) => {
             if (_.lowerCase(field) === _.lowerCase('Course')) {
