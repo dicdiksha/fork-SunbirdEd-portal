@@ -861,20 +861,26 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
       (data: ServerResponse) => {
         if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
 
+          console.log("user data 864 line.....", data?.result?.response);
           let ids = []; // locations ids -> state, district,block , cluster, school
 
-          data?.result?.response?.profileLocation.forEach((element: any) => {
+          data?.result?.response?.profileLocation?.forEach((element: any) => {
             ids.push(element?.id)
           });
 
-          this.userLMSToken.getUserLocationData(ids)
-            .then(data => {
-              this.userData = data;
-              console.log(this.userData);
-            })
-            .catch(error => {
-              console.error(error);
-            });
+          console.log("IDS.......", ids);
+
+          if (ids?.length) {
+            this.userLMSToken.getUserLocationData(ids)
+              .then(data => {
+                console.log("this?.userData?.result?.response", this?.userData?.result?.response)
+                this.userData = data;
+                console.log("this?.userData", this.userData);
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          }
 
           const createLocationObject = (locations: any) => {
             return locations.reduce((acc: any, location: any) => {
@@ -887,6 +893,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
           };
 
           const locationObject = createLocationObject(this?.userData?.result?.response);
+          console.log("locationObject", locationObject);
 
           const userDataObject = {
             firstname: _userProfile?.firstName,
@@ -900,6 +907,8 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
             board: data?.result?.response?.framework?.board[0],
             ...locationObject, // keys name {board , state, district, block, cluster, school, code}
           }
+
+          console.log("final object", userDataObject);
           const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
           const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&schoolCode=${userDataObject?.code}`;
           window.location.href = url;
