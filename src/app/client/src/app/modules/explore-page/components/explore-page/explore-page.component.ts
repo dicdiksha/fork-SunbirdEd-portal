@@ -344,7 +344,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const _userProfile = this.userService?._userProfile;
         const optionData = {
           url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
-          param: this.config.urlConFig.params.userReadParam
+        //   param: this.config.urlConFig.params.userReadParam
         };
     
         this.learnerService.getWithHeaders(optionData).subscribe(
