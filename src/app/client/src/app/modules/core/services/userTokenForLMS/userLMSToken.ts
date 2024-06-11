@@ -20,6 +20,7 @@ export class userLMSToken {
     }
 
     getUserLocationData(ids: string[]): Promise<any> {
+        const apiUrl = 'https://diksha.gov.in/api/data/v1/location/search';
         const data = JSON.stringify({
             "request": {
                 "filters": {
@@ -37,7 +38,7 @@ export class userLMSToken {
             'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZUJyTmhjY2djNWNzUnh2ZU02Z2JYMWFuVTZxZGZyYiJ9.PggkeMJjWcV4MEy3J5XnizCCd6qcrFSD5y5rron_G9Y'
         });
 
-        return this.http.post(this.apiUrl, data, { headers }).toPromise();
+        return this.http.post(apiUrl, data, { headers }).toPromise();
     }
 
 }
