@@ -19,6 +19,10 @@ import { SegmentationTagService } from '../../../core/services/segmentation-tag/
 import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
 import { LearnerService } from '@sunbird/core';
 
+import {
+ userLMSToken
+} from '../../../core/services/userTokenForLMS/userLMSToken';
+
 @Component({
     selector: 'app-explore-page-component',
     templateUrl: './explore-page.component.html',
@@ -65,6 +69,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public enrolledCourses: Array<any>;
     public enrolledSection: any;
     public selectedCourseBatches: any;
+    private userLMSToken: userLMSToken;
     private myCoursesSearchQuery = JSON.stringify({
         'request': { 'filters': { 'contentType': ['Course'], 'objectType': ['Content'], 'status': ['Live'] }, 'sort_by': { 'lastPublishedOn': 'desc' }, 'limit': 10, 'organisationId': _.get(this.userService.userProfile, 'organisationIds') }
     });
@@ -90,6 +95,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     primaryBanner = [];
     secondaryBanner = [];
     Categorytheme:any;
+    userData:any;
 
     get slideConfig() {
         return cloneDeep(this.configService.appConfig.LibraryCourses.slideConfig);
@@ -303,10 +309,39 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     
-    navigateToLMSWeb() {
+    // navigateToLMSWeb() {
         
+    //     const _userProfile = this.userService?._userProfile;
+    //     console.log(_userProfile,'this is data........')
+    //     const optionData = {
+    //       url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+    //       param: this.config.urlConFig.params.userReadParam
+    //     };
+    
+    //     this.learnerService.getWithHeaders(optionData).subscribe(
+    //       (data: ServerResponse) => {
+    //         if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
+    //           const userData = {
+    //             firstname: _userProfile?.firstName,
+    //             lastname: _userProfile?.lastName,
+    //             emailid: data?.result?.response?.email,
+    //             phone: data?.result?.response?.phone,
+    //             userid: _userProfile?.userId,
+    //           }
+    //           const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
+    //           const url = `${apiUrl}?userid=${userData.userid}&firstname=${userData.firstname}&lastname=${userData.lastname}&emailid=${userData.emailid}&phone=${userData.phone}`;
+    //           window.location.href = url;
+    //         }
+    //       },
+    //       (err: ServerResponse) => {
+    //         console.log("getDecriptedUserProfile error ", err);
+    //       }
+    //     )
+    //   }
+
+    navigateToLMSWeb() {
+
         const _userProfile = this.userService?._userProfile;
-        console.log(_userProfile,'this is data........')
         const optionData = {
           url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
           param: this.config.urlConFig.params.userReadParam
@@ -315,15 +350,57 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.learnerService.getWithHeaders(optionData).subscribe(
           (data: ServerResponse) => {
             if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
-              const userData = {
+    
+              console.log("user data 864 line.....", data?.result?.response);
+              let ids = []; // locations ids -> state, district,block , cluster, school
+    
+              data?.result?.response?.profileLocation?.forEach((element: any) => {
+                ids.push(element?.id)
+              });
+    
+              console.log("IDS.......", ids);
+    
+              if (ids?.length) {
+                this.userLMSToken.getUserLocationData(ids)
+                  .then(data => {
+                    console.log("data?.result?.response", data?.result?.response)
+                    this.userData = data;
+                    console.log("this?.userData", this.userData);
+                  })
+                  .catch(error => {
+                    console.error(error);
+                  });
+              }
+    
+              const createLocationObject = (locations: any) => {
+                return locations?.reduce((acc: any, location: any) => {
+                  acc[location.type] = location.name;
+                  if (location.type === 'school') {
+                    acc.code = location.code;
+                  }
+                  return acc;
+                }, {});
+              };
+    
+              const locationObject = createLocationObject(this?.userData?.result?.response);
+              console.log("locationObject", locationObject);
+    
+              const userDataObject = {
                 firstname: _userProfile?.firstName,
                 lastname: _userProfile?.lastName,
                 emailid: data?.result?.response?.email,
                 phone: data?.result?.response?.phone,
                 userid: _userProfile?.userId,
+                profileUserType: data?.result?.response?.profileUserType?.type,
+                profileUserSubType: data?.result?.response?.profileUserType?.subType,
+                rootOrgName: this.userService?.rootOrgName,
+                board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
+                ...locationObject, // keys name {board , state, district, block, cluster, school, code}
               }
+    
+              console.log("final object", userDataObject);
               const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-              const url = `${apiUrl}?userid=${userData.userid}&firstname=${userData.firstname}&lastname=${userData.lastname}&emailid=${userData.emailid}&phone=${userData.phone}`;
+              const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&schoolCode=${userDataObject?.code}`;
               window.location.href = url;
             }
           },
