@@ -124,6 +124,7 @@ export class DefaultTemplateComponent implements OnInit {
   setFormConfig() {
     const DROPDOWN_INPUT_TYPES = ['select', 'multiSelect'];
     _.forEach(this.formFieldProperties, (field) => {
+      console.log('field 127----', field, field.label, this.formFieldProperties)
       if (_.includes(DROPDOWN_INPUT_TYPES, field.inputType)) {
         if (field.depends && field.depends.length) {
           this.getAssociations(this.categoryMasterList[field.code],
@@ -162,7 +163,9 @@ export class DefaultTemplateComponent implements OnInit {
      * Call User service to get user data
      */
     this.mapParents(this.formFieldProperties, (data) => {
+      console.log('ngoninit 166----', data)
       this.formFieldProperties = data;
+      console.log('ngoninit 168----', this.formFieldProperties)
       this.setFormConfig();
       this.userService.userData$.subscribe(
         (user: IUserData) => {
@@ -209,9 +212,13 @@ export class DefaultTemplateComponent implements OnInit {
   }
 
   getParentAssociations(fields, associations, formData, callback) {
+    console.log('215----', fields, associations, formData, callback)
     if (fields.parent && fields.parent.length) {
+    console.log('217----', fields, fields.parent)
       _.forEach(fields.parent, (val) => {
+        console.log('219----', val)
         _.forEach(this.formFieldProperties, (field) => {
+          console.log('221----', field)
           if (field.code === val) {
             _.forEach(field.range, (range) => {
               if (_.isArray(formData[val]) && formData[val].length > 0) {
@@ -332,6 +339,7 @@ export class DefaultTemplateComponent implements OnInit {
 */
   mapMasterCategoryList(key) {
     _.forEach(this.formFieldProperties, (field, value) => {
+      console.log('342----', this.formFieldProperties, field)
       if (key) {
         if (field.code === key) {
           this.categoryList[field.code] = field.range;
