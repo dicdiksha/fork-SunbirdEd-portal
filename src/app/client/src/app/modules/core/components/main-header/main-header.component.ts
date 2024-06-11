@@ -904,7 +904,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
             profileUserType: data?.result?.response?.profileUserType?.type,
             profileUserSubType: data?.result?.response?.profileUserType?.subType,
             rootOrgName: this.userService?.rootOrgName,
-            board: data?.result?.response?.framework?.board[0],
+            board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
             ...locationObject, // keys name {board , state, district, block, cluster, school, code}
           }
 
