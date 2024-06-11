@@ -386,7 +386,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     phone: data?.result?.response?.phone,
                                     userid: _userProfile?.userId,
                                     profileUserType: data?.result?.response?.profileUserType?.type,
-                                    profileUserSubType: data?.result?.response?.profileUserType?.subType,
+                                    profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
                                     rootOrgName: this.userService?.rootOrgName,
                                     board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
                                     ...locationObject, // keys name {state, district, block, cluster, school, code}
