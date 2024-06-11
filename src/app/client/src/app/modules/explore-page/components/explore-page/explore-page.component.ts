@@ -361,9 +361,9 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     if (ids?.length) {
                         this.userLMSToken.getUserLocationData(ids)
-                            .then(data => {
-                                console.log("data?.result?.response", data?.result?.response)
-                                this.userData = data;
+                            .then(locationData => {
+                                console.log("data?.result?.response", locationData?.result?.response)
+                                this.userData = locationData;
                                 console.log("this?.userData", this.userData);
 
                                 const createLocationObject = (locations: any) => {
@@ -389,12 +389,12 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     profileUserSubType: data?.result?.response?.profileUserType?.subType,
                                     rootOrgName: this.userService?.rootOrgName,
                                     board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
-                                    ...locationObject, // keys name {board , state, district, block, cluster, school, code}
+                                    ...locationObject, // keys name {state, district, block, cluster, school, code}
                                 }
 
                                 console.log("final object", userDataObject);
                                 const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-                                const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&schoolCode=${userDataObject?.code}`;
+                                const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&schoolCode=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}`;
                                 window.location.href = url;
                             })
                             .catch(error => {
