@@ -132,22 +132,6 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
 
-
-  setInteractEventData() {
-    const id = 'delete-account';
-    this.submitInteractEdata = {
-      id: id,
-      type: 'click',
-      pageid: 'delete-account'
-    };
-
-    this.telemetryInteractObject = {
-      id: this.userService.userid,
-      type: 'User',
-      ver: '1.0'
-    };
-  }
-
   ngOnDestroy() {
     this.unsubscribe.next();
     this.unsubscribe.complete();
@@ -180,10 +164,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
             url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
             data: updateData
           };
-            console.log("profile API key",updateOptions);
             this.learnerService.patch(updateOptions).subscribe(
               (res: ServerResponse) => {
-                console.log("profile API update result",res);
                 this.blockUser();
               }
             );
@@ -191,7 +173,6 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       },
       (err: ServerResponse) => {
         console.log("getDecriptedUserProfile error ",err);
-        // this.toasterService.error(err);
       }
     )
   }
@@ -205,6 +186,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           window.location.replace('/logoff');
           this.cacheService.removeAll();
+          localStorage.clear()
+          sessionStorage.clear()
         }, 50);
 
       },
