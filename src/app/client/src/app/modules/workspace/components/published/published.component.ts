@@ -229,15 +229,25 @@ export class PublishedComponent extends WorkSpace implements OnInit, AfterViewIn
       });
   }
   getCourseQRCsv() {
-    this.coursesService.getQRCodeFile().subscribe((data: any) => {
-      const FileURL = _.get(data, 'result.fileUrl');
-      if (FileURL) {
-        window.open (FileURL, '_blank');
+    this.coursesService.getQRCodeFile().subscribe({
+      next: (data: any) => {
+        const fileURL = _.get(data, 'result.fileUrl');
+        if (fileURL) {
+          window.open(fileURL, '_blank');
+        } else {
+          this.toasterService.error(this.resourceService.messages.fmsg.m0095);
+        }
+      },
+      error: (err: ServerResponse) => {
+        this.handleError(err);
       }
-    },
-    (err: ServerResponse) => {
-      this.toasterService.error(this.resourceService.messages.fmsg.m0095);
     });
+  }
+
+  private handleError(error: ServerResponse) {
+    let errorMessage = this.resourceService.messages.fmsg.m0095;
+    // Additional error handling logic can be added here if needed
+    this.toasterService.error(errorMessage);
   }
   /**
     * This method sets the make an api call to get all Published content with page No and offset
