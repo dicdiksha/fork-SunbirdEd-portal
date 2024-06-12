@@ -483,7 +483,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const svgHeightPt = this.pixelsToPoints(svgHeight);
 
     // Create a high-resolution canvas
-    const scale = 2; // Adjust scale for highest resolution
+    const scale = 40; // Adjust scale for highest resolution
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
@@ -503,12 +503,12 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const pdfHeight = inchesToPoints(8); // Convert height to points
 
         const pdf = new jsPDF('landscape', 'pt', [pdfWidth, pdfHeight]);
-        // pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
-        // pdf.save(`${fileName}.pdf`);
-        // URL.revokeObjectURL(url);
-        pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${fileName}.pdf`);
         URL.revokeObjectURL(url);
+        // pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        // pdf.save(`${fileName}.pdf`);
+        // URL.revokeObjectURL(url);
     };
     img.src = url;
   }
