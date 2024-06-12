@@ -503,7 +503,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const pdfHeight = inchesToPoints(8); // Convert height to points
 
         const pdf = new jsPDF('landscape', 'pt', [pdfWidth, pdfHeight]);
-        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(canvas.toDataURL('image/png', 0.95), 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${fileName}.pdf`);
         URL.revokeObjectURL(url);
         // pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfWidth, pdfHeight);
