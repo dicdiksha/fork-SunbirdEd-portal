@@ -5,7 +5,7 @@ import {
   TenantService,
   OrgDetailsService,
   FormService,
-  ManagedUserService, CoursesService, DeviceRegisterService, ElectronService, ObservationUtilService, userLMSToken
+  ManagedUserService, CoursesService, DeviceRegisterService, ElectronService, ObservationUtilService
 } from './../../services';
 import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
 import {
@@ -171,7 +171,6 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   showingDescription: string;
   showSwitchTheme = false
   nishthaDashboard: Array<string>;
-  lmsDashboard: Array<string>;
   userData: any;
   constructor(public config: ConfigService, public resourceService: ResourceService, public router: Router,
     public permissionService: PermissionService, public userService: UserService, public tenantService: TenantService,
@@ -181,7 +180,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     private courseService: CoursesService, private utilService: UtilService, public layoutService: LayoutService,
     public activatedRoute: ActivatedRoute, private cacheService: CacheService, private cdr: ChangeDetectorRef,
     public navigationHelperService: NavigationHelperService, private deviceRegisterService: DeviceRegisterService,
-    private connectionService: ConnectionService, public electronService: ElectronService, private observationUtilService: ObservationUtilService, private userLMSToken: userLMSToken, public learnerService: LearnerService,) {
+    private connectionService: ConnectionService, public electronService: ElectronService, private observationUtilService: ObservationUtilService, public learnerService: LearnerService,) {
     try {
       this.exploreButtonVisibility = document.getElementById('exploreButtonVisibility')?(<HTMLInputElement>document.getElementById('exploreButtonVisibility')).value:'true';
       this.reportsListVersion = document.getElementById('reportsListVersion')?(<HTMLInputElement>document.getElementById('reportsListVersion')).value as reportsListVersionType:'v1';
@@ -194,7 +193,6 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.orgSetupRole = this.config.rolesConfig.headerDropdownRoles.orgSetupRole;
     this.orgAdminRole = this.config.rolesConfig.headerDropdownRoles.orgAdminRole;
     this.nishthaDashboard = this.config.rolesConfig.headerDropdownRoles.nishthaDashboard;
-    this.lmsDashboard = this.config.rolesConfig.headerDropdownRoles.lmsDashboard;
     this.instance = (<HTMLInputElement>document.getElementById('instance'))
       ? (<HTMLInputElement>document.getElementById('instance')).value.toUpperCase() : 'SUNBIRD';
     this.workSpaceRole = this.config.rolesConfig.headerDropdownRoles.workSpaceRole;
@@ -847,76 +845,5 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     if (this.cacheService.exists('searchFilters')) {
       this.cacheService.remove('searchFilters');
     }
-  }
-
-  navigateToLMSWeb() {
-
-    const _userProfile = this.userService?._userProfile;
-    const optionData = {
-      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
-      param: this.config.urlConFig.params.userReadParam
-    };
-
-    this.learnerService.getWithHeaders(optionData).subscribe(
-      (data: ServerResponse) => {
-        if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
-
-          console.log("user data 864 line.....", data?.result?.response);
-          let ids = []; // locations ids -> state, district,block , cluster, school
-
-          data?.result?.response?.profileLocation?.forEach((element: any) => {
-            ids.push(element?.id)
-          });
-
-          console.log("IDS.......", ids);
-
-          if (ids?.length) {
-            this.userLMSToken.getUserLocationData(ids)
-              .then(data => {
-                console.log("data?.result?.response", data?.result?.response)
-                this.userData = data;
-                console.log("this?.userData", this.userData);
-              })
-              .catch(error => {
-                console.error(error);
-              });
-          }
-
-          const createLocationObject = (locations: any) => {
-            return locations?.reduce((acc: any, location: any) => {
-              acc[location.type] = location.name;
-              if (location.type === 'school') {
-                acc.code = location.code;
-              }
-              return acc;
-            }, {});
-          };
-
-          const locationObject = createLocationObject(this?.userData?.result?.response);
-          console.log("locationObject", locationObject);
-
-          const userDataObject = {
-            firstname: _userProfile?.firstName,
-            lastname: _userProfile?.lastName,
-            emailid: data?.result?.response?.email,
-            phone: data?.result?.response?.phone,
-            userid: _userProfile?.userId,
-            profileUserType: data?.result?.response?.profileUserType?.type,
-            profileUserSubType: data?.result?.response?.profileUserType?.subType,
-            rootOrgName: this.userService?.rootOrgName,
-            board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
-            ...locationObject, // keys name {board , state, district, block, cluster, school, code}
-          }
-
-          console.log("final object", userDataObject);
-          const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-          const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&schoolCode=${userDataObject?.code}`;
-          window.location.href = url;
-        }
-      },
-      (err: ServerResponse) => {
-        console.log("getDecriptedUserProfile error ", err);
-      }
-    )
   }
 }
