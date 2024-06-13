@@ -506,7 +506,7 @@
           </li>
 
           <li appOnlineOnly class="list-item" role="link" tabindex="0" appTelemetryInteract
-            [telemetryInteractEdata]="getLogoutInteractEdata()" (click)="logout()">
+            [telemetryInteractEdata]="getLogoutInteractEdata()" (click)="toggleSideMenu(false);logout()">
             <i class="icon-svg icon-svg--sm icon-logout mr-8"><svg class="icon icon-svg--primary">
                 <use xlink:href="./assets/images/sprite.svg#logout"></use>
               </svg></i>
