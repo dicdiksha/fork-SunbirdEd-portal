@@ -165,6 +165,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   showReportMenu = false;
   showingDescription: string;
   showSwitchTheme = false
+  nishthaDashboard: Array<string>;
   constructor(public config: ConfigService, public resourceService: ResourceService, public router: Router,
     public permissionService: PermissionService, public userService: UserService, public tenantService: TenantService,
     public orgDetailsService: OrgDetailsService, public formService: FormService,
@@ -185,6 +186,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.myActivityRole = this.config.rolesConfig.headerDropdownRoles.myActivityRole;
     this.orgSetupRole = this.config.rolesConfig.headerDropdownRoles.orgSetupRole;
     this.orgAdminRole = this.config.rolesConfig.headerDropdownRoles.orgAdminRole;
+    this.nishthaDashboard = this.config.rolesConfig.headerDropdownRoles.nishthaDashboard;
     this.instance = (<HTMLInputElement>document.getElementById('instance'))
       ? (<HTMLInputElement>document.getElementById('instance')).value.toUpperCase() : 'SUNBIRD';
     this.workSpaceRole = this.config.rolesConfig.headerDropdownRoles.workSpaceRole;
