@@ -4,7 +4,7 @@ import { PublicPlayerService } from '@sunbird/public';
 import { Component, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
 import {
     ResourceService, ToasterService, ConfigService, NavigationHelperService, LayoutService, COLUMN_TYPE, UtilService,
-    OfflineCardService, BrowserCacheTtlService, IUserData, GenericResourceService
+    OfflineCardService, BrowserCacheTtlService, IUserData, GenericResourceService, ServerResponse
 } from '@sunbird/shared';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { cloneDeep, get, find, map as _map, pick, omit, groupBy, sortBy, replace, uniqBy, forEach, has, uniq, flatten, each, isNumber, toString, partition, toLower, includes } from 'lodash-es';
@@ -17,6 +17,10 @@ import { CacheService } from 'ng2-cache-service';
 import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
 import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
+import { LearnerService } from '@sunbird/core';
+import {
+    userLMSToken
+   } from '../../../core/services/userTokenForLMS/userLMSToken';
 
 @Component({
     selector: 'app-explore-page-component',
@@ -89,6 +93,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     primaryBanner = [];
     secondaryBanner = [];
     Categorytheme:any;
+    userData:any;
 
     get slideConfig() {
         return cloneDeep(this.configService.appConfig.LibraryCourses.slideConfig);
@@ -120,7 +125,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         public contentManagerService: ContentManagerService, private cacheService: CacheService,
         private browserCacheTtlService: BrowserCacheTtlService, private profileService: ProfileService,
         private segmentationTagService: SegmentationTagService, private observationUtil: ObservationUtilService,
-        private genericResourceService: GenericResourceService) {
+        private genericResourceService: GenericResourceService, public config: ConfigService, public learnerService: LearnerService, private userLMSToken: userLMSToken) {
             this.genericResourceService.initialize();
             this.instance = (<HTMLInputElement>document.getElementById('instance'))
             ? (<HTMLInputElement>document.getElementById('instance')).value.toUpperCase() : 'SUNBIRD';
@@ -293,6 +298,78 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.contentDownloadStatus = contentDownloadStatus;
             this.addHoverData();
         });
+    }
+
+    navigateToLMSWeb() {
+        const _userProfile = this.userService?._userProfile;
+        const optionData = {
+            url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+            //   param: this.config.urlConFig.params.userReadParam
+        };
+
+        this.learnerService.getWithHeaders(optionData).subscribe(
+            (data: ServerResponse) => {
+                if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
+
+                    console.log("user data 864 line.....", data?.result?.response);
+                    let ids = []; // locations ids -> state, district,block , cluster, school
+
+                    data?.result?.response?.profileLocation?.forEach((element: any) => {
+                        ids.push(element?.id)
+                    });
+
+                    console.log("IDS.......", ids);
+
+                    if (ids?.length) {
+                        this.userLMSToken.getUserLocationData(ids)
+                            .then(locationData => {
+                                console.log("data?.result?.response", locationData?.result?.response)
+                                this.userData = locationData;
+                                console.log("this?.userData", this.userData);
+
+                                const createLocationObject = (locations: any) => {
+                                    return locations?.reduce((acc: any, location: any) => {
+                                        acc[location.type] = location.name;
+                                        if (location.type === 'school') {
+                                            acc.code = location.code;
+                                        }
+                                        return acc;
+                                    }, {});
+                                };
+
+                                const locationObject = createLocationObject(this?.userData?.result?.response);
+                                console.log("locationObject", locationObject);
+
+                                const userDataObject = {
+                                    firstname: _userProfile?.firstName,
+                                    lastname: _userProfile?.lastName,
+                                    emailid: data?.result?.response?.email,
+                                    phone: data?.result?.response?.phone,
+                                    userid: _userProfile?.userId,
+                                    profileUserType: data?.result?.response?.profileUserType?.type,
+                                    profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
+                                    rootOrgName: this.userService?.rootOrgName,
+                                    board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
+                                    ...locationObject, // keys name {state, district, block, cluster, school, code}
+                                }
+
+                                console.log("final object", userDataObject);
+                                const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
+                                const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}`;
+                                // window.location.href = url; // open in same tab
+                                window.open(url, '_blank'); // open in new tab
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    }
+
+                }
+            },
+            (err: ServerResponse) => {
+                console.log("getDecriptedUserProfile error ", err);
+            }
+        )
     }
 
     public fetchEnrolledCoursesSection() {
