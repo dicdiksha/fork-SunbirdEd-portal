@@ -875,6 +875,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (window['TagManager']) {
       if (this.userService.loggedIn) {
         localStorage.setItem('tagManager_' + this.userService.userid, JSON.stringify(window['TagManager'].SBTagService));
+        localStorage.setItem('userId' , this.userService.userid);
       } else {
         localStorage.setItem('tagManager_' + 'guest', JSON.stringify(window['TagManager'].SBTagService));
       }
