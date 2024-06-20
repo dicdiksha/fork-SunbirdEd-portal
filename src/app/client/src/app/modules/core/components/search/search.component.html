@@ -10,6 +10,14 @@
 <button class="sb-btn sb-btn-normal" tabindex="0" appTelemetryInteract [telemetryInteractEdata]="getInteractEdata(key)" [ngClass]="{'disabled': !showInput }" (click)="onEnter(key)" title="{{resourceService.frmelmnts?.lbl?.SearchIn | interpolate:'{searchContentType}':searchPlaceHolderValue}}">{{resourceService.frmelmnts?.lbl?.search}}</button>
 </ng-container>
 <ng-container *ngIf="isLayoutAvailable()">
+    <label class="radio">
+        <input name="radio" [(ngModel)]="selectedSearchOption" type="radio" value="all" checked>
+        <span>All</span>
+      </label>
+      <label class="radio">
+        <input name="radio" [(ngModel)]="selectedSearchOption" type="radio" value="video">
+        <span>Video</span>
+      </label>
     <div class="input-div relative" id="search-input-container">
       <svg class="search icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
