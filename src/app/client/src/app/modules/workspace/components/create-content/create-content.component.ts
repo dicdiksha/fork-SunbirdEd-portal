@@ -127,7 +127,7 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
 
   navigateToLMSWeb() {
     const optionData = {
-        url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+        url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${localStorage.getItem('userId')}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
         //   param: this.config.urlConFig.params.userReadParam
     };
 
