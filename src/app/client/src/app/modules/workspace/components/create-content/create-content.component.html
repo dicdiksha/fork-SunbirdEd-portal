@@ -127,8 +127,33 @@
             </div>
             <p class="workspaceinstuction">Create Questionsets</p>
           </div>
+
+          <div class="three wide column" *ngIf='permissionService.permissionAvailable && enableQuestionSetCreation === true' appPermission
+            [permission]='textBookRole'>
+            <div class="ui link card" (click)="navigateToLMSWeb()">
+              <div class="content">
+                <div class="textcontent">
+                  <i class='my-icon file text outline icon'></i>
+                  <span class="my-text">Create Course through DIKSHA Courses</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="three wide column" *ngIf='permissionService.permissionAvailable && enableQuestionSetCreation === true' appPermission
+            [permission]='upForReviewRole'>
+            <div class="ui link card" (click)="navigateToLMSWeb()">
+              <div class="content">
+                <div class="textcontent">
+                  <i class='my-icon file text outline icon'></i>
+                  <span class="my-text">Review Course through DIKSHA Courses</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="twelve wide column sb-bulk-upload hide">
             <div class="ui grid">
                 <div class="six wide column">
