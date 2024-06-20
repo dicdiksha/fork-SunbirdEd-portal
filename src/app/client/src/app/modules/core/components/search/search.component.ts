@@ -4,7 +4,9 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { UserService } from './../../services';
 import { ResourceService, ConfigService, IUserProfile, LayoutService, UtilService, ConnectionService } from '@sunbird/shared';
 import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http'
 import * as _ from 'lodash-es';
+import { data } from 'jquery';
 /**
  * Main menu component
  */
@@ -20,6 +22,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   isOpen: boolean;
 
   showSuiSelectDropdown: boolean;
+  selectedSearchOption: string = 'all';
 
   /**
    *
@@ -87,7 +90,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   constructor(route: Router, activatedRoute: ActivatedRoute, userService: UserService,
     resourceService: ResourceService, config: ConfigService, public utilService: UtilService,
-    private cdr: ChangeDetectorRef, public layoutService: LayoutService, public connectionService: ConnectionService) {
+    private cdr: ChangeDetectorRef, public layoutService: LayoutService, public connectionService: ConnectionService,private http:HttpClient) {
     this.route = route;
     this.activatedRoute = activatedRoute;
     this.resourceService = resourceService;
@@ -178,9 +181,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
     if (this.isDesktopApp && !this.isConnected) {
       this.route.navigate(['mydownloads'], { queryParams: this.queryParam });
-    } else {
+    }else if(this.selectedSearchOption =='video'){
+      this.route.navigate([redirectUrl, 1], { queryParams: { key:this.key, searchType: this.selectedSearchOption} });
+    }
+    else {
       this.route.navigate([redirectUrl, 1], { queryParams: this.queryParam });
     }
+  
+  
   }
 
   setFilters() {

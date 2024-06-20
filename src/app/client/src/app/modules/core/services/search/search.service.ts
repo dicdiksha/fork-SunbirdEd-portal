@@ -10,6 +10,8 @@ import { LearnerService } from './../learner/learner.service';
 import { PublicDataService } from './../public-data/public-data.service';
 import * as _ from 'lodash-es';
 import { FormService } from './../form/form.service';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 /**
  * Service to search content
  */
@@ -17,11 +19,16 @@ import { FormService } from './../form/form.service';
   providedIn: 'root'
 })
 export class SearchService {
+  
   public mimeTypeList;
   /**
    * Contains searched content list
    */
+  apiUrl:string='https://i64ofr7odkrdgr2o5lkg2hyrpy.apigateway.ap-mumbai-1.oci.customer-oci.com/v1/opsq'
+  searchType:string =''
+  searchQuery:string =''
   _searchedContentList: any;
+  vquery:string;
   /**
    * Contains searched organization list
    */
@@ -59,13 +66,17 @@ export class SearchService {
    */
   constructor(user: UserService, content: ContentService, config: ConfigService,
     learnerService: LearnerService, publicDataService: PublicDataService,
-    resourceService: ResourceService, private formService: FormService) {
+    resourceService: ResourceService, private formService: FormService,private http:HttpClient,private route: ActivatedRoute) {
     this.user = user;
     this.content = content;
     this.config = config;
     this.learnerService = learnerService;
     this.publicDataService = publicDataService;
     this.resourceService = resourceService;
+    this.route.queryParams.subscribe(params => {
+      this.searchType = params['searchType'];
+      this.searchQuery = params['key'];
+    });
   }
   /**
    * Search content by user id.
@@ -271,7 +282,58 @@ export class SearchService {
     if (requestParam['pageNumber'] && requestParam['limit']) {
       option.data.request['offset'] = (requestParam.pageNumber - 1) * requestParam.limit;
     }
-    return this.publicDataService.post(option);
+    
+    let data ={
+      request: {
+          "facets": [],
+          "fields": [],
+          "filters": {
+              "channel": "",
+              "primaryCategory": [],
+              "visibility": [],
+              "identifier": "",
+              "se_gradeLevels": [],
+              "se_subjects": [],
+              "se_mediums": [],
+              "se_boards": []
+          },
+          "limit": 20,
+          "mode": "soft",
+          "offset": 0,
+          "query": this.searchQuery
+      }
+  }
+  if(this.searchType =='video'){
+    localStorage.setItem('key',this.searchQuery)
+    return this.http.post<any>(`${this.apiUrl}`, data);
+  }
+  return this.publicDataService.post(option);
+    
+  }
+
+   videoSearch(){
+    let searchQuery = localStorage.getItem('key');
+    let data ={
+      request: {
+          "facets": [],
+          "fields": [],
+          "filters": {
+              "channel": "",
+              "primaryCategory": [],
+              "visibility": [],
+              "identifier": "",
+              "se_gradeLevels": [],
+              "se_subjects": [],
+              "se_mediums": [],
+              "se_boards": []
+          },
+          "limit": 20,
+          "mode": "soft",
+          "offset": 0,
+          "query": searchQuery
+      }
+  }
+  return this.http.post<any>(`${this.apiUrl}`, data);
   }
   /* *
   * update option that was sent to the the search service call
