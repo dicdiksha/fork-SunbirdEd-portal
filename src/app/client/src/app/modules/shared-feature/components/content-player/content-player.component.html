@@ -60,9 +60,11 @@
 
 <div [ngClass]="layoutConfiguration ? 'sbt-inside-page-container' : ''">
 <div  class="relative9" [style.display]="!showLoader ? 'block' : 'none'" *ngIf="contentData">
+  
     <!-- CC-Player Video -->
     <div class="sb-single-resource">
     <div class="ui container">
+        
         <div class="cc-player sb-g">
             <section class="sb-g-col-xs-12 sb-g-col-md-12 sb-g-col-lg-12 sb-g-col-xxxl-16 cc-player__video"
                 [appTelemetryImpression]="telemetryImpression">
@@ -71,6 +73,9 @@
                 </app-contentplayer-page>
             </section>
         </div>
+    </div>
+    <div id="dropdown">
+      
     </div>
 </div>
     <div class="twelve wide column" *ngIf="showLoader">

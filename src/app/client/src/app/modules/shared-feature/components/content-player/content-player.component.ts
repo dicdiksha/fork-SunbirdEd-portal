@@ -15,6 +15,7 @@ import { PublicPlayerService, ComponentCanDeactivate } from '@sunbird/public';
 import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ContentModalComponent } from '../../content-modal/content-modal.component';
+import { SearchService } from '../../../../modules/core/services/search/search.service'
 
 @Component({
   selector: 'app-content-player',
@@ -50,6 +51,8 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   isQuestionSet = false;
   isDesktopApp = false;
   modalRef: BsModalRef;
+  filteredContent = [];
+  timestampDetailList = [];
 
   @HostListener('window:beforeunload')
     canDeactivate() {
@@ -67,7 +70,8 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
     public contentUtilsServiceService: ContentUtilsServiceService, public popupControlService: PopupControlService,
     private configService: ConfigService,
     public layoutService: LayoutService, public telemetryService: TelemetryService,
-    public modalService: BsModalService
+    public modalService: BsModalService,
+    private searchService: SearchService
     ) {
     this.playerOption = {
       showContentRating: true
@@ -92,6 +96,8 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
         this.groupId = _.get(data, 'groupId') || _.get(this.activatedRoute.snapshot, 'queryParams.groupId');
       });
       this.getContent();
+      this.getTimestampData();
+      console.log(this.contentId,'this is content Id')
       CsGroupAddableBloc.instance.state$.pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
         this.isGroupAdmin = !_.isEmpty(_.get(this.activatedRoute.snapshot, 'queryParams.groupId'))
         && _.get(data.params, 'groupData.isAdmin');
@@ -102,6 +108,31 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
       pipe(takeUntil(this.unsubscribe)).subscribe(isFullScreen => {
         this.isFullScreenView = isFullScreen;
       });
+  }
+
+  getTimestampData(){
+    console.log(localStorage.getItem("key"), "this is search query");
+    this.searchService.videoSearch().subscribe((res) => {
+      this.filteredContent = res.result.content.filter(
+        (item) => item.identifier === this.contentId
+      );
+      console.log(this.filteredContent, "this filtered array");
+      this.timestampDetailList =
+        this.filteredContent[0].timestamps_details_list;
+      const dropdown = document.getElementById("dropdown");
+      this.timestampDetailList.forEach((obj, index) => {
+        let timestamp_button = document.createElement("button");
+        console.log(`Object ${index + 1}:`);
+        let start_time = obj.start_time;
+        let relevance = obj.relevance;
+        console.log(start_time, "this is start_time");
+        console.log(relevance, "this is relevance");
+        timestamp_button.textContent ="Go to " +(start_time / 60).toFixed(2) +" minutes (" +relevance +").";
+        timestamp_button.classList.add('sb-btn', 'sb-btn-primary', 'sb-btn-normal', 'sb-btn-border');
+        dropdown.appendChild(timestamp_button);
+      });
+      console.log(this.timestampDetailList, "this is timestampdetail list");
+    });
   }
 
   sendInteractDataToTelemetry(uniqueId) {
