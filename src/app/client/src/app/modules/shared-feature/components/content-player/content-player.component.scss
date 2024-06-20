@@ -1,6 +1,8 @@
 @use "~@project-sunbird/sb-styles/assets/mixins/mixins" as *;
 @use 'pages/content-header' as *;
 .sb-single-resource {
+  display: flex;
+  gap: 3rem;
 	width: 100%;
 	height: 100%;
 	max-width: calculateRem(896px);
