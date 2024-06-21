@@ -60,24 +60,28 @@
 
 <div [ngClass]="layoutConfiguration ? 'sbt-inside-page-container' : ''">
 <div  class="relative9" [style.display]="!showLoader ? 'block' : 'none'" *ngIf="contentData">
-  
-    <!-- CC-Player Video -->
-    <div class="sb-single-resource">
-    <div class="ui container">
-        
-        <div class="cc-player sb-g">
-            <section class="sb-g-col-xs-12 sb-g-col-md-12 sb-g-col-lg-12 sb-g-col-xxxl-16 cc-player__video"
-                [appTelemetryImpression]="telemetryImpression">
-                <app-contentplayer-page [playerConfig]="playerConfig" [tocPage]="true" [contentDetails]="contentData"
-                    [isContentPresent]="isContentPresent" [objectRollUp]="objectRollup">
-                </app-contentplayer-page>
-            </section>
-        </div>
-    </div>
-    <div id="dropdown">
-      
-    </div>
-</div>
+  <div class="side-bar" *ngIf="timestampDetailList.length > 0">
+    <h6>Select Timestamp</h6>
+    <div class="card player-timeline w-100">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" (click)="getstartTime(item.start_time)" *ngFor="let item of timestampDetailList">Go to {{(item.start_time / 60).toFixed(2)}} minutes ({{item.relevance}})</li>
+        </ul>
+      </div>
+     </div>
+      <div class="sb-single-resource video-player-section">
+          <div class="ui container">
+              <div class="cc-player sb-g">
+                  <section class="sb-g-col-xs-12 sb-g-col-md-12 sb-g-col-lg-12 sb-g-col-xxxl-16 cc-player__video"
+                      [appTelemetryImpression]="telemetryImpression">
+                      <app-contentplayer-page [playerConfig]="playerConfig" [tocPage]="true" [contentDetails]="contentData"
+                          [isContentPresent]="isContentPresent" [objectRollUp]="objectRollup">
+                      </app-contentplayer-page>
+                  </section>
+              </div>
+          </div>
+      </div>
+    <!-- CC-Player Video -->  
+   
     <div class="twelve wide column" *ngIf="showLoader">
         <app-loader [data]='loaderMessage'></app-loader>
     </div>
