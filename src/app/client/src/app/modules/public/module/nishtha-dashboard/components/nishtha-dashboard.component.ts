@@ -76,7 +76,7 @@ export class NishthaDashboardComponent implements OnInit {
     );
     const input = new HttpParams()
       .set("client_id", "ntp-support-tool")
-      .set("username", "reportviewer_tn@yopmail.com")
+      .set("username", "reportadmin@teamdiksha.org")
       .set("grant_type", "password")
       .set("password", "") // Assuming the password is intentionally left empty
       .set("client_secret", "58d30df4-c5c7-48d4-906c-aa33b673e3c2"); 
