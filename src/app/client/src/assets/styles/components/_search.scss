@@ -406,6 +406,9 @@ select:-internal-autofill-selected {
   justify-content: center;
   width:100%;
 }
+.sbt-search-bar-panel label{
+  margin-bottom: 0!important;
+}
 .sbt-search-bar-panel:focus-within{
   ~ .search-box-dropdown-list{
     // display: block;  //dropdown suggestion list
@@ -417,7 +420,7 @@ select:-internal-autofill-selected {
   }
   .sbt-search-bar-panel{
     .sbt-search-box.large {
-      max-width: 60%;
+      max-width: 75%;
     }
   }
 }

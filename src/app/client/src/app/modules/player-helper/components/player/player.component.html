@@ -20,7 +20,7 @@
         </sunbird-pdf-player>
 
         <sunbird-video-player *ngIf="playerType === 'video-player'" [playerConfig]="playerConfig"
-          (playerEvent)="eventHandler($event)" (telemetryEvent)="generateContentReadEvent($event, true)">
+          (playerEvent)="eventHandler($event)" (telemetryEvent)="generateContentReadEvent($event, true)" [playVideoFromTimestamp]="videoStartTime">
         </sunbird-video-player>
 
         <sunbird-epub-player *ngIf="playerType === 'epub-player'" [playerConfig]="playerConfig" [showFullScreen]="isFullScreenView"
