@@ -43,6 +43,11 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
    */
   assessmentRole: Array<string>;
   /**
+   * upForReviewRole access role
+   */
+  upForReviewRole: Array<string>;
+
+  /**
    * To call resource service which helps to use language constant
    */
   public resourceService: ResourceService;
@@ -75,6 +80,10 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
   userProfile: any;
   userData:any;
 
+  public isUserLoggedIn(): boolean {
+    return this.userService && (this.userService.loggedIn || false);
+  }
+
   constructor(configService: ConfigService, resourceService: ResourceService,
     frameworkService: FrameworkService, permissionService: PermissionService,
     private activatedRoute: ActivatedRoute, public userService: UserService,
@@ -98,6 +107,7 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
     this.lessonplanRole = this.configService.rolesConfig.workSpaceRole.lessonplanRole;
     this.contentUploadRole = this.configService.rolesConfig.workSpaceRole.contentUploadRole;
     this.assessmentRole = this.configService.rolesConfig.workSpaceRole.assessmentRole;
+    this.upForReviewRole = this.configService.rolesConfig.workSpaceRole.upForReviewRole;
     this.courseRole = this.configService.rolesConfig.workSpaceRole.courseRole;
     this.workSpaceService.questionSetEnabled$.subscribe(
       (response: any) => {
@@ -126,8 +136,11 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
 
 
   navigateToLMSWeb() {
+    
+    console.log("getting user id....", this.userService?.userProfile?.userId);
+    console.log("isUserLoggedIn", this.isUserLoggedIn());
     const optionData = {
-        url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${localStorage.getItem('userId')}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+        url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userService?.userProfile?.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
         //   param: this.config.urlConFig.params.userReadParam
     };
 
@@ -144,7 +157,7 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
 
                 console.log("IDS.......", ids);
 
-                if (ids?.length) {
+                if (ids?.length && this.isUserLoggedIn()) {
                     this.userLMSToken.getUserLocationData(ids)
                         .then(locationData => {
                             console.log("locationData?.result?.response", locationData?.result?.response)
