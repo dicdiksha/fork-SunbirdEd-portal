@@ -1,5 +1,5 @@
 import { FieldConfig, FieldConfigOptionsBuilder } from '@dicdikshaorg/common-form-elements';
-import { Location as SbLocation } from '@project-sunbird/client-services/models/location';
+import { Location as SbLocation } from '@dicdikshaorg/client-services/models/location';
 import { FormControl } from '@angular/forms';
 import { concat, defer, iif, of } from 'rxjs';
 import { distinctUntilChanged, mergeMap, map, catchError } from 'rxjs/operators';
