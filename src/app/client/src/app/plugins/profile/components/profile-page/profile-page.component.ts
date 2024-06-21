@@ -1,34 +1,19 @@
-import {ProfileService} from '../../services';
+import { ProfileService } from '../../services';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Inject } from '@angular/core';
-import {
-  CertRegService,
-  CoursesService,
-  OrgDetailsService,
-  PlayerService,
-  SearchService,
-  UserService,
-  FormService
-} from '@sunbird/core';
-import {
-  ConfigService,
-  IUserData, LayoutService,
-  NavigationHelperService,
-  ResourceService,
-  ServerResponse,
-  ToasterService,
-  UtilService,
-  ConnectionService
-} from '@sunbird/shared';
+import { CertRegService, CoursesService, OrgDetailsService, PlayerService, SearchService, UserService, FormService } from '@sunbird/core';
+import { ConfigService, IUserData, LayoutService, NavigationHelperService, ResourceService, ServerResponse, ToasterService, UtilService, ConnectionService } from '@sunbird/shared';
 import * as _ from 'lodash-es';
-import {Subject, Subscription, zip} from 'rxjs';
-import {IImpressionEventInput, IInteractEventEdata, TelemetryService} from '@sunbird/telemetry';
-import {ActivatedRoute, Router} from '@angular/router';
-import {CacheService} from 'ng2-cache-service';
-import {takeUntil} from 'rxjs/operators';
+import { Subject, Subscription, zip } from 'rxjs';
+import { IImpressionEventInput, IInteractEventEdata, TelemetryService } from '@sunbird/telemetry';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CacheService } from 'ng2-cache-service';
+import { takeUntil } from 'rxjs/operators';
 import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
+import { HttpClient } from '@angular/common/http';
+import jsPDF from 'jspdf';
 import { ManagedUserService } from '../../../../modules/core/services/managed-user/managed-user.service';
 @Component({
   templateUrl: './profile-page.component.html',
@@ -37,9 +22,9 @@ import { ManagedUserService } from '../../../../modules/core/services/managed-us
 })
 export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   private static readonly SUPPORTED_PERSONA_LIST_FORM_REQUEST =
-  { formType: 'config', formAction: 'get', contentType: 'userType', component: 'portal' };
+    { formType: 'config', formAction: 'get', contentType: 'userType', component: 'portal' };
   private static readonly DEFAULT_PERSONA_LOCATION_CONFIG_FORM_REQUEST =
-  { formType: 'profileConfig_v2', contentType: 'default', formAction: 'get' };
+    { formType: 'profileConfig_v2', contentType: 'default', formAction: 'get' };
   @ViewChild('profileModal') profileModal;
   @ViewChild('slickModal') slickModal;
   userProfile: any;
@@ -60,7 +45,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   orgDetails: any = [];
   showContactPopup = false;
   showEditUserDetailsPopup = false;
-  disableDelete=true
+  disableDelete = true
   userFrameWork: any;
   telemetryImpression: IImpressionEventInput;
   myFrameworkEditEdata: IInteractEventEdata;
@@ -101,15 +86,22 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   isConnected = true;
   showFullScreenLoader = false;
   subUserAccount = 0;
-  constructor(@Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
-  public resourceService: ResourceService, public coursesService: CoursesService,
+  // private browser: puppeteer.Browser;
+
+  constructor(
+    private http: HttpClient,
+    @Inject('CS_COURSE_SERVICE') private courseCService: CsCourseService, private cacheService: CacheService,
+    public resourceService: ResourceService, public coursesService: CoursesService,
     public toasterService: ToasterService, public profileService: ProfileService, public userService: UserService,
     public configService: ConfigService, public router: Router, public utilService: UtilService, public searchService: SearchService,
     private playerService: PlayerService, private activatedRoute: ActivatedRoute, public orgDetailsService: OrgDetailsService,
     public navigationhelperService: NavigationHelperService, public certRegService: CertRegService,
     private telemetryService: TelemetryService, public layoutService: LayoutService, private formService: FormService,
-    private certDownloadAsPdf: CertificateDownloadAsPdfService, private connectionService: ConnectionService,
-    @Inject('CS_CERTIFICATE_SERVICE') private CsCertificateService: CsCertificateService,private managedUserService: ManagedUserService,) {
+    private certDownloadAsPdf: CertificateDownloadAsPdfService,
+    private managedUserService: ManagedUserService,
+    private connectionService: ConnectionService,
+    @Inject('CS_CERTIFICATE_SERVICE')
+    private CsCertificateService: CsCertificateService) {
     this.getNavParams();
   }
 
@@ -122,7 +114,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const requests = [this.managedUserService.managedUserList$];
     zip(...requests).subscribe((data) => {
       let userListToProcess = _.get(data[0], 'result.response.content');
-      console.log("userListToProcess=====",userListToProcess)
+      console.log("userListToProcess=====", userListToProcess)
       if (userListToProcess) {
         this.subUserAccount = userListToProcess.length
       }
@@ -130,17 +122,19 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.toasterService.error(_.get(this.resourceService, 'messages.emsg.m0005'));
     }
     );
+    console.log('requests===============', requests)
     this.activatedRoute.queryParams.subscribe((params) => {
+      console.log("112388 ngOnInit param ", params);
       if (params['showEditUserDetailsPopup']) {
         this.showEditUserDetailsPopup = true;
       }
-      });
+    });
 
     if (this.isDesktopApp) {
       this.connectionService.monitor()
-      .pipe(takeUntil(this.unsubscribe$)).subscribe(isConnected => {
-        this.isConnected = isConnected;
-      });
+        .pipe(takeUntil(this.unsubscribe$)).subscribe(isConnected => {
+          this.isConnected = isConnected;
+        });
     }
     this.initLayout();
     this.instance = _.upperFirst(_.toLower(this.resourceService.instance || 'SUNBIRD'));
@@ -153,6 +147,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const role: string = (!this.userProfile.profileUserType.type ||
           (this.userProfile.profileUserType.type && this.userProfile.profileUserType.type === 'OTHER')) ? '' : this.userProfile.profileUserType.type;
         this.userLocation = this.getUserLocation(this.userProfile);
+        console.log("112388 ngOnInit userLocation ", this.userLocation);
         this.getPersonaConfig(role).then((val) => {
           this.persona = val;
         });
@@ -177,6 +172,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.setInteractEventData();
   }
+
+  // ngOnDestroy(): void {
+  //   this.closeBrowser();
+  // }
+
+  // async closeBrowser() {
+  //   if (this.browser) {
+  //     await this.browser.close();
+  //   }
+  // }
 
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
@@ -207,6 +212,45 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+
+  // async generatePdfFromSvg(svgContent: string, trainingName: string) {
+  //   try {
+  //     if (!this.browser) {
+  //       this.browser = await puppeteer.launch({
+  //         headless: true,
+  //         args: [
+  //           "--no-sandbox",
+  //           "--disable-gpu",
+  //         ]
+  //       });
+  //     }
+
+  //     const page = await this.browser.newPage();
+  //     await page.setContent(svgContent, { waitUntil: 'domcontentloaded' });
+  //     await page.evaluateHandle('document.fonts.ready');
+
+  //     const pdfBuffer = await page.pdf({
+  //       format: 'A4',
+  //       printBackground: true,
+  //       scale: 1,
+  //       margin: {
+  //         top: '10px',
+  //         right: '10px',
+  //         bottom: '10px',
+  //         left: '10px'
+  //       }
+  //     });
+
+  //     await page.close();
+
+  //     return pdfBuffer;
+  //   } catch (error) {
+  //     console.error('PDF generation failed:', error);
+  //     return null;
+  //   }
+  // }
+
+
   getOrgDetails() {
     let orgList = [];
     this.roles = [];
@@ -235,6 +279,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (_.get(this.userProfile, 'roles') && !_.isEmpty(this.userProfile.roles)) {
       this.userRoles = _.map(this.userProfile.roles, 'role');
     }
+    if (_.includes(this.userRoles, 'ORG_ADMIN')) {
+      this.disableDelete = true
+    } else {
+      this.disableDelete = false
+    }
     _.forEach(this.userRoles, (value, key) => {
       if (value !== 'PUBLIC') {
         const roleName = _.find(this.userProfile.roleList, { id: value });
@@ -259,16 +308,16 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getContribution(): void {
     const { constantData, metaData, dynamicFields } = this.configService.appConfig.Course.otherCourse;
-      const searchParams = {
-        status: ['Live'],
-        contentType: this.configService.appConfig.WORKSPACE.contentType,
-        params: { lastUpdatedOn: 'desc' }
-      };
-      const inputParams = { params: this.configService.appConfig.PROFILE.contentApiQueryParams };
-      this.searchService.searchContentByUserId(searchParams, inputParams).subscribe((data: ServerResponse) => {
-        this.contributions = this.utilService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
-        this.totalContributions = _.get(data, 'result.count') || 0;
-      });
+    const searchParams = {
+      status: ['Live'],
+      contentType: this.configService.appConfig.WORKSPACE.contentType,
+      params: { lastUpdatedOn: 'desc' }
+    };
+    const inputParams = { params: this.configService.appConfig.PROFILE.contentApiQueryParams };
+    this.searchService.searchContentByUserId(searchParams, inputParams).subscribe((data: ServerResponse) => {
+      this.contributions = this.utilService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
+      this.totalContributions = _.get(data, 'result.count') || 0;
+    });
   }
 
   getTrainingAttended() {
@@ -279,10 +328,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-/**
- * @param userId
- *It will fetch certificates of user, other than courses
- */
+  /**
+   * @param userId
+   *It will fetch certificates of user, other than courses
+   */
   getOtherCertificates(userId, certType) {
     this.otherCertificates = [];
     let requestBody = { userId: userId, schemaName: 'certificate' };
@@ -305,6 +354,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadCert(course) {
+    console.log('course====', course)
     if (this.isDesktopApp && !this.isConnected) {
       this.toasterService.error(this.resourceService.messages.desktop.emsg.cannotAccessCertificate);
       return;
@@ -321,26 +371,32 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
           templateUrl: _.get(certificateInfo, 'templateUrl'),
           trainingName: courseName
         }
+        console.log('course resp downloadOldAndRCCert====', courseObj)
         this.downloadOldAndRCCert(courseObj);
       } else if (_.get(certificateInfo, 'identifier')) {
         this.courseCService.getSignedCourseCertificate(_.get(certificateInfo, 'identifier'))
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe((resp) => {
+            console.log('course resp====', resp)
             if (_.get(resp, 'printUri')) {
               this.certDownloadAsPdf.download(resp.printUri, null, courseName);
             } else if (_.get(course, 'certificates.length')) {
+              console.log('course resp certificates====', course.certificates)
               this.downloadPdfCertificate(course.certificates[0]);
             } else {
               this.toasterService.error(this.resourceService.messages.emsg.m0076);
             }
           }, error => {
+            console.log('course resp certificateInfo====', certificateInfo)
             this.downloadPdfCertificate(certificateInfo);
           });
       } else {
+        console.log('course resp downloadPdfCertificate====', certificateInfo)
         this.downloadPdfCertificate(certificateInfo);
       }
     } else if (_.get(course, 'certificates.length')) { // For V1 - backward compatibility
       this.toasterService.success(_.get(this.resourceService, 'messages.smsg.certificateGettingDownloaded'));
+      console.log('course resp downloadPdfCertificate 329====', course.certificates)
       this.downloadPdfCertificate(course.certificates[0]);
     } else {
       this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -348,12 +404,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   downloadOldAndRCCert(courseObj) {
+    console.log('course downloadOldAndRCCert', courseObj)
     let requestBody = {
       certificateId: courseObj.id,
       schemaName: 'certificate',
       type: courseObj.type,
       templateUrl: courseObj.templateUrl
     };
+    console.log(requestBody, 'requestBody');
     this.CsCertificateService.getCerificateDownloadURI(requestBody, {
       apiPath: '/learner/certreg/v2',
       apiPathLegacy: '/certreg/v1',
@@ -361,8 +419,14 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((resp) => {
+        console.log(resp, 'resp');
         if (_.get(resp, 'printUri')) {
-          this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
+          console.log(resp, ' afterresp');
+          // const fileType = this.getFileTypeFromUri(resp.printUri);
+          // const fileName = `${courseObj.trainingName}.${fileType}`;
+          // this.convertSvgToPdf(resp.printUri, fileName, fileType);
+          this.convertSvgToPdf(resp.printUri, courseObj.trainingName);
+          // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
           this.toasterService.error(this.resourceService.messages.emsg.m0076);
         }
@@ -371,14 +435,97 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+  getFileTypeFromUri(uri: string): string {
+    const extension = uri.split('.').pop();
+    return extension ? extension : 'pdf'; // Default to 'pdf' if no extension is found
+  }
+
+  convertSvgToPdf(svgContent: string, fileName: string): void {
+    console.log(fileName, 'filename', svgContent);
+    const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
+
+    // Function to convert units to pixels
+    const unitToPixels = (value: string): number => {
+        const units = value.match(/[a-zA-Z%]+/);
+        const number = parseFloat(value);
+
+        if (!units) return number; // No units, return as pixels
+
+        switch (units[0]) {
+            case 'px':
+                return number;
+            case 'mm':
+                return number * 3.7795275591; // 1 mm = 3.7795275591 px
+            case 'cm':
+                return number * 37.795275591; // 1 cm = 37.795275591 px
+            case 'in':
+                return number * 96; // 1 inch = 96 px
+            case 'pt':
+                return number * 1.3333333333; // 1 point = 1.3333333333 px
+            case 'pc':
+                return number * 16; // 1 pica = 16 px
+            default:
+                return number;
+        }
+    };
+
+    // Function to convert inches to points
+    const inchesToPoints = (inches: number): number => {
+        return inches * 72; // 1 inch = 72 points
+    };
+
+    // Determine SVG dimensions
+    const svgWidth = unitToPixels(svgElement.getAttribute('width') || '210mm');
+    const svgHeight = unitToPixels(svgElement.getAttribute('height') || '297mm');
+
+    // Convert dimensions to points
+    const svgWidthPt = this.pixelsToPoints(svgWidth);
+    const svgHeightPt = this.pixelsToPoints(svgHeight);
+
+    // Create a high-resolution canvas
+    const scale = 40; // Adjust scale for highest resolution
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    canvas.width = svgWidth * scale;
+    canvas.height = svgHeight * scale;
+
+    const svgString = new XMLSerializer().serializeToString(svgElement);
+    const img = new Image();
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+        context.scale(scale, scale); // Scale the context to maintain high resolution
+        context.drawImage(img, 0, 0, svgWidth, svgHeight);
+
+        const pdfWidth = inchesToPoints(11.66); // Convert width to points
+        const pdfHeight = inchesToPoints(8); // Convert height to points
+
+        const pdf = new jsPDF('landscape', 'pt', [pdfWidth, pdfHeight]);
+        pdf.addImage(canvas.toDataURL('image/png',1.0), 'PNG', 0, 0, pdfWidth, pdfHeight,undefined, 'FAST');
+        pdf.save(`${fileName}.pdf`);
+        URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+
+  private pixelsToPoints(px: number): number {
+    return px * 72 / 96; // 1 point = 1/72 inch, 1 inch = 96 pixels
+  }
+
+
   downloadPdfCertificate(value) {
+    console.log('course downloadPdfCertificate', value)
     if (_.get(value, 'url')) {
       const request = {
         request: {
           pdfUrl: _.get(value, 'url')
         }
       };
+      console.log('course downloadPdfCertificate request', request)
       this.profileService.downloadCertificates(request).subscribe((apiResponse) => {
+        console.log('course downloadPdfCertificate apiResponse', apiResponse)
         const signedPdfUrl = _.get(apiResponse, 'result.signedUrl');
         if (signedPdfUrl) {
           window.open(signedPdfUrl, '_blank');
@@ -414,7 +561,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateProfile(data) {
+    console.log("112388 updateProfile ", data);
     this.profileService.updateProfile({ framework: data }).subscribe(res => {
+      console.log("112388 updateProfile Res ", res);
       this.userProfile.framework = data;
       this.toasterService.success(this.resourceService.messages.smsg.m0046);
       this.profileModal && this.profileModal.deny();
@@ -508,7 +657,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       type: 'click',
       pageid: 'profile-read'
     };
-    this.deleteAccountEdata={
+    this.deleteAccountEdata = {
       id: 'delete-user-account',
       type: 'click',
       pageid: 'profile-read'
@@ -516,7 +665,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   navigate(url, formAction) {
-    this.router.navigate([url], {queryParams: {formaction: formAction}});
+    this.router.navigate([url], { queryParams: { formaction: formAction } });
   }
 
   navigatetoRoute(url) {
@@ -524,11 +673,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.userProfile.stateValidated) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
-      } else if(this.subUserAccount){
+      } else if (this.subUserAccount) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
-       }
-       else {
+      }
+      else {
         this.router.navigate([url]);
       }
     } else {
@@ -536,8 +685,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.toasterService.warning(msg);
     }
   }
-
-
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -565,6 +712,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+    //    this.closeBrowser();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
@@ -654,82 +802,84 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       const offsetPosition = elementPosition - 144;
 
       window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
+        top: offsetPosition,
+        behavior: 'smooth'
       });
     });
   }
 
   private getUserLocation(profile: any) {
-   const userLocation = {};
+    console.log("112388 Profile Page ", profile);
+    const userLocation = {};
     if (profile && profile.userLocations && profile.userLocations.length) {
-        profile.userLocations.forEach((d) => {
-            userLocation[d.type] = d;
-        });
+      profile.userLocations.forEach((d) => {
+        userLocation[d.type] = d;
+      });
     }
+    console.log("112388 userLocation ", userLocation);
     return userLocation;
-}
-
-private async getPersonaConfig(persona: string) {
-  const formFields = await this.formService.getFormConfig(ProfilePageComponent.SUPPORTED_PERSONA_LIST_FORM_REQUEST).toPromise();
-  return formFields.find(config => config.code === persona);
-}
-
-private async getSubPersonaConfig(persona: string, userLocation: any): Promise<string[]> {
-  if ((!this.userProfile.profileUserTypes || !this.userProfile.profileUserTypes.length) &&
-  (!this.userProfile.profileUserType || !this.userProfile.profileUserType.subType)) {
-      return undefined;
   }
-  let formFields;
-  try {
+
+  private async getPersonaConfig(persona: string) {
+    const formFields = await this.formService.getFormConfig(ProfilePageComponent.SUPPORTED_PERSONA_LIST_FORM_REQUEST).toPromise();
+    return formFields.find(config => config.code === persona);
+  }
+
+  private async getSubPersonaConfig(persona: string, userLocation: any): Promise<string[]> {
+    if ((!this.userProfile.profileUserTypes || !this.userProfile.profileUserTypes.length) &&
+      (!this.userProfile.profileUserType || !this.userProfile.profileUserType.subType)) {
+      return undefined;
+    }
+    let formFields;
+    try {
       const state = userLocation.state;
       formFields = await this.formService.getFormConfig({
         ...ProfilePageComponent.DEFAULT_PERSONA_LOCATION_CONFIG_FORM_REQUEST,
-        ...(state ? {contentType: state.code} : {})
+        ...(state ? { contentType: state.code } : {})
       }).toPromise();
-  } catch (e) {
+    } catch (e) {
       formFields = await this.formService.getFormConfig(ProfilePageComponent.DEFAULT_PERSONA_LOCATION_CONFIG_FORM_REQUEST).toPromise();
-  }
+    }
 
-  const personaConfig = formFields.find(formField => formField.code === 'persona');
-  const personaChildrenConfig: FieldConfig<any>[] = personaConfig['children'][persona];
-  const subPersonaConfig = personaChildrenConfig.find(formField => formField.code === 'subPersona');
-  if (!subPersonaConfig) {
+    const personaConfig = formFields.find(formField => formField.code === 'persona');
+    const personaChildrenConfig: FieldConfig<any>[] = personaConfig['children'][persona];
+    const subPersonaConfig = personaChildrenConfig.find(formField => formField.code === 'subPersona');
+    if (!subPersonaConfig) {
       return undefined;
-   }
-  const subPersonaList = [];
-  if (_.get(subPersonaConfig, 'templateOptions.multiple')) {
-    if (this.userProfile.profileUserTypes && this.userProfile.profileUserTypes.length) {
-      this.userProfile.profileUserTypes.forEach(ele => {
-        if (_.get(ele, 'subType')) {
-          subPersonaList.push(ele.subType);
-        }
-      });
+    }
+    const subPersonaList = [];
+    if (_.get(subPersonaConfig, 'templateOptions.multiple')) {
+      if (this.userProfile.profileUserTypes && this.userProfile.profileUserTypes.length) {
+        this.userProfile.profileUserTypes.forEach(ele => {
+          if (_.get(ele, 'subType')) {
+            subPersonaList.push(ele.subType);
+          }
+        });
+      } else {
+        subPersonaList.push(this.userProfile.profileUserType.subType);
+      }
     } else {
       subPersonaList.push(this.userProfile.profileUserType.subType);
     }
-  } else {
-    subPersonaList.push(this.userProfile.profileUserType.subType);
+
+    const subPersonaFieldConfigOption = [];
+    subPersonaList.forEach((ele) => {
+      subPersonaFieldConfigOption.push((subPersonaConfig.templateOptions.options as FieldConfigOption<any>[]).
+        find(option => option.value === ele).label);
+    });
+
+    return subPersonaFieldConfigOption;
   }
 
-   const subPersonaFieldConfigOption = [];
-   subPersonaList.forEach((ele) => {
-    subPersonaFieldConfigOption.push((subPersonaConfig.templateOptions.options as FieldConfigOption<any>[]).
-    find(option => option.value === ele).label);
-   });
-
-  return subPersonaFieldConfigOption;
-}
-
-public onLocationModalClose(event) {
-  this.showEditUserDetailsPopup = !this.showEditUserDetailsPopup;
-  this.showFullScreenLoader = !event?.isSubmitted ? false : true;
-  setTimeout(() => {
-    if (this.showFullScreenLoader) {
-      this.showFullScreenLoader = false;
-      this.toasterService.error(this.resourceService.messages.emsg.m0005);
-    }
-  }, 5000);
-}
+  public onLocationModalClose(event) {
+    this.showEditUserDetailsPopup = !this.showEditUserDetailsPopup;
+    this.showFullScreenLoader = !event?.isSubmitted ? false : true;
+    setTimeout(() => {
+      if (this.showFullScreenLoader) {
+        this.showFullScreenLoader = false;
+        this.toasterService.error(this.resourceService.messages.emsg.m0005);
+      }
+    }, 5000);
+  }
 
 }
