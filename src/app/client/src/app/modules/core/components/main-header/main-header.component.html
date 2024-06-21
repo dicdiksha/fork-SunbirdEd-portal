@@ -404,6 +404,14 @@
               </svg></i>
             {{resourceService.frmelmnts?.lnk?.dashboard}}
           </li>
+
+          <li class="list-item" tabindex="0" role="link" *ngIf='!isDesktopApp && permissionService.permissionAvailable'
+            appPermission [permission]='nishthaDashboard' (click)="toggleSideMenu(false);navigate('/nishtha-dashboard')">
+            <i class="icon-svg icon-svg--sm icon-dashboard mr-8"><svg class="icon icon-svg--primary">
+              <use xlink:href="./assets/images/sprite.svg#dashboard"></use>
+            </svg></i>
+              <span>{{resourceService?.frmelmnts?.tab?.courseDashboard}}</span> 
+          </li>
         
           <li class="list-item" *ngIf='!isDesktopApp && permissionService.permissionAvailable' appPermission
           [permission]='programDashboardRole' (click)="toggleSideMenu(false)" routerLink="program">
