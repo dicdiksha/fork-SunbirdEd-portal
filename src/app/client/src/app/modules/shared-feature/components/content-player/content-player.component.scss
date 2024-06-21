@@ -49,3 +49,45 @@
 .header-block {
 	display: none !important;
   }
+
+  .side-bar {
+    margin-left: 2%;
+    width: 25%;
+    float: right;
+    border-radius: 1.25rem;
+    box-shadow: 0.275rem 0.275rem 0.225rem 0 rgba(0,0,0,0.5);
+    background: #e9e8d9;
+    padding: 15px;
+    overflow: hidden;
+}
+.video-player-section {
+  margin-left: 14.66%;
+  width: 58.3%;
+}
+.player-timeline {
+    overflow: hidden;
+    border-radius: 1rem;
+}
+.side-bar h6 {
+  padding:5px 0px;
+}
+
+.side-bar ul li{
+  margin-bottom: 0;
+  padding: 10px 10px;
+  font-size: 13px;
+  border-radius: 0!important;
+  cursor: pointer;
+}
+.side-bar ul {
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+
+li:hover{
+  background-color: #f5f5f5;
+}

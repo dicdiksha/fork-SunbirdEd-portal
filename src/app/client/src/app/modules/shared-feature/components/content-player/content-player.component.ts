@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener,EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService, PlayerService, CopyContentService, PermissionService } from '@sunbird/core';
 import * as _ from 'lodash-es';
@@ -53,6 +53,7 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   modalRef: BsModalRef;
   filteredContent = [];
   timestampDetailList = [];
+  startTime: EventEmitter<number> = new EventEmitter<number>();
 
   @HostListener('window:beforeunload')
     canDeactivate() {
@@ -97,7 +98,6 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
       });
       this.getContent();
       this.getTimestampData();
-      console.log(this.contentId,'this is content Id')
       CsGroupAddableBloc.instance.state$.pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
         this.isGroupAdmin = !_.isEmpty(_.get(this.activatedRoute.snapshot, 'queryParams.groupId'))
         && _.get(data.params, 'groupData.isAdmin');
@@ -111,28 +111,20 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   }
 
   getTimestampData(){
-    console.log(localStorage.getItem("key"), "this is search query");
+    if(sessionStorage.getItem('key')!=''){
     this.searchService.videoSearch().subscribe((res) => {
       this.filteredContent = res.result.content.filter(
         (item) => item.identifier === this.contentId
       );
-      console.log(this.filteredContent, "this filtered array");
-      this.timestampDetailList =
-        this.filteredContent[0].timestamps_details_list;
-      const dropdown = document.getElementById("dropdown");
-      this.timestampDetailList.forEach((obj, index) => {
-        let timestamp_button = document.createElement("button");
-        console.log(`Object ${index + 1}:`);
-        let start_time = obj.start_time;
-        let relevance = obj.relevance;
-        console.log(start_time, "this is start_time");
-        console.log(relevance, "this is relevance");
-        timestamp_button.textContent ="Go to " +(start_time / 60).toFixed(2) +" minutes (" +relevance +").";
-        timestamp_button.classList.add('sb-btn', 'sb-btn-primary', 'sb-btn-normal', 'sb-btn-border');
-        dropdown.appendChild(timestamp_button);
-      });
-      console.log(this.timestampDetailList, "this is timestampdetail list");
+      this.timestampDetailList = this.filteredContent[0].timestamps_details_list;
     });
+  }
+  }
+
+  getstartTime(data){ 
+    if(data){
+      this.searchService.videoStartTime.emit(parseInt(data));
+    }
   }
 
   sendInteractDataToTelemetry(uniqueId) {
