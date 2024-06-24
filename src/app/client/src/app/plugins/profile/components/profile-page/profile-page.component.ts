@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CacheService } from 'ng2-cache-service';
 import { takeUntil } from 'rxjs/operators';
 import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
-import { CsCourseService } from '@project-sunbird/client-services/services/course/interface';
+import { CsCourseService } from '@dicdikshaorg/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
 import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 import { HttpClient } from '@angular/common/http';
@@ -182,7 +182,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     await this.browser.close();
   //   }
   // }
-
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
     this.layoutService.switchableLayout().pipe(takeUntil(this.unsubscribe$)).subscribe(layoutConfig => {

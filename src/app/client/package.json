@@ -53,6 +53,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@dicdikshaorg/chatbot-client": "^3.0.3",
+    "@dicdikshaorg/client-services": "2.10.0",
     "@dicdikshaorg/common-consumption": "4.12.18",
     "@dicdikshaorg/common-form-elements": "5.1.30",
     "@dicdikshaorg/epub-player-v9": "5.0.6",
@@ -97,6 +98,7 @@
     "common-form-elements-v9": "4.5.0",
     "common-form-elements-web-v9": "4.7.2",
     "core-js": "^2.4.1",
+    "d3": "^7.9.0",
     "datatables.net-dt": "^1.10.20",
     "dayjs": "^1.8.26",
     "dictrigyn-collection-editor-v9": "^5.0.14",
@@ -176,7 +178,7 @@
     "protractor": "~7.0.0",
     "ts-node": "^4.1.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.8"
+    "typescript": "~4.0.8" 
   },
   "resolutions": {
     "moment": "2.24.0"

@@ -50,7 +50,9 @@ export class SelectOptionGroupComponent implements OnInit {
           });
         }
       } else {
-        this.preSelectedValue = this.selectedOption.selectedOption === 'CBSE' ? 'CBSE/NCERT' : this.selectedOption.selectedOption;
+        //117337 - remove cbse/ncert
+        // this.preSelectedValue = this.selectedOption.selectedOption === 'CBSE' ? 'CBSE/NCERT' : this.selectedOption.selectedOption;
+        this.preSelectedValue = this.selectedOption.selectedOption;
       }
     }
   }

@@ -201,6 +201,7 @@ export class UserService {
       }
     );
   }
+
   /**
    * get method to fetch appId.
    */

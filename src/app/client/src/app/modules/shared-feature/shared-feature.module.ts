@@ -15,7 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule,
   SuiProgressModule, SuiRatingModule, SuiCollapseModule, SuiDimmerModule } from 'ng2-semantic-ui-v9';
 import { GlobalConsentPiiComponent } from './components/global-consent-pii/global-consent-pii.component';
-import { CsModule } from '@project-sunbird/client-services';
+import { CsModule } from '@dicdikshaorg/client-services';
 import { CsLibInitializerService } from '../../service/CsLibInitializer/cs-lib-initializer.service';
 import { PlayerHelperModule } from '@sunbird/player-helper';
 import { CommonConsumptionModule } from '@dicdikshaorg/common-consumption';
