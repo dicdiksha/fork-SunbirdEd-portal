@@ -1,6 +1,6 @@
 
 import { map } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+import { Injectable,EventEmitter } from '@angular/core';
 import { UserService } from './../user/user.service';
 import { ContentService } from './../content/content.service';
 import { ConfigService, ServerResponse, ResourceService } from '@sunbird/shared';
@@ -21,6 +21,7 @@ import { ActivatedRoute } from '@angular/router';
 export class SearchService {
   
   public mimeTypeList;
+  public videoStartTime = new EventEmitter<number>();
   /**
    * Contains searched content list
    */
@@ -282,7 +283,6 @@ export class SearchService {
     if (requestParam['pageNumber'] && requestParam['limit']) {
       option.data.request['offset'] = (requestParam.pageNumber - 1) * requestParam.limit;
     }
-    
     let data ={
       request: {
           "facets": [],
@@ -304,15 +304,17 @@ export class SearchService {
       }
   }
   if(this.searchType =='video'){
-    localStorage.setItem('key',this.searchQuery)
+    sessionStorage.setItem('key',this.searchQuery)
     return this.http.post<any>(`${this.apiUrl}`, data);
   }
-  return this.publicDataService.post(option);
-    
+  else{
+    sessionStorage.setItem('key','')
+    return this.publicDataService.post(option);
+  }
   }
 
    videoSearch(){
-    let searchQuery = localStorage.getItem('key');
+    let searchQuery = sessionStorage.getItem('key');
     let data ={
       request: {
           "facets": [],
