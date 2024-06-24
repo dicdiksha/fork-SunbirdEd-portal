@@ -144,10 +144,6 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
         //   param: this.config.urlConFig.params.userReadParam
     };
 
-    this.userLMSToken.getDataForLMS().then((lmsData) => {
-      console.log("lmsData....", lmsData);
-    });
-
     this.learnerService.getWithHeaders(optionData).subscribe(
         (data: ServerResponse) => {
             if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
