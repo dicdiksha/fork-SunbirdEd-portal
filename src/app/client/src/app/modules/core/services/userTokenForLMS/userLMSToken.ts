@@ -60,66 +60,74 @@ export class userLMSToken {
       * it can use for LMS requirement to redirect from DIKSHA to LMS web portal
      */
     getDataForLMS(): Promise<any> {
-        console.log("getting user id in common method....", this.userService?.userProfile?.userId);
-        console.log("isUserLoggedIn in common method", this.isUserLoggedIn());
-        const optionData = {
-            url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userService?.userProfile?.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
-            //   param: this.config.urlConFig.params.userReadParam
-        };
-        this.learnerService.getWithHeaders(optionData).subscribe(
-            (data: ServerResponse) => {
-                if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
-                    console.log("user data.....", data?.result?.response);
-                    let ids = []; // locations ids -> state, district,block , cluster, school
-                    data?.result?.response?.profileLocation?.forEach((element: any) => {
-                        ids.push(element?.id)
-                    });
-                    console.log("IDS.......", ids);
-                    if (ids?.length && this.isUserLoggedIn()) {
-                        this.getUserLocationData(ids)
-                            .then(locationData => {
-                                console.log("locationData?.result?.response", locationData?.result?.response)
-                                this.userData = locationData;
-                                console.log("this?.userData", this.userData);
-                                const createLocationObject = (locations: any) => {
-                                    return locations?.reduce((acc: any, location: any) => {
-                                        acc[location.type] = location.name;
-                                        if (location.type === 'school') {
-                                            acc.code = location.code;
-                                        }
-                                        return acc;
-                                    }, {});
-                                };
-                                const locationObject = createLocationObject(this?.userData?.result?.response);
-                                console.log("locationObject", locationObject);
-                                const userDataObject = {
-                                    firstname: data?.result?.response?.firstName,
-                                    lastname: data?.result?.response?.lastName,
-                                    emailid: data?.result?.response?.email,
-                                    phone: data?.result?.response?.phone,
-                                    userid: data?.result?.response?.userId,
-                                    profileUserType: data?.result?.response?.profileUserType?.type,
-                                    profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
-                                    rootOrgName: data?.result?.response?.rootOrg?.description,
-                                    board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
-                                    ...locationObject, // keys name {state, district, block, cluster, school, code}
-                                }
-                                // return userDataObject;
-                                console.log("userDataObject....", userDataObject)
-                                this.lmsData = userDataObject;
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
+        return new Promise((resolve, reject) => {
+            console.log("getting user id in common method....", this.userService?.userProfile?.userId);
+            console.log("isUserLoggedIn in common method", this.isUserLoggedIn());
+            const optionData = {
+                url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userService?.userProfile?.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+                //   param: this.config.urlConFig.params.userReadParam
+            };
+            this.learnerService.getWithHeaders(optionData).subscribe(
+                (data: ServerResponse) => {
+                    if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
+                        console.log("user data.....", data?.result?.response);
+                        let ids = []; // locations ids -> state, district,block , cluster, school
+                        data?.result?.response?.profileLocation?.forEach((element: any) => {
+                            ids.push(element?.id)
+                        });
+                        console.log("IDS.......", ids);
+                        if (ids?.length && this.isUserLoggedIn()) {
+                            this.getUserLocationData(ids)
+                                .then(locationData => {
+                                    console.log("locationData?.result?.response", locationData?.result?.response)
+                                    this.userData = locationData;
+                                    console.log("this?.userData", this.userData);
+                                    const createLocationObject = (locations: any) => {
+                                        return locations?.reduce((acc: any, location: any) => {
+                                            acc[location.type] = location.name;
+                                            if (location.type === 'school') {
+                                                acc.code = location.code;
+                                            }
+                                            return acc;
+                                        }, {});
+                                    };
+                                    const locationObject = createLocationObject(this?.userData?.result?.response);
+                                    console.log("locationObject", locationObject);
+                                    const userDataObject = {
+                                        firstname: data?.result?.response?.firstName,
+                                        lastname: data?.result?.response?.lastName,
+                                        emailid: data?.result?.response?.email,
+                                        phone: data?.result?.response?.phone,
+                                        userid: data?.result?.response?.userId,
+                                        profileUserType: data?.result?.response?.profileUserType?.type,
+                                        profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
+                                        rootOrgName: data?.result?.response?.rootOrg?.description,
+                                        board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
+                                        ...locationObject, // keys name {state, district, block, cluster, school, code}
+                                    }
+                                    // resolve the promise with userDataObject
+                                    console.log("userDataObject....", userDataObject);
+                                    resolve(userDataObject);
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                    reject(error);
+                                });
+                        } else {
+                            resolve(null); // or reject(new Error("No ids or user not logged in"));
+                        }
+                    } else {
+                        resolve(null); // or reject(new Error("No user data found"));
                     }
+                },
+                (err: ServerResponse) => {
+                    console.log("getDecriptedUserProfile error ", err);
+                    reject(err);
                 }
-            },
-            (err: ServerResponse) => {
-                console.log("getDecriptedUserProfile error ", err);
-            }
-        )
-        return this.lmsData;
+            );
+        });
     }
+    
      // LMS part end
 
 }
