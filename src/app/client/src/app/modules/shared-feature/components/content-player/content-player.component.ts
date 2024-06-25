@@ -54,6 +54,7 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   filteredContent = [];
   timestampDetailList = [];
   startTime: EventEmitter<number> = new EventEmitter<number>();
+  searchQuery:string='';
 
   @HostListener('window:beforeunload')
     canDeactivate() {
@@ -110,8 +111,9 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
       });
   }
 
-  getTimestampData(){
-    if(sessionStorage.getItem('key')!=''){
+ async getTimestampData(){
+    this.searchQuery = sessionStorage.getItem('key')
+    if(this.searchQuery != ''){
     this.searchService.videoSearch().subscribe((res) => {
       this.filteredContent = res.result.content.filter(
         (item) => item.identifier === this.contentId
@@ -125,6 +127,14 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
     if(data){
       this.searchService.videoStartTime.emit(parseInt(data));
     }
+  }
+  
+
+  convertIntoMinutes(seconds){
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = seconds % 60;
+    var formattedTime = minutes.toString().padStart(2, '0') + ':' + remainingSeconds.toString().padStart(2, '0');
+    return formattedTime;
   }
 
   sendInteractDataToTelemetry(uniqueId) {
@@ -308,6 +318,11 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   }
 
   ngAfterViewInit() {
+    setTimeout(()=>{
+      if(this.timestampDetailList){
+        this.getstartTime(this.timestampDetailList[0]?.start_time) 
+      }
+    },1500)
     this.pageLoadDuration = this.navigationHelperService.getPageLoadTime();
   }
 
