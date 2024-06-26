@@ -79,6 +79,32 @@ export class NavigationHelperService {
       }
     });
   }
+
+   /**
+   * Stores routing Query change history
+   * @memberof NavigationHelperService
+   */
+   public storeUrlHistoryOnQueryChange(): void {
+    this.activatedRoute.queryParams.subscribe(() => {
+      const url = this.router.url.split('?')[0];
+      const queryParams = this.activatedRoute.root.children[this.activatedRoute.root.children.length - 1]?.snapshot.queryParams;
+      let history: { url: string, queryParams?: any };
+  
+      if (_.isEmpty(queryParams)) {
+        history = { url };
+      } else {
+        history = { url, queryParams };
+      }
+      const previousUrl = this._history.length ? this._history[this._history.length - 1] : undefined;
+      if (previousUrl === undefined || (previousUrl && previousUrl.url !== history.url) || !_.isEqual(previousUrl.queryParams, history.queryParams)) {
+        if(previousUrl.url == history.url){
+          this._history.pop();
+        }
+        this._history.push(history);
+      }
+    });
+  }
+
   storeResourceCloseUrl() {
     this._resourceCloseUrl = this._history[this._history.length - 1];
   }
