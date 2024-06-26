@@ -176,13 +176,15 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     if(!this.showNewPlayer){
       const interval = setInterval(() => {
         const iframe = document.getElementById('contentPlayer') as HTMLIFrameElement;
-        let innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-        let isVideoEnded = innerDoc.body.innerHTML.match('vjs-ended');
-        if (isVideoEnded) {
-            clearInterval(interval);
-       
-            this.contentRatingModal = true;
-            this.showRatingModalAfterClose = true;
+        if(iframe){
+          let innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+          let isVideoEnded = innerDoc.body.innerHTML.match('vjs-ended');
+          if (isVideoEnded) {
+              clearInterval(interval);
+        
+              this.contentRatingModal = true;
+              this.showRatingModalAfterClose = true;
+          }
         }
       }, 1000);
     }
