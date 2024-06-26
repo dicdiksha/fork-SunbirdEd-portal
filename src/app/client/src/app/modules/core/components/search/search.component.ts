@@ -6,7 +6,7 @@ import { ResourceService, ConfigService, IUserProfile, LayoutService, UtilServic
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http'
 import * as _ from 'lodash-es';
-import { data } from 'jquery';
+import { NavigationHelperService } from '../../../../modules/shared/services/navigation-helper/navigation-helper.service';
 /**
  * Main menu component
  */
@@ -90,7 +90,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   constructor(route: Router, activatedRoute: ActivatedRoute, userService: UserService,
     resourceService: ResourceService, config: ConfigService, public utilService: UtilService,
-    private cdr: ChangeDetectorRef, public layoutService: LayoutService, public connectionService: ConnectionService,private http:HttpClient) {
+    private cdr: ChangeDetectorRef, public layoutService: LayoutService, public connectionService: ConnectionService,private http:HttpClient,private navigationHelperService: NavigationHelperService) {
     this.route = route;
     this.activatedRoute = activatedRoute;
     this.resourceService = resourceService;
@@ -188,6 +188,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.route.navigate([redirectUrl, 1], { queryParams: this.queryParam });
     }
   
+    setTimeout(() => {
+      this.navigationHelperService.storeUrlHistoryOnQueryChange();
+    }, 500);
   
   }
 
