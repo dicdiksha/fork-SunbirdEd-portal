@@ -43,6 +43,9 @@ const routes: Routes = [
     path: 'nishtha-dashboard', loadChildren: () => import('./module/nishtha-dashboard/nishtha-dashboard.module').then(m => m.NishthaDashboardModule)
   },
   {
+    path: 'chat-with-books', loadChildren: () => import('./module/chat-with-books/chat-with-books.module').then(m => m.ChatWithBooksModule)
+  },
+  {
     path: 'guest-profile', loadChildren: () => import('./module/guest-profile/guest-profile.module').then(m => m.GuestProfileModule)
   }
 ];
