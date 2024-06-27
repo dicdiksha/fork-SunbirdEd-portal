@@ -612,7 +612,9 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((response) => {
          // this.toasterService.success(_.get(this.resourceService, 'messages.smsg.dataSettingSubmitted'));
-          if (response && response.consent) {
+         console.log("=========response=========",response,"response.consent",response.consent);
+          // if (response && response.consent) {
+          if (response) {
             this.isTenantChanged = false;
             const requestForActive: Consent = {
               status: ConsentStatus.ACTIVE,
