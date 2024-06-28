@@ -1,1 +1,29 @@
-<p>chat-with-books works!</p>
+<div [ngClass]="layoutConfiguration ? 'sbt-fluid-content-bg':''">
+  <div [ngClass]="layoutConfiguration ? 'sb-g sbt-container sbt-page-content' : 'sb-g'">
+    <div [ngClass]="FIRST_PANEL_LAYOUT">
+      <div *ngIf="layoutConfiguration">
+        <ng-container *ngIf="isDesktopApp">
+          <app-network-status></app-network-status>
+          <app-load-offline-content></app-load-offline-content>
+          <app-system-warning></app-system-warning>
+        </ng-container>
+      </div>
+      <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''">
+        <ng-container>
+          <p>left sidebar</p>
+        </ng-container>
+      </div>
+    </div>
+    <div [ngClass]="SECOND_PANEL_LAYOUT" class="w-100">
+      <div [ngClass]="layoutConfiguration ? 'sbt-page-content-area' : 'ui container mt-24'">
+        <div class="content-grid relative9">
+          <div [appTelemetryImpression]="telemetryImpression" class="twelve wide column content-scroll"
+            in-view-container>
+            <p>Right side section</p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

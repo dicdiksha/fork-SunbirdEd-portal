@@ -10,10 +10,10 @@ const routes: Routes = [
         path: 'chatwithbooks'
       },
       menuBar: {
-        visible: false
+        visible: true
     },
       telemetry: {
-        env: 'chatwithbooks', pageid: 'chat-with-books', type: 'view', subtype: 'paginate'
+        env: 'chatwithbooks', pageid: 'chat-with-books', type: 'view',
       }
     }
   }
