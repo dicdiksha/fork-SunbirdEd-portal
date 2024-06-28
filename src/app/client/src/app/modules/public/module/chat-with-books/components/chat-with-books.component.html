@@ -33,7 +33,10 @@
             in-view-container>
             <div class="chatgpt-box h-100">
               <!-- Chats container -->
-              <div class="chat-container"></div>
+              <div class="chat-container" id="chat-data" (input)="onDataChange($event)">
+               {{apiData}}
+
+              </div>
               <!-- Typing container -->
               <div class="typing-container">
                 <div class="typing-content">
