@@ -572,7 +572,6 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
     const formValue = this.declaredLatestFormValue.children.externalIds;
     const declarations = [];
     const declaredDetails = this.declaredLatestFormValue.children && this.declaredLatestFormValue.children.externalIds;
-    console.log("=============userProfile=======",this.userProfile);
     let operation = '';
     if (!this.userProfile.declarations || !_.get(this.userProfile, 'declarations.length')) {
       operation = 'add';
@@ -586,7 +585,6 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
     declarations.push(this.getDeclarationReqObject(operation, declaredDetails, this.tenantPersonaLatestFormValue));
 
     const data = { declarations };
-    console.log("declarations=====",declarations);
     this.getProfileInfo(declarations);
     this.updateProfile(data);
     if (this.formAction === 'submit') {
@@ -597,7 +595,6 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
   }
 
   updateUserConsent(currentOrgId, previousOrgId?) {
-    console.log("=============currentOrgId=======",currentOrgId,"========previousOrgId======",previousOrgId);
     if (this.isTenantChanged && !!previousOrgId) {
       const requestFoRevoked: Consent = {
         status: ConsentStatus.REVOKED,
@@ -607,14 +604,11 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
         objectType: 'Organisation'
       };
 
-      console.log("====requestFoRevoked====",requestFoRevoked);
       this.csUserService.updateConsent(requestFoRevoked, { apiPath: '/learner/user/v1' })
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((response) => {
          // this.toasterService.success(_.get(this.resourceService, 'messages.smsg.dataSettingSubmitted'));
-         console.log("=========response=========",response,"response.consent",response.consent);
-          // if (response && response.consent) {
-          if (response) {
+          if (response && response.consent) {
             this.isTenantChanged = false;
             const requestForActive: Consent = {
               status: ConsentStatus.ACTIVE,
@@ -624,7 +618,6 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
               objectType: 'Organisation'
             };
 
-            console.log("====requestForActive====",requestForActive);
             this.csUserService.updateConsent(requestForActive, { apiPath: '/learner/user/v1' })
               .pipe(takeUntil(this.unsubscribe))
               .subscribe(() => {
