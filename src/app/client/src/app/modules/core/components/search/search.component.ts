@@ -23,6 +23,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   showSuiSelectDropdown: boolean;
   selectedSearchOption: string = 'all';
+  selectedSearchFlag:boolean =true;
 
   /**
    *
@@ -132,6 +133,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
+  onToggle(value:boolean){
+    this.selectedSearchFlag =value;
+  }
+
   /**
    * on changing dropdown option
    * it navigate
@@ -182,7 +187,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.isDesktopApp && !this.isConnected) {
       this.route.navigate(['mydownloads'], { queryParams: this.queryParam });
     }else if(this.selectedSearchOption =='video'){
-      this.route.navigate([redirectUrl, 1], { queryParams: { key:this.key, searchType: this.selectedSearchOption} });
+      this.route.navigate([redirectUrl, 1], { queryParams: { key:this.key, searchType: this.selectedSearchOption,selectedTab:'all'} });
     }
     else {
       this.route.navigate([redirectUrl, 1], { queryParams: this.queryParam });
