@@ -60,11 +60,12 @@
 
 /* Chats container styling */
 .chat-container {
+  padding: 0px 15px 15px 15px;
     overflow-y: auto;
     height: 70vh;
     max-height: 100vh;
-    border-radius: 1.5rem;
-    background-color: rgba(0, 0, 0, 0.05);
+    // border-radius: 1.5rem;
+    // background-color: rgba(0, 0, 0, 0.05);
     // padding-bottom: 150px;
   }
   :where(.chat-container, textarea)::-webkit-scrollbar {
@@ -182,10 +183,10 @@
   /* Typing container styling */
   .typing-container {
     // position: fixed;
-    bottom: 0;
+    margin-top: 15px;
+    padding: 15px 0px 0px 0px;
     width: 100%;
     display: flex;
-    padding: 20px 10px 0px 10px;
     justify-content: center;
     background: transparent;
     border-top: 1px solid #c1c0ae;
