@@ -77,6 +77,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
         this.closeModal();
         localStorage.setItem('isReturnFromThirdParty', 'false');
       }
+      this.closeModal();
       console.log("location-selection.component page called");
   }
 

@@ -11,7 +11,7 @@ import { SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, Su
 import { WebExtensionModule } from '@project-sunbird/web-extensions';
 import { CommonConsumptionModule } from '@dicdikshaorg/common-consumption';
 import { ContentSearchModule } from '@sunbird/content-search';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChatWithBooksRoutingModule } from './chat-with-books-routing.module';
 import { ChatWithBooksComponent } from './components/chat-with-books.component';
 
@@ -29,6 +29,8 @@ import { ChatWithBooksComponent } from './components/chat-with-books.component';
     SharedModule,
     NgInviewModule,
     SharedFeatureModule,
+    FormsModule,
+    ReactiveFormsModule,
     SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule, SuiProgressModule,
     SuiRatingModule, SuiCollapseModule, SuiDimmerModule, WebExtensionModule,
     CommonConsumptionModule, ContentSearchModule, SlickModule

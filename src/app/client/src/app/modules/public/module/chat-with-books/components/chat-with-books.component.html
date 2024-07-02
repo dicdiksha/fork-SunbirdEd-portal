@@ -41,8 +41,8 @@
               <div class="typing-container">
                 <div class="typing-content">
                   <div class="typing-textarea">
-                    <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required></textarea>
-                    <span id="send-btn" class="material-symbols-rounded"><i class="fa fa-arrow-right"></i></span>
+                    <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required [(ngModel)]="searchQuery"></textarea>
+                    <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i class="fa fa-arrow-right"></i></span>
                   </div>
                   <div class="typing-controls">
                     <span id="delete-btn" class="material-symbols-rounded"><i class="fa fa-trash-alt"></i></span>

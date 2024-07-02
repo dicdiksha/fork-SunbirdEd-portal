@@ -237,7 +237,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     };
     this.formService.getFormConfig(formServiceInputParams).subscribe((data: any) => {
       // to show/hide about tab
-
+      
       // const pathSegment = this.userService._slug;
       // const targetItem = data.find(item => item.index === 10);
       // targetItem.isEnabled = false;

@@ -13,14 +13,14 @@ import { CacheService } from 'ng2-cache-service';
 import { ContentManagerService } from './../../offline/services';
 import {omit, groupBy, get, uniqBy, toLower, find, map as _map, forEach, each} from 'lodash-es';
 import { frameworkList } from './../../../../content-search/components/search-data';
-
+import { LearnerService } from '../../../../../modules/core/services/learner/learner.service';
 @Component({
   selector: 'app-chat-with-books',
   templateUrl: './chat-with-books.component.html',
   styleUrls: ['./chat-with-books.component.scss']
 })
 export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCheck ,AfterViewInit {
-
+  public searchQuery : string = '';
   public showLoader = true;
   public showLoginModal = false;
   public baseUrl: string;
@@ -89,7 +89,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCh
     public userService: UserService, public frameworkService: FrameworkService,
     public cacheService: CacheService, public navigationhelperService: NavigationHelperService, public layoutService: LayoutService,
     public contentManagerService: ContentManagerService, private offlineCardService: OfflineCardService,
-    public telemetryService: TelemetryService, private schemaService: SchemaService) {
+    public telemetryService: TelemetryService, private schemaService: SchemaService,private learnerService: LearnerService) {
     this.paginationDetails = this.paginationService.getPager(0, 1, this.configService.appConfig.SEARCH.PAGE_LIMIT);
     this.filterType = this.configService.appConfig.explore.filterType;
   }
@@ -105,6 +105,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCh
     setTimeout(() => {
       this.apiData = this.apiData + 'Hi New data coming'
     }, 5000);
+    this.getQueryFromBooks();
   }
 
 
@@ -229,7 +230,7 @@ ngOnChanges(changes: SimpleChanges) {
 
 ngDoCheck() {
   // Custom change detection logic
-  console.log('Change detection run');
+  // console.log('Change detection run');
   // this.moveToBottom()
 } 
 
@@ -237,5 +238,20 @@ onDataChange(event: any) {
   this.moveToBottom()
 }
 
+saveBooksQuery(){
+  const option = {
+    url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
+    data: {'searchQuery':this.searchQuery}
+  };
+  return this.learnerService.postWithSubscribe(option);
+}
+
+getQueryFromBooks(){
+  let userId = '12233333'
+  const option = {
+    url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + userId,
+  };
+  return this.learnerService.get(option);
+}
 
 }

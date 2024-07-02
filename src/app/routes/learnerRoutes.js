@@ -74,6 +74,35 @@ module.exports = function (app) {
     })
   )
 
+  app.post('/learner/v1/chat-with-books/save',
+    bodyParser.json(),
+    proxyUtils.verifyToken(),
+    isAPIWhitelisted.isAllowed(),
+    telemetryHelper.generateTelemetryForLearnerService,
+    telemetryHelper.generateTelemetryForProxy,
+    proxy(learnerURL, {
+      limit: reqDataLimitOfContentUpload,
+      proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
+      proxyReqPathResolver: (req) => {
+        logger.info({ msg: '/learner/v1/chat-with-books/save called upstream url /v1/chat-with-books/save in request path resolver' });
+        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '')).path
+      },
+      userResDecorator: (proxyRes, proxyResData, req, res) => {
+        logger.info({ msg: '/learner/v1/chat-with-books/save called upstream url /v1/chat-with-books/save in request path resolver' });
+        try {
+          const data = JSON.parse(proxyResData.toString('utf8'));
+          if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
+          else return proxyUtils.handleSessionExpiry(proxyRes, data, req, res, data);
+        } catch (err) {
+          logger.error({ msg: 'learner route : userResDecorator json parse error:', proxyResData });
+          logger.error({ msg: 'learner route : error for /learner/v1/chat-with-books/save upstram url is /learner/v1/chat-with-books/save ', err });
+          return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, null);
+        }
+      }
+    })
+  )
+
+
   app.patch('/learner/user/v1/block',
     proxyUtils.verifyToken(),
     proxy(envHelper.learner_Service_Local_BaseUrl, {
