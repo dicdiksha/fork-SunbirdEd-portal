@@ -305,6 +305,7 @@ export class UserLocationComponent implements OnInit, OnDestroy, AfterViewInit {
     const telemetryData = this.getTelemetryData(changeType);
     this.generateInteractEvent(telemetryData);
     this.updateLocation(data, {state: stateData, district: districtData});
+    location.reload();
   }
 
   getTelemetryData(changeType) {
