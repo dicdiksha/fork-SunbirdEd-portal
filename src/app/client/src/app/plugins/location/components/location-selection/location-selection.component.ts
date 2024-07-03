@@ -108,7 +108,9 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
     dialogRef && dialogRef.close();
     this.popupControlService.changePopupStatus(true);
     this.close.emit({isSubmitted: this.isSubmitted});
+    this.ngOnInit();
     console.log("called close method---->>>>>")
+    
   }
 
   async updateUserLocation() {
