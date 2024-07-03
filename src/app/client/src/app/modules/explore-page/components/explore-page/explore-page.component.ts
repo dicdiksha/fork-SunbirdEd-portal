@@ -357,7 +357,16 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                                 console.log("final object", userDataObject);
                                 const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-                                const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}`;
+
+                                // check role and according to role it will redirect to required page
+                                let redirecturl : string;
+                                if (userDataObject?.profileUserType?.toLowerCase() === 'student' || userDataObject?.profileUserType?.toLowerCase() === 'teacher') {
+                                    redirecturl = 'https://learning.diksha.gov.in/diksha/diksha_sso.php'
+                                }
+                                // else if (){
+
+                                // }
+                                const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}&redirecturl=${redirecturl}`;
                                 // window.location.href = url; // open in same tab
                                 window.open(url, '_blank'); // open in new tab
                             })
