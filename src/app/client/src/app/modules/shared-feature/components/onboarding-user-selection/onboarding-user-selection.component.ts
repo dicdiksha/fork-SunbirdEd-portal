@@ -156,6 +156,7 @@ export class OnboardingUserSelectionComponent implements OnInit, OnDestroy {
       localStorage.setItem('guestUserType', name);
       this.userSelect.emit(true);
     }
+    location.reload();
     this.logAuditEvent(code);
   }
   logAuditEvent(code: any) {
