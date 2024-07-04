@@ -127,6 +127,8 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     if (this.userService.loggedIn) {
       if(pathname && data.contentType === "About") {
         window.open('/'+pathname,'_self');
+      } else if(pathname && data.contentType === "chatwithbooks") {
+        this.router.navigate(['/explore/chat-with-books'],{ queryParams: { selectedTab: 'chatwithbooks' }});
       } else {
         this.router.navigate([this.exploreNcert ? '/exploren/1' : data.loggedInUserRoute.route],
           { queryParams: { ...params, selectedTab: data.loggedInUserRoute.queryParam } });
@@ -134,6 +136,8 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     } else {
       if(pathname && data.contentType === "About") {
         window.open('/'+pathname,'_self');
+      } else if(pathname && data.contentType === "chatwithbooks") {
+        this.router.navigate(['/explore/chat-with-books'],{ queryParams: { selectedTab: 'chatwithbooks' }});
       } else {
         if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
           !data.isLoginMandatory ?

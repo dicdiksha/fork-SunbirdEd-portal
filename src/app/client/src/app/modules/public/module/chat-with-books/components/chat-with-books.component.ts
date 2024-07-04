@@ -2,17 +2,15 @@ import {
   PaginationService, ResourceService, ConfigService, ToasterService, OfflineCardService, ILoaderMessage, UtilService, NavigationHelperService, IPagination, LayoutService, COLUMN_TYPE
 } from '@sunbird/shared';
 import { SearchService, OrgDetailsService, UserService, FrameworkService, SchemaService} from '@sunbird/core';
-import { PublicPlayerService } from './../../../services';
 import { combineLatest, Subject, of } from 'rxjs';
 import { Component, OnInit, OnDestroy, EventEmitter, AfterViewInit,OnChanges, SimpleChanges,DoCheck  } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash-es';
 import { IInteractEventEdata, IImpressionEventInput, TelemetryService } from '@sunbird/telemetry';
-import { takeUntil, map, mergeMap, first, debounceTime, tap, delay } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { CacheService } from 'ng2-cache-service';
 import { ContentManagerService } from './../../offline/services';
-import {omit, groupBy, get, uniqBy, toLower, find, map as _map, forEach, each} from 'lodash-es';
-import { frameworkList } from './../../../../content-search/components/search-data';
+import { get, map as _map} from 'lodash-es';
 import { LearnerService } from '../../../../../modules/core/services/learner/learner.service';
 @Component({
   selector: 'app-chat-with-books',
@@ -21,45 +19,18 @@ import { LearnerService } from '../../../../../modules/core/services/learner/lea
 })
 export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCheck ,AfterViewInit {
   public searchQuery : string = '';
-  public showLoader = true;
-  public showLoginModal = false;
-  public baseUrl: string;
-  public noResultMessage;
-  public filterType: string;
-  public queryParams: any;
-  public hashTagId: string;
+
   public unsubscribe$ = new Subject<void>();
   public telemetryImpression: IImpressionEventInput;
   public inViewLogs = [];
-  public sortIntractEdata: IInteractEventEdata;
-  public dataDrivenFilters: any = {};
   public dataDrivenFilterEvent = new EventEmitter();
-  public initFilters = false;
-  public facets: Array<string>;
-  public facetsList: any;
-  public paginationDetails: IPagination;
   public contentList: Array<any> = [];
   public cardIntractEdata: IInteractEventEdata;
-  public loaderMessage: ILoaderMessage;
-  public numberOfSections = new Array(this.configService.appConfig.SEARCH.PAGE_LIMIT);
-  showExportLoader = false;
-  contentName: string;
-  showDownloadLoader = false;
-  frameworkId;
-  public globalSearchFacets: Array<string>;
-  public allTabData;
-  public selectedFilters;
-  public formData;
+
+
   layoutConfiguration;
   FIRST_PANEL_LAYOUT;
   SECOND_PANEL_LAYOUT;
-  public totalCount;
-  public searchAll;
-  public allMimeType;
-  downloadIdentifier: string;
-  contentDownloadStatus = {};
-  contentData;
-  showModal = false;
   isDesktopApp = false;
   showBackButton = false;
   apiData = `The standard Lorem Ipsum passage, used since the 1500s "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -85,21 +56,15 @@ export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCh
     public activatedRoute: ActivatedRoute, public paginationService: PaginationService,
     public resourceService: ResourceService, public toasterService: ToasterService,
     public configService: ConfigService, public utilService: UtilService, public orgDetailsService: OrgDetailsService,
-    public navigationHelperService: NavigationHelperService, private publicPlayerService: PublicPlayerService,
+    public navigationHelperService: NavigationHelperService,
     public userService: UserService, public frameworkService: FrameworkService,
     public cacheService: CacheService, public navigationhelperService: NavigationHelperService, public layoutService: LayoutService,
     public contentManagerService: ContentManagerService, private offlineCardService: OfflineCardService,
     public telemetryService: TelemetryService, private schemaService: SchemaService,private learnerService: LearnerService) {
-    this.paginationDetails = this.paginationService.getPager(0, 1, this.configService.appConfig.SEARCH.PAGE_LIMIT);
-    this.filterType = this.configService.appConfig.explore.filterType;
   }
   ngOnInit() {
 
     this.isDesktopApp = this.utilService.isDesktopApp;
-    this.activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(queryParams => {
-      this.queryParams = { ...queryParams };
-      if(queryParams.publisher) this.utilService.setNcertPublisher(true);
-    });
     this.initLayout();
     // this.moveToBottom();
     setTimeout(() => {
