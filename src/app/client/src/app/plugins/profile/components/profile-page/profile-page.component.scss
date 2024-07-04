@@ -232,3 +232,14 @@
 .delete{
   height: 2.5rem;
 }
+html[data-mode=darkmode] .multi-select-container {
+    background: #333;
+    border: .03125rem solid #666666;
+    color: #fff;
+}
+html[data-mode=darkmode] .multi-select-container .caret-down svg {
+  filter: invert(1);
+}
+html[data-mode=darkmode] :not(.normalize) .sb-modal-dropdown-web ul {
+  background-color: #222;
+}
