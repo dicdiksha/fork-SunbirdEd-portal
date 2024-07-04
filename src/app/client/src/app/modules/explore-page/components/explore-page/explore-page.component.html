@@ -97,8 +97,9 @@
                 class="sb-btn sb-btn-primary sb-btn-normal sb-btn-border">{{resourceService?.frmelmnts?.lbl?.changePreferences}}</button>
             </div>
           </div>
-          <div class="personalized_btn" *ngIf="userService?._userProfile?.profileUserType?.type == 'student' && getSelectedTab() === 'home'">
-            <button class="sb-btn sb-btn-primary sb-btn-normal sb-btn-border" (click)="navigateToLMSWeb()">DIKSHA Learning</button>
+
+          <div class="personalized_btn" *ngIf="(userService?._userProfile?.profileUserType?.type == 'student' || userService?._userProfile?.profileUserType?.type == 'teacher') && getSelectedTab() === 'home'">
+            <button class="sb-btn sb-btn-primary sb-btn-normal sb-btn-border" (click)="navigateToLMSWeb()">DIKSHA Courses</button>
           </div>
           
           <div *ngFor="let section of facetSections">
