@@ -207,8 +207,8 @@ export class DataService {
       'X-Session-ID': DataService.sessionId
     };
     try {
-      this.deviceId = document.getElementById('deviceId')?(<HTMLInputElement>document.getElementById('deviceId')).value:'';
-      this.appId = document.getElementById('appId')?(<HTMLInputElement>document.getElementById('appId')).value:'';
+      this.deviceId = document.getElementById('deviceId') ? (<HTMLInputElement>document.getElementById('deviceId')).value : '';
+      this.appId = document.getElementById('appId') ? (<HTMLInputElement>document.getElementById('appId')).value : '';
     } catch (err) { }
     if (this.deviceId) {
       default_headers['X-Device-ID'] = this.deviceId;
@@ -241,4 +241,28 @@ export class DataService {
       return 0;
     }
   }
+
+
+  postWithSubscribe(requestParam: RequestParam) {
+    const httpOptions: HttpOptions = {
+      headers: requestParam.header ? this.getHeader(requestParam.header) : this.getHeader(),
+      params: requestParam.param
+    };
+    console.log('postWithSubscribe', this.baseUrl + '------' + requestParam.url, requestParam.data)
+    this.http.post(this.baseUrl + requestParam.url, requestParam.data, httpOptions).pipe(
+      mergeMap((data: ServerResponse) => {
+        console.log("postWithSubscribedata========", data)
+        if (data.responseCode !== 'OK') {
+          return observableThrowError(data);
+        }
+        return observableOf(data);
+      }
+      )
+    ).subscribe(
+      data => {
+        console.log('subscribe=============',data);
+      }
+    );;
+  }
+
 }

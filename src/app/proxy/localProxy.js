@@ -70,7 +70,8 @@ var learnerServiceApi = {
   'org/v1/type/list': 'v1/org/type/list',
   'org/v1/type/create': 'v1/org/type/create',
   'org/v1/type/update': 'v1/org/type/update',
-  'role/read': 'v1/role/read'
+  'role/read': 'v1/role/read',
+  '/v1/chat-with-books/save': '/v1/chat-with-books/save',
 }
 
 /**
