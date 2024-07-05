@@ -194,8 +194,18 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
 
                             console.log("final object", userDataObject);
                             const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-                            const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}`;
+                            // const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}`;
                             // window.location.href = url; // open in same tab
+
+                            const encodeQueryData = (data) => {
+                              return Object.keys(data)
+                                .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+                                .join('&');
+                            };
+                        
+                            const queryString = encodeQueryData(userDataObject);
+                            const url = `${apiUrl}?${queryString}`;
+
                             window.open(url, '_blank'); // open in new tab
                         })
                         .catch(error => {
