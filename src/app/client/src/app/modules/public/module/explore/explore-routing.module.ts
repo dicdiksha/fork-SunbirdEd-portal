@@ -7,6 +7,9 @@ const routes: Routes = [
     path: '', loadChildren: () => import('../../../explore-page/explore-page.module').then(m => m.ExplorePageModule)
   },
   {
+    path: 'chat-with-books', loadChildren: () => import('./../chat-with-books/chat-with-books.module').then(m => m.ChatWithBooksModule)
+  },
+  {
     path: 'view-all/:section/:pageNumber', component: ViewAllComponent,
     data: {
       telemetry: {

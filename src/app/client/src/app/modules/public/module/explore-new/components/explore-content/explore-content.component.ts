@@ -728,11 +728,14 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
           "do_3138319389948067841420",
           "do_3138319270610862081369",
           "do_3138319631372943361537",
-          "do_3138319174463160321327"
+          "do_3138319174463160321327",
+          "do_3135686224833085441101"
         ];
         break;
       case 'tvProgram':
-        filters.primaryCategory = ['TVLesson'];
+//        filters.primaryCategory = ['TVLesson'];
+          filters.primaryCategory = ['Explanation Content'];
+          filters.additionalCategories = ['TV Lesson'];
         break;
       case 'home':
         this.router.navigateByUrl('/exploren?selectedTab=home')
@@ -812,7 +815,8 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     }
     // Replacing cbse/ncert value with cbse
     console.log("Se boards present ", filters);
-    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
+    //117337 - unused removed 
+    //const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
     // if (cbseNcertExists) {
     //   option.filters.se_boards = ['CBSE'];
     // }

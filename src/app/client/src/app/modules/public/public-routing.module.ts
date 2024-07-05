@@ -44,7 +44,10 @@ const routes: Routes = [
   },
   {
     path: 'guest-profile', loadChildren: () => import('./module/guest-profile/guest-profile.module').then(m => m.GuestProfileModule)
-  }
+  },
+  {
+    path: 'katbook', loadChildren: () => import('./module/katbook/katbook.module').then(m => m.KatbookModule)
+  },
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

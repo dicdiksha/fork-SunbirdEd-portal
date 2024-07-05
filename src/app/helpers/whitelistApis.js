@@ -569,6 +569,10 @@ const API_LIST = {
       checksNeeded: ['ROLE_CHECK'],
       ROLE_CHECK: [ROLE.ANONYMOUS]
     },
+    '/learner/v1/chat-with-books/save': {
+      checksNeeded: ['ROLE_CHECK'],
+      ROLE_CHECK: [ROLE.PUBLIC]
+    },
     '/v1/location/search': {
       checksNeeded: ['ROLE_CHECK'],
       ROLE_CHECK: [ROLE.ANONYMOUS]
@@ -2044,7 +2048,8 @@ const API_LIST = {
     '/uci/admin/v1/forms/upload',
     '/kendra/user-extension/mlcore/v1/solutions/:id',
     '/learner/user/v1/delete',
-    '/learner/user/v1/block'
+    '/learner/user/v1/block',
+    '/learner/v1/chat-with-books/save'
   ]
 };
 module.exports = API_LIST;

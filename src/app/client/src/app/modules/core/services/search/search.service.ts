@@ -1,6 +1,6 @@
 
 import { map } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+import { Injectable,EventEmitter } from '@angular/core';
 import { UserService } from './../user/user.service';
 import { ContentService } from './../content/content.service';
 import { ConfigService, ServerResponse, ResourceService } from '@sunbird/shared';
@@ -10,6 +10,8 @@ import { LearnerService } from './../learner/learner.service';
 import { PublicDataService } from './../public-data/public-data.service';
 import * as _ from 'lodash-es';
 import { FormService } from './../form/form.service';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 /**
  * Service to search content
  */
@@ -17,11 +19,17 @@ import { FormService } from './../form/form.service';
   providedIn: 'root'
 })
 export class SearchService {
+  
   public mimeTypeList;
+  public videoStartTime = new EventEmitter<number>();
   /**
    * Contains searched content list
    */
+  apiUrl:string='https://i64ofr7odkrdgr2o5lkg2hyrpy.apigateway.ap-mumbai-1.oci.customer-oci.com/v1/opsq'
+  searchType:string =''
+  searchQuery:string =''
   _searchedContentList: any;
+  vquery:string;
   /**
    * Contains searched organization list
    */
@@ -59,13 +67,17 @@ export class SearchService {
    */
   constructor(user: UserService, content: ContentService, config: ConfigService,
     learnerService: LearnerService, publicDataService: PublicDataService,
-    resourceService: ResourceService, private formService: FormService) {
+    resourceService: ResourceService, private formService: FormService,private http:HttpClient,private route: ActivatedRoute) {
     this.user = user;
     this.content = content;
     this.config = config;
     this.learnerService = learnerService;
     this.publicDataService = publicDataService;
     this.resourceService = resourceService;
+    this.route.queryParams.subscribe(params => {
+      this.searchType = params['searchType'];
+      this.searchQuery = params['key'];
+    });
   }
   /**
    * Search content by user id.
@@ -271,7 +283,59 @@ export class SearchService {
     if (requestParam['pageNumber'] && requestParam['limit']) {
       option.data.request['offset'] = (requestParam.pageNumber - 1) * requestParam.limit;
     }
+    let data ={
+      request: {
+          "facets": [],
+          "fields": [],
+          "filters": {
+              "channel": "",
+              "primaryCategory": [],
+              "visibility": [],
+              "identifier": "",
+              "se_gradeLevels": [],
+              "se_subjects": [],
+              "se_mediums": [],
+              "se_boards": []
+          },
+          "limit": 20,
+          "mode": "soft",
+          "offset": 0,
+          "query": this.searchQuery
+      }
+  }
+  if(this.searchType =='video'){
+    sessionStorage.setItem('key',this.searchQuery)
+    return this.http.post<any>(`${this.apiUrl}`, data);
+  }
+  else{
+    sessionStorage.setItem('key','')
     return this.publicDataService.post(option);
+  }
+  }
+
+   videoSearch(){
+    let searchQuery = sessionStorage.getItem('key');
+    let data ={
+      request: {
+          "facets": [],
+          "fields": [],
+          "filters": {
+              "channel": "",
+              "primaryCategory": [],
+              "visibility": [],
+              "identifier": "",
+              "se_gradeLevels": [],
+              "se_subjects": [],
+              "se_mediums": [],
+              "se_boards": []
+          },
+          "limit": 20,
+          "mode": "soft",
+          "offset": 0,
+          "query": searchQuery
+      }
+  }
+  return this.http.post<any>(`${this.apiUrl}`, data);
   }
   /* *
   * update option that was sent to the the search service call
@@ -508,7 +572,9 @@ export class SearchService {
           facet['placeholder'] = this.resourceService.frmelmnts.lbl.selectBoard;
           // Replacing cbse value with cbse/ncert
           _.map(facet['values'], val => {
-            if (_.toLower(val.name) === 'cbse') { val.name = 'CBSE/NCERT'; }
+            //117337 - removed hardcoded cbse/ncert
+           // if (_.toLower(val.name) === 'cbse') { val.name = 'CBSE/NCERT'; }
+           if (_.toLower(val.name) === 'cbse') { val.name = 'CBSE'; }
           });
           break;
         case 'se_mediums':

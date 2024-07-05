@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener,EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService, PlayerService, CopyContentService, PermissionService } from '@sunbird/core';
 import * as _ from 'lodash-es';
@@ -12,9 +12,10 @@ import { PopupControlService } from '../../../../service/popup-control.service';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 import { Subject, of, throwError } from 'rxjs';
 import { PublicPlayerService, ComponentCanDeactivate } from '@sunbird/public';
-import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
+import { CsGroupAddableBloc } from '@dicdikshaorg/client-services/blocs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ContentModalComponent } from '../../content-modal/content-modal.component';
+import { SearchService } from '../../../../modules/core/services/search/search.service'
 
 @Component({
   selector: 'app-content-player',
@@ -50,6 +51,10 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   isQuestionSet = false;
   isDesktopApp = false;
   modalRef: BsModalRef;
+  filteredContent = [];
+  timestampDetailList = [];
+  startTime: EventEmitter<number> = new EventEmitter<number>();
+  searchQuery:string='';
 
   @HostListener('window:beforeunload')
     canDeactivate() {
@@ -67,7 +72,8 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
     public contentUtilsServiceService: ContentUtilsServiceService, public popupControlService: PopupControlService,
     private configService: ConfigService,
     public layoutService: LayoutService, public telemetryService: TelemetryService,
-    public modalService: BsModalService
+    public modalService: BsModalService,
+    private searchService: SearchService
     ) {
     this.playerOption = {
       showContentRating: true
@@ -92,6 +98,7 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
         this.groupId = _.get(data, 'groupId') || _.get(this.activatedRoute.snapshot, 'queryParams.groupId');
       });
       this.getContent();
+      this.getTimestampData();
       CsGroupAddableBloc.instance.state$.pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
         this.isGroupAdmin = !_.isEmpty(_.get(this.activatedRoute.snapshot, 'queryParams.groupId'))
         && _.get(data.params, 'groupData.isAdmin');
@@ -102,6 +109,32 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
       pipe(takeUntil(this.unsubscribe)).subscribe(isFullScreen => {
         this.isFullScreenView = isFullScreen;
       });
+  }
+
+ async getTimestampData(){
+    this.searchQuery = sessionStorage.getItem('key')
+    if(this.searchQuery != ''){
+    this.searchService.videoSearch().subscribe((res) => {
+      this.filteredContent = res.result.content.filter(
+        (item) => item.identifier === this.contentId
+      );
+      this.timestampDetailList = this.filteredContent[0].timestamps_details_list;
+    });
+  }
+  }
+
+  getstartTime(data){ 
+    if(data){
+      this.searchService.videoStartTime.emit(parseInt(data));
+    }
+  }
+  
+
+  convertIntoMinutes(seconds){
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = seconds % 60;
+    var formattedTime = minutes.toString().padStart(2, '0') + ':' + remainingSeconds.toString().padStart(2, '0');
+    return formattedTime;
   }
 
   sendInteractDataToTelemetry(uniqueId) {
@@ -285,6 +318,11 @@ export class ContentPlayerComponent implements OnInit, AfterViewInit, OnDestroy,
   }
 
   ngAfterViewInit() {
+    setTimeout(()=>{
+      if(this.timestampDetailList){
+        this.getstartTime(this.timestampDetailList[0]?.start_time) 
+      }
+    },1500)
     this.pageLoadDuration = this.navigationHelperService.getPageLoadTime();
   }
 

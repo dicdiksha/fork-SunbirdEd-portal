@@ -1,0 +1,58 @@
+<div [ngClass]="layoutConfiguration ? 'sbt-fluid-content-bg':''">
+  <div [ngClass]="layoutConfiguration ? 'sb-g sbt-container sbt-page-content' : 'sb-g'">
+    <div [ngClass]="FIRST_PANEL_LAYOUT">
+      <div *ngIf="layoutConfiguration">
+        <ng-container *ngIf="isDesktopApp">
+          <app-network-status></app-network-status>
+          <app-load-offline-content></app-load-offline-content>
+          <app-system-warning></app-system-warning>
+        </ng-container>
+      </div>
+      <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''">
+        <ng-container class="h-100">
+          <div class="filters-area h-100">
+            <ul>
+                <li>
+                    <a href="" class="active">Lorem ipsum dolor sit amet consectetur adipisicing elit.</a>
+                </li>
+                <li>
+                    <a href="">Distinctio sapiente deserunt accusamus, culpa blanditiis incidunt.</a>
+                </li>
+                <li>
+                    <a href="">Magni corrupti natus ratione, adipisci nobis suscipit consectetur esse voluptas! Magni officia vero vitae pariatur</a>
+                </li>
+            </ul>
+        </div>
+        </ng-container>
+      </div>
+    </div>
+    <div [ngClass]="SECOND_PANEL_LAYOUT" class="w-100">
+      <div [ngClass]="layoutConfiguration ? 'sbt-page-content-area' : 'ui container mt-24'">
+        <div class="content-grid relative9">
+          <div [appTelemetryImpression]="telemetryImpression" class="twelve wide column content-scroll"
+            in-view-container>
+            <div class="chatgpt-box h-100">
+              <!-- Chats container -->
+              <div class="chat-container" id="chat-data" (input)="onDataChange($event)">
+               {{apiData}}
+
+              </div>
+              <!-- Typing container -->
+              <div class="typing-container">
+                <div class="typing-content">
+                  <div class="typing-textarea">
+                    <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required [(ngModel)]="searchQuery"></textarea>
+                    <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i class="fa fa-arrow-right"></i></span>
+                  </div>
+                  <div class="typing-controls">
+                    <span id="delete-btn" class="material-symbols-rounded"><i class="fa fa-trash-alt"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,8 +2,8 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormService, OtpService, TncService, UserService } from '@sunbird/core';
-import { Consent, ConsentStatus } from '@project-sunbird/client-services/models';
-import { CsUserService } from '@project-sunbird/client-services/services/user/interface';
+import { Consent, ConsentStatus } from '@dicdikshaorg/client-services/models';
+import { CsUserService } from '@dicdikshaorg/client-services/services/user/interface';
 import {
   IUserData,
   NavigationHelperService,
@@ -603,6 +603,7 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
         objectId: previousOrgId,
         objectType: 'Organisation'
       };
+
       this.csUserService.updateConsent(requestFoRevoked, { apiPath: '/learner/user/v1' })
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((response) => {
@@ -616,6 +617,7 @@ export class SubmitTeacherDetailsComponent implements OnInit, OnDestroy {
               objectId: currentOrgId,
               objectType: 'Organisation'
             };
+
             this.csUserService.updateConsent(requestForActive, { apiPath: '/learner/user/v1' })
               .pipe(takeUntil(this.unsubscribe))
               .subscribe(() => {

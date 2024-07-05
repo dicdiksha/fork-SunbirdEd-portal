@@ -4,7 +4,9 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { UserService } from './../../services';
 import { ResourceService, ConfigService, IUserProfile, LayoutService, UtilService, ConnectionService } from '@sunbird/shared';
 import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http'
 import * as _ from 'lodash-es';
+import { NavigationHelperService } from '../../../../modules/shared/services/navigation-helper/navigation-helper.service';
 /**
  * Main menu component
  */
@@ -20,6 +22,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   isOpen: boolean;
 
   showSuiSelectDropdown: boolean;
+  selectedSearchOption: string = 'all';
+  selectedSearchFlag:boolean =true;
 
   /**
    *
@@ -87,7 +91,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   constructor(route: Router, activatedRoute: ActivatedRoute, userService: UserService,
     resourceService: ResourceService, config: ConfigService, public utilService: UtilService,
-    private cdr: ChangeDetectorRef, public layoutService: LayoutService, public connectionService: ConnectionService) {
+    private cdr: ChangeDetectorRef, public layoutService: LayoutService, public connectionService: ConnectionService,private http:HttpClient,private navigationHelperService: NavigationHelperService) {
     this.route = route;
     this.activatedRoute = activatedRoute;
     this.resourceService = resourceService;
@@ -127,6 +131,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.connectionService.monitor().subscribe(isConnected => {
         this.isConnected = isConnected;
     });
+  }
+
+  onToggle(value:boolean){
+    this.selectedSearchFlag =value;
   }
 
   /**
@@ -178,9 +186,17 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
     if (this.isDesktopApp && !this.isConnected) {
       this.route.navigate(['mydownloads'], { queryParams: this.queryParam });
-    } else {
+    }else if(this.selectedSearchOption =='video'){
+      this.route.navigate([redirectUrl, 1], { queryParams: { key:this.key, searchType: this.selectedSearchOption,selectedTab:'all'} });
+    }
+    else {
       this.route.navigate([redirectUrl, 1], { queryParams: this.queryParam });
     }
+  
+    setTimeout(() => {
+      this.navigationHelperService.storeUrlHistoryOnQueryChange();
+    }, 500);
+  
   }
 
   setFilters() {

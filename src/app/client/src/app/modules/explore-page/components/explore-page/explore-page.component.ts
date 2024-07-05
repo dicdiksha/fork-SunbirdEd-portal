@@ -4,7 +4,7 @@ import { PublicPlayerService } from '@sunbird/public';
 import { Component, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
 import {
     ResourceService, ToasterService, ConfigService, NavigationHelperService, LayoutService, COLUMN_TYPE, UtilService,
-    OfflineCardService, BrowserCacheTtlService, IUserData, GenericResourceService
+    OfflineCardService, BrowserCacheTtlService, IUserData, GenericResourceService, ServerResponse
 } from '@sunbird/shared';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { cloneDeep, get, find, map as _map, pick, omit, groupBy, sortBy, replace, uniqBy, forEach, has, uniq, flatten, each, isNumber, toString, partition, toLower, includes } from 'lodash-es';
@@ -17,6 +17,10 @@ import { CacheService } from 'ng2-cache-service';
 import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
 import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
+import { LearnerService } from '@sunbird/core';
+import {
+    userLMSToken
+   } from '../../../core/services/userTokenForLMS/userLMSToken';
 
 @Component({
     selector: 'app-explore-page-component',
@@ -89,6 +93,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     primaryBanner = [];
     secondaryBanner = [];
     Categorytheme:any;
+    userData:any;
 
     get slideConfig() {
         return cloneDeep(this.configService.appConfig.LibraryCourses.slideConfig);
@@ -120,7 +125,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         public contentManagerService: ContentManagerService, private cacheService: CacheService,
         private browserCacheTtlService: BrowserCacheTtlService, private profileService: ProfileService,
         private segmentationTagService: SegmentationTagService, private observationUtil: ObservationUtilService,
-        private genericResourceService: GenericResourceService) {
+        private genericResourceService: GenericResourceService, public config: ConfigService, public learnerService: LearnerService, private userLMSToken: userLMSToken) {
             this.genericResourceService.initialize();
             this.instance = (<HTMLInputElement>document.getElementById('instance'))
             ? (<HTMLInputElement>document.getElementById('instance')).value.toUpperCase() : 'SUNBIRD';
@@ -202,9 +207,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (this.isUserLoggedIn()) {
                     this.prepareVisits([]);
                 }
-                if (_.get(params, 'board') && params.board[0] === 'CBSE') {
-                    params.board[0] = 'CBSE/NCERT';
-                }
+                //117337 - removed hardcoded cbse/ncert
+                // if (_.get(params, 'board') && params.board[0] === 'CBSE') {
+                //     params.board[0] = 'CBSE/NCERT';
+                // }
                 this.queryParams = { ...params, ...queryParams };
             }));
     }
@@ -217,7 +223,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             const selectedTab = urlQuery.get("selectedTab") != undefined || urlQuery.get("selectedTab") != null ? urlQuery.get("selectedTab") : 'home';
         const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
             if (tenant) {
-                const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                //117337 - removed hardcoded cbse/ncert
+                //const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                const queryParams: Params = { board: tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                console.log("queryParams===",queryParams)
             console.log("queryParams===",queryParams)
             this.router.navigate(
                 [],
@@ -245,7 +254,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 // guestUserDetails.framework.id = 'ncert_k-12';
                 // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
             } else {
-                this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+                //117337 - removed hardcoded cbse/ncert
+                // this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+                this.router.navigateByUrl('/explore?board=CBSE&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+           
             }
         }
         const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -293,6 +305,89 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.contentDownloadStatus = contentDownloadStatus;
             this.addHoverData();
         });
+    }
+
+    navigateToLMSWeb() {
+        const _userProfile = this.userService?._userProfile;
+        const optionData = {
+            url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+            //   param: this.config.urlConFig.params.userReadParam
+        };
+
+        this.learnerService.getWithHeaders(optionData).subscribe(
+            (data: ServerResponse) => {
+                if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
+
+                    console.log("user data 864 line.....", data?.result?.response);
+                    let ids = []; // locations ids -> state, district,block , cluster, school
+
+                    data?.result?.response?.profileLocation?.forEach((element: any) => {
+                        ids.push(element?.id)
+                    });
+
+                    console.log("IDS.......", ids);
+
+                    if (ids?.length) {
+                        this.userLMSToken.getUserLocationData(ids)
+                            .then(locationData => {
+                                console.log("data?.result?.response", locationData?.result?.response)
+                                this.userData = locationData;
+                                console.log("this?.userData", this.userData);
+
+                                const createLocationObject = (locations: any) => {
+                                    return locations?.reduce((acc: any, location: any) => {
+                                        acc[location.type] = location.name;
+                                        if (location.type === 'school') {
+                                            acc.code = location.code;
+                                        }
+                                        return acc;
+                                    }, {});
+                                };
+
+                                const locationObject = createLocationObject(this?.userData?.result?.response);
+                                console.log("locationObject", locationObject);
+
+                                const userDataObject = {
+                                    firstname: _userProfile?.firstName,
+                                    lastname: _userProfile?.lastName,
+                                    emailid: data?.result?.response?.email,
+                                    phone: data?.result?.response?.phone,
+                                    userid: _userProfile?.userId,
+                                    profileUserType: data?.result?.response?.profileUserType?.type,
+                                    profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
+                                    rootOrgName: this.userService?.rootOrgName,
+                                    board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
+                                    medium: data?.result?.response?.framework?.medium[0] ? data?.result?.response?.framework?.medium[0] : null,
+                                    class: data?.result?.response?.framework?.gradeLevel[0] ? data?.result?.response?.framework?.gradeLevel[0] : null,
+                                    ...locationObject, // keys name {state, district, block, cluster, school, code}
+                                }
+
+                                console.log("final object", userDataObject);
+                                const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
+
+                                // check role and according to role it will redirect to required page
+                                let redirecturl : string;
+                                if (userDataObject?.profileUserType?.toLowerCase() === 'student' || userDataObject?.profileUserType?.toLowerCase() === 'teacher') {
+                                    redirecturl = 'https://learning.diksha.gov.in/diksha/diksha_sso.php'
+                                }
+                                // else if (){
+
+                                // }
+                                const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}&redirecturl=${redirecturl}`;
+                                // window.location.href = url; // open in same tab
+                                window.open(url, '_blank'); // open in new tab
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    }
+
+                }
+            },
+            (err: ServerResponse) => {
+                console.log("getDecriptedUserProfile error ", err);
+            }
+        )
     }
 
     public fetchEnrolledCoursesSection() {
@@ -423,9 +518,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         //this.cacheService.set('searchFilters', filters, { expires: Date.now() + _cacheTimeout });
         this.showLoader = true;
         this.selectedFilters = pick(filters, _.get(currentPageData , 'metaData.filters'));
-        if (this.selectedFilters && this.selectedFilters['board'] && this.selectedFilters['board'][0] === 'CBSE/NCERT') {
-            this.selectedFilters['board'][0] = 'CBSE';
-        }
+        //117337 - removed hardcoded cbse/ncert
+        // if (this.selectedFilters && this.selectedFilters['board'] && this.selectedFilters['board'][0] === 'CBSE/NCERT') {
+        //     this.selectedFilters['board'][0] = 'CBSE';
+        // }
         if (has(filters, 'audience') || (localStorage.getItem('userType') && currentPageData.contentType !== 'all')) {
             const userTypes = get(filters, 'audience') || [localStorage.getItem('userType')];
             const audienceSearchFilterValue = _.get(filters, 'audienceSearchFilterValue');
@@ -511,9 +607,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                             if (_.get(currentPageData, 'metaData.filters') && _.get(currentPageData, 'metaData.filters')!=undefined && ((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
                                 let param = {};
                                 param[filterValue] = (typeof (params[filterValue]) === "string") ? params[filterValue].split(',') : params[filterValue];
-                                if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
-                                    param[filterValue][0] = "CBSE";                                
-                                }
+                               //117337 - removed hardcoded cbse/ncert
+                                // if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
+                                //     param[filterValue][0] = "CBSE";                                
+                                // }
                                 option.filters[filterValue] = (typeof (param[filterValue]) === "string") ? param[filterValue].split(',') : param[filterValue];
                             }
                         });
@@ -1178,7 +1275,8 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         const paramValuesInLowerCase = _.mapValues(updatedCategoriesMapping, value => {
-            if (_.toLower(value) === 'cbse') { return 'CBSE/NCERT'; }
+            //117337 - removed hardcoded cbse/ncert
+            // if (_.toLower(value) === 'cbse') { return 'CBSE/NCERT'; }
             return Array.isArray(value) ? _.map(value, _.toLower) : _.toLower(value);
         });
 
@@ -1401,9 +1499,10 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         let pathSegment;
         if( this.userPreference.framework.board){
             let board = this.userPreference.framework.board[0];
-            if(board==="CBSE/NCERT"){
-                board="CBSE";
-            }
+             //117337 - removed hardcoded cbse/ncert
+            // if(board==="CBSE/NCERT"){
+            //     board="CBSE";
+            // }
           pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
         }
         if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {

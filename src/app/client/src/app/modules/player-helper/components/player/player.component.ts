@@ -12,9 +12,10 @@ import { IInteractEventEdata } from '@sunbird/telemetry';
 import { UserService, FormService } from '../../../core/services';
 import { OnDestroy } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { CsContentProgressCalculator } from '@project-sunbird/client-services/services/content/utilities/content-progress-calculator';
+import { CsContentProgressCalculator } from '@dicdikshaorg/client-services/services/content/utilities/content-progress-calculator';
 import { ContentService } from '@sunbird/core';
 import { PublicPlayerService } from '@sunbird/public';
+import { SearchService } from '../../../../modules/core/services/search/search.service'
 
 @Component({
   selector: 'app-player',
@@ -53,6 +54,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   @Output() ratingPopupClose = new EventEmitter<any>();
   @Output() selfAssessLastAttempt = new EventEmitter<any>();
   contentDeleted = false;
+  videoStartTime:number;
   isMobileOrTab: boolean;
   showPlayIcon = true;
   closeButtonInteractEdata: IInteractEventEdata;
@@ -86,13 +88,16 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     public resourceService: ResourceService, public navigationHelperService: NavigationHelperService,
     private deviceDetectorService: DeviceDetectorService, private userService: UserService, public formService: FormService
     , public contentUtilsServiceService: ContentUtilsServiceService, private contentService: ContentService,
-    private cdr: ChangeDetectorRef, public playerService: PublicPlayerService, private utilService: UtilService) {
+    private cdr: ChangeDetectorRef, public playerService: PublicPlayerService, private utilService: UtilService, private searchService: SearchService) {
     this.buildNumber = (<HTMLInputElement>document.getElementById('buildNumber'))
       ? (<HTMLInputElement>document.getElementById('buildNumber')).value : '1.0';
     this.previewCdnUrl = (<HTMLInputElement>document.getElementById('previewCdnUrl'))
       ? (<HTMLInputElement>document.getElementById('previewCdnUrl')).value : undefined;
     this.isCdnWorking = (<HTMLInputElement>document.getElementById('cdnWorking'))
       ? (<HTMLInputElement>document.getElementById('cdnWorking')).value : 'no';
+      this.searchService.videoStartTime.subscribe((videoStartTime)=>{
+         this.videoStartTime=videoStartTime;
+      })
   }
 
   @HostListener('window:orientationchange', ['$event'])
@@ -166,6 +171,22 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     if (this.playerConfig) {
       console.log("player.component.ts ngAfterViewInit called");
       this.loadPlayer();
+    }
+
+    if(!this.showNewPlayer){
+      const interval = setInterval(() => {
+        const iframe = document.getElementById('contentPlayer') as HTMLIFrameElement;
+        if(iframe){
+          let innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+          let isVideoEnded = innerDoc.body.innerHTML.match('vjs-ended');
+          if (isVideoEnded) {
+              clearInterval(interval);
+        
+              this.contentRatingModal = true;
+              this.showRatingModalAfterClose = true;
+          }
+        }
+      }, 1000);
     }
   }
 

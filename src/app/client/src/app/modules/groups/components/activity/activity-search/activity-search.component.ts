@@ -18,7 +18,7 @@ import { IPagination } from '../../../../shared/interfaces/index';
 import { CacheService } from 'ng2-cache-service';
 import { GroupsService } from '../../../services/groups/groups.service';
 import { IImpressionEventInput } from '@sunbird/telemetry';
-import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
+import { CsGroupAddableBloc } from '@dicdikshaorg/client-services/blocs';
 import { VIEW_ACTIVITY, CATEGORY_SEARCH } from '../../../interfaces/telemetryConstants';
 import { ActivityDashboardService } from '@sunbird/shared';
 import { sessionKeys } from '../../../interfaces/group';

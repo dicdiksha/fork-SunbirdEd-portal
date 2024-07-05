@@ -9,7 +9,7 @@ import { IDeviceProfile } from '../../../../modules/shared-feature/interfaces/de
 import { SbFormLocationSelectionDelegate } from '../delegate/sb-form-location-selection.delegate';
 import { MatDialog } from '@angular/material/dialog';
 import * as _ from 'lodash-es';
-import {Location as SbLocation} from '@project-sunbird/client-services/models/location';
+import {Location as SbLocation} from '@dicdikshaorg/client-services/models/location';
 
 @Component({
   selector: 'app-location-selection',
@@ -108,7 +108,9 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
     dialogRef && dialogRef.close();
     this.popupControlService.changePopupStatus(true);
     this.close.emit({isSubmitted: this.isSubmitted});
+    this.ngOnInit();
     console.log("called close method---->>>>>")
+    
   }
 
   async updateUserLocation() {

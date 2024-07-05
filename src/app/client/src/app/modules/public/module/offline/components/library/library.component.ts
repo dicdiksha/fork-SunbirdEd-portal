@@ -277,9 +277,13 @@ export class LibraryComponent implements OnInit, OnDestroy {
         filters.mimeType = _.get(mimeType, 'values');
 
         // Replacing cbse/ncert value with cbse
-        if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
-        filters.board = ['cbse'];
-        }
+        // 117337 - remove cbse/ncert
+        // if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+        // filters.board = ['cbse'];
+        // }
+        if (_.toLower(_.get(filters, 'board[0]')) === 'cbse' || _.toLower(_.get(filters, 'board')) === 'cbse') {
+            filters.board = ['cbse'];
+            }
 
         _.forEach(this.formData, (form, key) => {
         const pageTitle = _.get(this.resourceService, form.title);

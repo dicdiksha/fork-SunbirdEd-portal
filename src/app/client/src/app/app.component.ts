@@ -138,6 +138,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private connectionService: ConnectionService, public genericResourceService: GenericResourceService) {
     this.instance = (<HTMLInputElement>document.getElementById('instance'))
       ? (<HTMLInputElement>document.getElementById('instance')).value : 'sunbird';
+      // console.log('instance', this.instance);
     const layoutType = localStorage.getItem('layoutType') || 'base';
     if (layoutType === 'base' || layoutType === 'joy') {
       this.layoutConfiguration = this.configService.appConfig.layoutConfiguration;
@@ -875,6 +876,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (window['TagManager']) {
       if (this.userService.loggedIn) {
         localStorage.setItem('tagManager_' + this.userService.userid, JSON.stringify(window['TagManager'].SBTagService));
+        localStorage.setItem('userId' , this.userService.userid);
       } else {
         localStorage.setItem('tagManager_' + 'guest', JSON.stringify(window['TagManager'].SBTagService));
       }

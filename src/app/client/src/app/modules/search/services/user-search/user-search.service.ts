@@ -44,7 +44,7 @@ export class UserSearchService {
         }
       }
     };
-
+    console.log("deleteUser option=====",option)
     return this.learnerService.post(option).pipe(map(data => {
       this.userDeleteEvent.emit(requestParam.userId);
       return data;

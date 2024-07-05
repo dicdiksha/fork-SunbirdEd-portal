@@ -159,7 +159,8 @@ export class UserLocationComponent implements OnInit, OnDestroy, AfterViewInit {
             }),
             state: _.find(userProfileData.userLocations, (location) => {
               return location.type === 'state';
-            })
+            }),
+            role: (localStorage.getItem('userType') || '').toLowerCase() || 'other'
           };
           this.isUserProfileUpdateAllowed = false;
           this.isDeviceProfileUpdateAllowed = true;
@@ -190,7 +191,8 @@ export class UserLocationComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getLocationCodes(location).subscribe((mappedDistrictDetails) => {
       this.processedDeviceLocation = {
         district: mappedDistrictDetails,
-        state: mappedStateDetails
+        state: mappedStateDetails,
+        role: (localStorage.getItem('userType') || '').toLowerCase() || 'other'
       };
       this.setStateDistrict(this.processedDeviceLocation);
       this.isUserProfileUpdateAllowed = updateUserProFile;
@@ -303,6 +305,7 @@ export class UserLocationComponent implements OnInit, OnDestroy, AfterViewInit {
     const telemetryData = this.getTelemetryData(changeType);
     this.generateInteractEvent(telemetryData);
     this.updateLocation(data, {state: stateData, district: districtData});
+    location.reload();
   }
 
   getTelemetryData(changeType) {
