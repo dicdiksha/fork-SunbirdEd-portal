@@ -18,9 +18,13 @@ import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
 import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
 import { LearnerService } from '@sunbird/core';
+import { HttpClient } from '@angular/common/http';
 import {
     userLMSToken
    } from '../../../core/services/userTokenForLMS/userLMSToken';
+import {
+    EncryptionService
+   } from '../../../core/services/userTokenForLMS/aes-encrypt-decrypt-object';
 
 @Component({
     selector: 'app-explore-page-component',
@@ -125,7 +129,8 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         public contentManagerService: ContentManagerService, private cacheService: CacheService,
         private browserCacheTtlService: BrowserCacheTtlService, private profileService: ProfileService,
         private segmentationTagService: SegmentationTagService, private observationUtil: ObservationUtilService,
-        private genericResourceService: GenericResourceService, public config: ConfigService, public learnerService: LearnerService, private userLMSToken: userLMSToken) {
+        private genericResourceService: GenericResourceService, public config: ConfigService, public learnerService: LearnerService, 
+        private userLMSToken: userLMSToken, public encryptionService: EncryptionService, private http: HttpClient) {
             this.genericResourceService.initialize();
             this.instance = (<HTMLInputElement>document.getElementById('instance'))
             ? (<HTMLInputElement>document.getElementById('instance')).value.toUpperCase() : 'SUNBIRD';
@@ -366,8 +371,28 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                 // else if (){
 
                                 // }
-                                const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}&redirecturl=${redirecturl}`;
+
+                                const encodeQueryData = (data) => {
+                                    return Object.keys(data)
+                                      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+                                      .join('&');
+                                  };
+                              
+                                  const queryString = encodeQueryData(userDataObject);
+                                  const url = `${apiUrl}?${queryString}`;
+
+                                // const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}&redirecturl=${redirecturl}`;
                                 // window.location.href = url; // open in same tab
+                                this.encryptionService.generateKey().then((keyValue) => {
+                                    this.encryptionService.encryptData(userDataObject, keyValue).then((encryptData) => {
+                                      console.log("encryptData", encryptData)
+                                    //   this.http.post('https://learning.diksha.gov.in/diksha/diksha_sso.php', encryptData)
+                                    //     .subscribe(response => {
+                                    //       console.log('Server response:', response);
+                                    //     });
+                                    });
+                                  });
+
                                 window.open(url, '_blank'); // open in new tab
                             })
                             .catch(error => {
