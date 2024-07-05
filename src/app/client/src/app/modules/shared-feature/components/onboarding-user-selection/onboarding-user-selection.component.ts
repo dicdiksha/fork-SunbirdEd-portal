@@ -157,7 +157,7 @@ export class OnboardingUserSelectionComponent implements OnInit, OnDestroy {
       this.userSelect.emit(true);
     }
     // 
-    location.reload();
+    // location.reload();
     this.logAuditEvent(code);
   }
   logAuditEvent(code: any) {
