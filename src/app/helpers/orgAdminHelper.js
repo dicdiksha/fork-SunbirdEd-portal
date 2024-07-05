@@ -11,7 +11,7 @@ const orgAdminAsCollaborator = async function assignOrgAdminAsCollaborator(req, 
     const userId = req.session.userId
     if ( (req.url == '/content/lock/v1/create') && req.body.request.isRootOrgAdmin) {
         const token =   getAuthToken(req);
-        axios.get(envHelper.CONTENT_PROXY_URL +'/action/content/v3/read/' + resourceId + '?fields=collaborators,createdBy')
+        axios.get(envHelper.CONTENT_PROXY_URL +'/action/content/v3/read/' + resourceId + '?fields=collaborators,createdBy,notes,learningObjective,duration')
         .then((response) => {
             if (_.has(response.data.result.content, 'collaborators') && _.includes(response.data.result.content.collaborators, userId)) {
                 next()
