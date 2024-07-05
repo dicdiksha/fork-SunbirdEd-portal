@@ -3,8 +3,8 @@
   <div mat-dialog-title class="flex-jc-center">
     <div class="sb-onboard__header">
       <img [src]="tenantInfo?.logo" class="brand-logo" height="40"
-        alt="{{resourceService?.frmelmnts?.lbl?.welcomeToInstance | interpolate:'{instance}': tenantInfo?.titleName}}" />
-      <h1 class="mb-0">{{resourceService?.frmelmnts?.lbl?.welcomeToInstance | interpolate:'{instance}': tenantInfo?.titleName}}
+        alt="{{resourceService?.frmelmnts?.lbl?.welcomeToInstance | interpolate:'{instance}': tenantInfo?.titleName.toUpperCase()}}" />
+      <h1 class="mb-0">{{resourceService?.frmelmnts?.lbl?.welcomeToInstance | interpolate:'{instance}': tenantInfo?.titleName.toUpperCase()}}
       </h1>
     </div>
   </div>
