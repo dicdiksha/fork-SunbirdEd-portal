@@ -85,7 +85,7 @@ module.exports = function (app) {
       proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
       proxyReqPathResolver: (req) => {
         logger.info({ msg: '/learner/v1/chat-with-books/save called upstream url /v1/chat-with-books/save in request path resolver' });
-        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '')).path
+        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '/user/')).path
       },
       userResDecorator: (proxyRes, proxyResData, req, res) => {
         logger.info({ msg: '/learner/v1/chat-with-books/save called upstream url /v1/chat-with-books/save in request path resolver' });
