@@ -162,6 +162,7 @@ export class DataDrivenComponent extends WorkSpace implements OnInit, OnDestroy,
    this.configService.appConfig.contentDescription[this.contentType] : 'Untitled';
   }
   ngOnInit() {
+    console.log(`this is test`)
     this.activatedRoute.queryParams.subscribe(queryParams => {
       this.showFrameworkSelection = _.get(queryParams, 'showFrameworkSelection');
     });
