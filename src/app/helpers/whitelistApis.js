@@ -569,7 +569,7 @@ const API_LIST = {
       checksNeeded: ['ROLE_CHECK'],
       ROLE_CHECK: [ROLE.ANONYMOUS]
     },
-    '/learner/v1/chat-with-books/save': {
+    '/learner/v1/chatWithBooks/save': {
       checksNeeded: ['ROLE_CHECK'],
       ROLE_CHECK: [ROLE.PUBLIC]
     },
@@ -2049,7 +2049,7 @@ const API_LIST = {
     '/kendra/user-extension/mlcore/v1/solutions/:id',
     '/learner/user/v1/delete',
     '/learner/user/v1/block',
-    '/learner/v1/chat-with-books/save'
+    '/learner/v1/chatWithBooks/save'
   ]
 };
 module.exports = API_LIST;
