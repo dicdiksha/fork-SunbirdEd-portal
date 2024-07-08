@@ -74,7 +74,7 @@ module.exports = function (app) {
     })
   )
 
-  app.post('/learner/v1/chat-with-books/save',
+  app.post('/learner/v1/chatWithBooks/save',
     bodyParser.json(),
     proxyUtils.verifyToken(),
     isAPIWhitelisted.isAllowed(),
@@ -84,18 +84,18 @@ module.exports = function (app) {
       limit: reqDataLimitOfContentUpload,
       proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
       proxyReqPathResolver: (req) => {
-        logger.info({ msg: '/learner/v1/chat-with-books/save called upstream url /v1/chat-with-books/save in request path resolver' });
-        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '')).path
+        logger.info({ msg: '/learner/v1/chatWithBooks/save called upstream url /v1/chatWithBooks/save in request path resolver' });
+        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '/user/')).path
       },
       userResDecorator: (proxyRes, proxyResData, req, res) => {
-        logger.info({ msg: '/learner/v1/chat-with-books/save called upstream url /v1/chat-with-books/save in request path resolver' });
+        logger.info({ msg: '/learner/v1/chatWithBooks/save called upstream url /v1/chatWithBooks/save in request path resolver' });
         try {
           const data = JSON.parse(proxyResData.toString('utf8'));
           if (req.method === 'POST' && proxyRes.statusCode === 404 && (typeof data.message === 'string' && data.message.toLowerCase() === 'API not found with these values'.toLowerCase())) res.redirect('/')
           else return proxyUtils.handleSessionExpiry(proxyRes, data, req, res, data);
         } catch (err) {
           logger.error({ msg: 'learner route : userResDecorator json parse error:', proxyResData });
-          logger.error({ msg: 'learner route : error for /learner/v1/chat-with-books/save upstram url is /learner/v1/chat-with-books/save ', err });
+          logger.error({ msg: 'learner route : error for /learner/v1/chatWithBooks/save upstram url is /learner/v1/chatWithBooks/save ', err });
           return proxyUtils.handleSessionExpiry(proxyRes, proxyResData, req, res, null);
         }
       }

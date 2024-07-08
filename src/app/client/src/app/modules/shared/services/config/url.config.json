@@ -377,8 +377,8 @@
     },
     "UCI": "/uci",
     "CHAT_WITH_BOOKS": {
-      "SAVE": "v1/chat-with-books/save",
-      "READ": "v1/chat-with-books/read"
+      "SAVE": "v1/chatWithBooks/save",
+      "READ": "v1/chatWithBooks/read"
     }
   }
 }
