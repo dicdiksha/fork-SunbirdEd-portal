@@ -18,7 +18,7 @@ import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
 import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
 import { LearnerService } from '@sunbird/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
     userLMSToken
    } from '../../../core/services/userTokenForLMS/userLMSToken';
@@ -313,36 +313,6 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     
-    // navigateToLMSWeb() {
-        
-    //     const _userProfile = this.userService?._userProfile;
-    //     console.log(_userProfile,'this is data........')
-    //     const optionData = {
-    //       url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userProfile.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
-    //       param: this.config.urlConFig.params.userReadParam
-    //     };
-    
-    //     this.learnerService.getWithHeaders(optionData).subscribe(
-    //       (data: ServerResponse) => {
-    //         if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
-    //           const userData = {
-    //             firstname: _userProfile?.firstName,
-    //             lastname: _userProfile?.lastName,
-    //             emailid: data?.result?.response?.email,
-    //             phone: data?.result?.response?.phone,
-    //             userid: _userProfile?.userId,
-    //           }
-    //           const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-    //           const url = `${apiUrl}?userid=${userData.userid}&firstname=${userData.firstname}&lastname=${userData.lastname}&emailid=${userData.emailid}&phone=${userData.phone}`;
-    //           window.location.href = url;
-    //         }
-    //       },
-    //       (err: ServerResponse) => {
-    //         console.log("getDecriptedUserProfile error ", err);
-    //       }
-    //     )
-    //   }
-
     navigateToLMSWeb() {
 
         const _userProfile = this.userService?._userProfile;
@@ -396,43 +366,19 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
                                     medium: data?.result?.response?.framework?.medium[0] ? data?.result?.response?.framework?.medium[0] : null,
                                     class: data?.result?.response?.framework?.gradeLevel[0] ? data?.result?.response?.framework?.gradeLevel[0] : null,
+                                    redirecturl: 'https://learning.diksha.gov.in/diksha/diksha_sso.php', // this is for student/teacher ROLE for LMS redirect URL
                                     ...locationObject, // keys name {state, district, block, cluster, school, code}
                                 }
 
                                 console.log("final object", userDataObject);
+                                const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
                                 const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-
-                                // check role and according to role it will redirect to required page
-                                let redirecturl : string;
-                                if (userDataObject?.profileUserType?.toLowerCase() === 'student' || userDataObject?.profileUserType?.toLowerCase() === 'teacher') {
-                                    redirecturl = 'https://learning.diksha.gov.in/diksha/diksha_sso.php'
-                                }
-                                // else if (){
-
-                                // }
-
-                                const encodeQueryData = (data) => {
-                                    return Object.keys(data)
-                                      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-                                      .join('&');
-                                  };
-                              
-                                  const queryString = encodeQueryData(userDataObject);
-                                  const url = `${apiUrl}?${queryString}`;
-
-                                // const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}&redirecturl=${redirecturl}`;
-                                // window.location.href = url; // open in same tab
-                                this.encryptionService.generateKey().then((keyValue) => {
-                                    this.encryptionService.encryptData(userDataObject, keyValue).then((encryptData) => {
-                                      console.log("encryptData", encryptData)
-                                    //   this.http.post('https://learning.diksha.gov.in/diksha/diksha_sso.php', encryptData)
-                                    //     .subscribe(response => {
-                                    //       console.log('Server response:', response);
-                                    //     });
+                                const redirectUrl = 'https://learning.diksha.gov.in/diksha/diksha_sso.php?token=';
+                                this.http.post(apiUrl, userDataObject, { headers, responseType: "text" })
+                                    .subscribe(response => {
+                                        console.log('Server response:', response);
+                                        window.open(redirectUrl + response, '_blank'); // new tab
                                     });
-                                  });
-
-                                window.open(url, '_blank'); // open in new tab
                             })
                             .catch(error => {
                                 console.error(error);
