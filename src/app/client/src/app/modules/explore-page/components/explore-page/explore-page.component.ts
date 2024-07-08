@@ -18,7 +18,7 @@ import { ProfileService } from '@sunbird/profile';
 import { SegmentationTagService } from '../../../core/services/segmentation-tag/segmentation-tag.service';
 import { frameworkList } from '../../../../../app/modules/content-search/components/search-data';
 import { LearnerService } from '@sunbird/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
     userLMSToken
    } from '../../../core/services/userTokenForLMS/userLMSToken';
@@ -304,7 +304,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
             this.addHoverData();
         });
     }
-
+    
     navigateToLMSWeb() {
         const _userProfile = this.userService?._userProfile;
         const optionData = {
@@ -357,43 +357,19 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                                     board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
                                     medium: data?.result?.response?.framework?.medium[0] ? data?.result?.response?.framework?.medium[0] : null,
                                     class: data?.result?.response?.framework?.gradeLevel[0] ? data?.result?.response?.framework?.gradeLevel[0] : null,
+                                    redirecturl: 'https://learning.diksha.gov.in/diksha/diksha_sso.php', // this is for student/teacher ROLE for LMS redirect URL
                                     ...locationObject, // keys name {state, district, block, cluster, school, code}
                                 }
 
                                 console.log("final object", userDataObject);
+                                const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
                                 const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-
-                                // check role and according to role it will redirect to required page
-                                let redirecturl : string;
-                                if (userDataObject?.profileUserType?.toLowerCase() === 'student' || userDataObject?.profileUserType?.toLowerCase() === 'teacher') {
-                                    redirecturl = 'https://learning.diksha.gov.in/diksha/diksha_sso.php'
-                                }
-                                // else if (){
-
-                                // }
-
-                                const encodeQueryData = (data) => {
-                                    return Object.keys(data)
-                                      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-                                      .join('&');
-                                  };
-                              
-                                  const queryString = encodeQueryData(userDataObject);
-                                  const url = `${apiUrl}?${queryString}`;
-
-                                // const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}&redirecturl=${redirecturl}`;
-                                // window.location.href = url; // open in same tab
-                                this.encryptionService.generateKey().then((keyValue) => {
-                                    this.encryptionService.encryptData(userDataObject, keyValue).then((encryptData) => {
-                                      console.log("encryptData", encryptData)
-                                    //   this.http.post('https://learning.diksha.gov.in/diksha/diksha_sso.php', encryptData)
-                                    //     .subscribe(response => {
-                                    //       console.log('Server response:', response);
-                                    //     });
+                                const redirectUrl = 'https://learning.diksha.gov.in/diksha/diksha_sso.php?token=';
+                                this.http.post(apiUrl, userDataObject, { headers, responseType: "text" })
+                                    .subscribe(response => {
+                                        console.log('Server response:', response);
+                                        window.open(redirectUrl + response, '_blank'); // new tab
                                     });
-                                  });
-
-                                window.open(url, '_blank'); // open in new tab
                             })
                             .catch(error => {
                                 console.error(error);
