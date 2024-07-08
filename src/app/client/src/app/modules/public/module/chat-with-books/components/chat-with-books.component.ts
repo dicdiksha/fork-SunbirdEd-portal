@@ -206,7 +206,12 @@ onDataChange(event: any) {
 saveBooksQuery(){
   const option = {
     url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
-    data: {'searchQuery':this.searchQuery}
+    data: {
+      "request": {
+          "userid": this.userService.userid,
+          "input": this.searchQuery
+          }
+          }
   };
   return this.learnerService.postWithSubscribe(option);
 }
