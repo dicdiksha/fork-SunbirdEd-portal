@@ -28,6 +28,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   sbFormLocationSelectionDelegate: SbFormLocationSelectionDelegate;
   isSubmitted = false;
   public locationSelectionModalId = 'location-selection';
+  isUserLoggedIn:boolean =false;
 
   constructor(
     public resourceService: ResourceService,
@@ -54,36 +55,40 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   ngOnInit() {
+    this.isUserLoggedIn = _.get(this.userService, 'loggedIn');
     if(_.get(this.userService, 'loggedIn')){
       this.openModalOncePerMonthOnWorkingDay();
     }
-    this.popupControlService.changePopupStatus(false);
-    this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
-      .catch(() => {
-        this.closeModal();
-        this.toasterService.error(this.resourceService.messages.fmsg.m0049);
-      });
+    setTimeout(()=>{
+      this.popupControlService.changePopupStatus(false);
+      this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
+        .catch(() => {
+          this.closeModal();
+          this.toasterService.error(this.resourceService.messages.fmsg.m0049);
+        });
 
-      this.router.events.subscribe(event => {
-        if (event instanceof NavigationEnd) {
-          let substring1 = "play/content";
-          let substring2 = "contentType=Resource";
-          if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
-            console.log("urlAfterRedirects condition called");
-            this.closeModal();
+        this.router.events.subscribe(event => {
+          if (event instanceof NavigationEnd) {
+            let substring1 = "play/content";
+            let substring2 = "contentType=Resource";
+            if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
+              console.log("urlAfterRedirects condition called");
+              this.closeModal();
+            }
           }
-        }
-      });
+        });
 
-      console.log("isReturnFromThirdParty", localStorage.getItem('isReturnFromThirdParty'));
-      if (localStorage.getItem('isReturnFromThirdParty') === 'true') {
-        this.closeModal();
-        localStorage.setItem('isReturnFromThirdParty', 'false');
-      }
+        console.log("isReturnFromThirdParty", localStorage.getItem('isReturnFromThirdParty'));
+        if (localStorage.getItem('isReturnFromThirdParty') === 'true') {
+          this.closeModal();
+          localStorage.setItem('isReturnFromThirdParty', 'false');
+        }
+    },6000);
       console.log("location-selection.component page called");
   }
 
     openModalOncePerMonthOnWorkingDay() {
+      this.showModal =false;
       console.log("openModalOncePerMonthOnWorkingDay--");
        // Get current date
     let currentDate = new Date();
@@ -120,6 +125,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
     if (firstWorkingDayOfMonth.getDate() === currentDate.getDate() &&
         firstWorkingDayOfMonth.getMonth() === currentDate.getMonth() &&
         firstWorkingDayOfMonth.getFullYear() === currentDate.getFullYear()) {
+          console.log("success...");
         this.showModal=true; // Call your function to open the modal
     }
   }
