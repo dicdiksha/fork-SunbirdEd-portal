@@ -1578,3 +1578,15 @@ html[layout="joy"] .sb-modal-content .ui.center.aligned.segment {
   font-weight: normal;
   padding: calculateRem(10px) 0;
 }
+
+html[data-mode=darkmode] .multi-select-container .list-border {
+  background: #333 !important;
+  border: .03125rem solid #666666;
+  color: #fff;
+}
+html[data-mode=darkmode] .multi-select-container .caret-down svg {
+filter: invert(1) !important;
+}
+html[data-mode=darkmode] :not(.normalize) .sb-modal-dropdown-web ul {
+background-color: #222 !important;
+}

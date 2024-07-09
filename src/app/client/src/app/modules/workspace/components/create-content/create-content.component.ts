@@ -5,6 +5,7 @@ import { FrameworkService, PermissionService, UserService } from '@sunbird/core'
 import { IImpressionEventInput } from '@sunbird/telemetry';
 import { WorkSpaceService } from './../../services';
 import { LearnerService } from '@sunbird/core';
+import { HttpClient , HttpHeaders} from '@angular/common/http';
 import {
   userLMSToken
  } from '../../../core/services/userTokenForLMS/userLMSToken';
@@ -92,6 +93,7 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
     public config: ConfigService,
     public learnerService: LearnerService,
     private userLMSToken: userLMSToken,
+    private http: HttpClient,
   ) {
     this.resourceService = resourceService;
     this.frameworkService = frameworkService;
@@ -136,89 +138,84 @@ export class CreateContentComponent implements OnInit, AfterViewInit {
 
 
   navigateToLMSWeb() {
-    
+
     console.log("getting user id....", this.userService?.userProfile?.userId);
     console.log("isUserLoggedIn", this.isUserLoggedIn());
     const optionData = {
-        url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userService?.userProfile?.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
-        //   param: this.config.urlConFig.params.userReadParam
+      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userService?.userProfile?.userId}${'?userdelete=true'}`, // userdelete is not actual deleted user data this is basically unmaksed phone no. & email id and give us reponse
+      //   param: this.config.urlConFig.params.userReadParam
     };
 
     this.learnerService.getWithHeaders(optionData).subscribe(
-        (data: ServerResponse) => {
-            if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
+      (data: ServerResponse) => {
+        if (data?.result && (data?.result?.response?.phone || data?.result?.response?.email)) {
 
-                console.log("user data.....", data?.result?.response);
-                let ids = []; // locations ids -> state, district,block , cluster, school
+          console.log("user data.....", data?.result?.response);
+          let ids = []; // locations ids -> state, district,block , cluster, school
 
-                data?.result?.response?.profileLocation?.forEach((element: any) => {
-                    ids.push(element?.id)
-                });
+          data?.result?.response?.profileLocation?.forEach((element: any) => {
+            ids.push(element?.id)
+          });
 
-                console.log("IDS.......", ids);
+          console.log("IDS.......", ids);
 
-                if (ids?.length && this.isUserLoggedIn()) {
-                    this.userLMSToken.getUserLocationData(ids)
-                        .then(locationData => {
-                            console.log("locationData?.result?.response", locationData?.result?.response)
-                            this.userData = locationData;
-                            console.log("this?.userData", this.userData);
+          if (ids?.length && this.isUserLoggedIn()) {
+            this.userLMSToken.getUserLocationData(ids)
+              .then(locationData => {
+                console.log("locationData?.result?.response", locationData?.result?.response)
+                this.userData = locationData;
+                console.log("this?.userData", this.userData);
 
-                            const createLocationObject = (locations: any) => {
-                                return locations?.reduce((acc: any, location: any) => {
-                                    acc[location.type] = location.name;
-                                    if (location.type === 'school') {
-                                        acc.code = location.code;
-                                    }
-                                    return acc;
-                                }, {});
-                            };
+                const createLocationObject = (locations: any) => {
+                  return locations?.reduce((acc: any, location: any) => {
+                    acc[location.type] = location.name;
+                    if (location.type === 'school') {
+                      acc.code = location.code;
+                    }
+                    return acc;
+                  }, {});
+                };
 
-                            const locationObject = createLocationObject(this?.userData?.result?.response);
-                            console.log("locationObject", locationObject);
+                const locationObject = createLocationObject(this?.userData?.result?.response);
+                console.log("locationObject", locationObject);
 
-                            const userDataObject = {
-                                firstname: data?.result?.response?.firstName,
-                                lastname: data?.result?.response?.lastName,
-                                emailid: data?.result?.response?.email,
-                                phone: data?.result?.response?.phone,
-                                userid: data?.result?.response?.userId,
-                                profileUserType: data?.result?.response?.profileUserType?.type,
-                                profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
-                                rootOrgName: data?.result?.response?.rootOrg?.description,
-                                board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
-                                medium: data?.result?.response?.framework?.medium[0] ? data?.result?.response?.framework?.medium[0] : null,
-                                class: data?.result?.response?.framework?.gradeLevel[0] ? data?.result?.response?.framework?.gradeLevel[0] : null,
-                                ...locationObject, // keys name {state, district, block, cluster, school, code}
-                            }
-
-                            console.log("final object", userDataObject);
-                            const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
-                            // const url = `${apiUrl}?userid=${userDataObject?.userid}&firstname=${userDataObject?.firstname}&lastname=${userDataObject?.lastname}&emailid=${userDataObject?.emailid}&phone=${userDataObject?.phone}&profileUserType=${userDataObject?.profileUserType}&board=${userDataObject?.board}&state=${userDataObject?.state}&district=${userDataObject?.district}&block=${userDataObject?.block}&cluster=${userDataObject?.cluster}&school=${userDataObject?.school}&code=${userDataObject?.code}&rootOrgName=${userDataObject?.rootOrgName}&profileUserSubType=${userDataObject?.profileUserSubType}&medium=${userDataObject?.medium}&class=${userDataObject?.class}`;
-                            // window.location.href = url; // open in same tab
-
-                            const encodeQueryData = (data) => {
-                              return Object.keys(data)
-                                .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-                                .join('&');
-                            };
-                        
-                            const queryString = encodeQueryData(userDataObject);
-                            const url = `${apiUrl}?${queryString}`;
-
-                            window.open(url, '_blank'); // open in new tab
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
+                const userDataObject = {
+                  firstname: data?.result?.response?.firstName,
+                  lastname: data?.result?.response?.lastName,
+                  emailid: data?.result?.response?.email,
+                  phone: data?.result?.response?.phone,
+                  userid: data?.result?.response?.userId,
+                  profileUserType: data?.result?.response?.profileUserType?.type,
+                  profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
+                  rootOrgName: data?.result?.response?.rootOrg?.description,
+                  board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
+                  medium: data?.result?.response?.framework?.medium[0] ? data?.result?.response?.framework?.medium[0] : null,
+                  class: data?.result?.response?.framework?.gradeLevel[0] ? data?.result?.response?.framework?.gradeLevel[0] : null,
+                  redirecturl: 'https://learning.diksha.gov.in/diksha/diksha_sso.php', //TODO -> pass for reviewer/creator redirect URL - currently this is for student/teacher ROLE for LMS redirect URL
+                  ...locationObject, // keys name {state, district, block, cluster, school, code}
                 }
 
-            }
-        },
-        (err: ServerResponse) => {
-            console.log("getDecriptedUserProfile error ", err);
+                console.log("final object", userDataObject);
+                const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+                const apiUrl = 'https://jenkins.oci.diksha.gov.in/diksha-jwttoken/jwtlmsgenarator';
+                const redirectUrl = 'https://learning.diksha.gov.in/diksha/diksha_sso.php?token=';
+                this.http.post(apiUrl, userDataObject, { headers, responseType: "text" })
+                  .subscribe(response => {
+                    console.log('Server response:', response);
+                    window.open(redirectUrl + response, '_blank'); // new tab
+                  });
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          }
+
         }
+      },
+      (err: ServerResponse) => {
+        console.log("getDecriptedUserProfile error ", err);
+      }
     )
-}
+  }
 
 }

@@ -28,6 +28,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   sbFormLocationSelectionDelegate: SbFormLocationSelectionDelegate;
   isSubmitted = false;
   public locationSelectionModalId = 'location-selection';
+  isUserLoggedIn:boolean =false;
 
   constructor(
     public resourceService: ResourceService,
@@ -54,30 +55,79 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   ngOnInit() {
-    this.popupControlService.changePopupStatus(false);
-    this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
-      .catch(() => {
-        this.closeModal();
-        this.toasterService.error(this.resourceService.messages.fmsg.m0049);
-      });
+    this.isUserLoggedIn = _.get(this.userService, 'loggedIn');
+    if(_.get(this.userService, 'loggedIn')){
+      this.openModalOncePerMonthOnWorkingDay();
+    }
+    setTimeout(()=>{
+      this.popupControlService.changePopupStatus(false);
+      this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
+        .catch(() => {
+          this.closeModal();
+          this.toasterService.error(this.resourceService.messages.fmsg.m0049);
+        });
 
-      this.router.events.subscribe(event => {
-        if (event instanceof NavigationEnd) {
-          let substring1 = "play/content";
-          let substring2 = "contentType=Resource";
-          if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
-            console.log("urlAfterRedirects condition called");
-            this.closeModal();
+        this.router.events.subscribe(event => {
+          if (event instanceof NavigationEnd) {
+            let substring1 = "play/content";
+            let substring2 = "contentType=Resource";
+            if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
+              console.log("urlAfterRedirects condition called");
+              this.closeModal();
+            }
           }
-        }
-      });
+        });
 
-      console.log("isReturnFromThirdParty", localStorage.getItem('isReturnFromThirdParty'));
-      if (localStorage.getItem('isReturnFromThirdParty') === 'true') {
-        this.closeModal();
-        localStorage.setItem('isReturnFromThirdParty', 'false');
-      }
+        console.log("isReturnFromThirdParty", localStorage.getItem('isReturnFromThirdParty'));
+        if (localStorage.getItem('isReturnFromThirdParty') === 'true') {
+          this.closeModal();
+          localStorage.setItem('isReturnFromThirdParty', 'false');
+        }
+    },6000);
       console.log("location-selection.component page called");
+  }
+
+    openModalOncePerMonthOnWorkingDay() {
+      this.showModal =false;
+      console.log("openModalOncePerMonthOnWorkingDay--");
+       // Get current date
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
+    // Set the date to the first day of the next month
+    let nextMonth = currentMonth + 1;
+    let nextYear = currentYear;
+    if (nextMonth > 11) {
+        nextMonth = 0; // January (0) of next year
+        nextYear++;
+    }
+
+    // Initialize variables
+    let firstWorkingDayFound = false;
+    let dayOfMonth = 1;
+    let firstWorkingDayOfMonth;
+
+    // Loop through the days of the next month until we find the first working day
+    while (!firstWorkingDayFound) {
+        let nextDate = new Date(nextYear, nextMonth, dayOfMonth);
+
+        // Check if it's a weekday (Monday to Friday)
+        if (nextDate.getDay() >= 1 && nextDate.getDay() <= 5) {
+            firstWorkingDayOfMonth = nextDate;
+            firstWorkingDayFound = true;
+        }
+
+        dayOfMonth++;
+    }
+
+    // Check if the first working day of the month matches today's date
+    if (firstWorkingDayOfMonth.getDate() === currentDate.getDate() &&
+        firstWorkingDayOfMonth.getMonth() === currentDate.getMonth() &&
+        firstWorkingDayOfMonth.getFullYear() === currentDate.getFullYear()) {
+          console.log("success...");
+        this.showModal=true; // Call your function to open the modal
+    }
   }
 
   ngOnDestroy() {
@@ -154,9 +204,9 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
       const payload: any = {
         userId: _.get(this.userService, 'userid'),
         profileLocation: locationDetails,
-        profileUserTypes: userTypes,
-        gender: 'Male',
-        email: 'abc@yopmail.com'
+        profileUserTypes: userTypes
+        // gender: 'Male',
+        // email: 'abc@yopmail.com'
       };
       this.locationService.updateProfile(payload).toPromise()
         .then((res) => {

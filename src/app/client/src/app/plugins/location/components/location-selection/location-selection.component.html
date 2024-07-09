@@ -60,7 +60,7 @@
   </ng-template>
 </app-modal-wrapper>
 
-<div *ngIf="!showModal" class="sb-mat__modal sb-onboard">
+<div *ngIf="!showModal && !isUserLoggedIn" class="sb-mat__modal sb-onboard">
 
   <!-- <div mat-dialog-title class="flex-jc-center">
     <div class="sb-onboard__header">
