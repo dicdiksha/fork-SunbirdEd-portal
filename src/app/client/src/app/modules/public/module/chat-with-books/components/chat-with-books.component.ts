@@ -208,16 +208,16 @@ saveBooksQuery(){
     url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
     data: {
       "request": {
-          "userid": this.userService.userid,
-          "input": this.searchQuery
-                }
+          "id": this.userService.userid,
+          "saveQuery": this.searchQuery
+          }
           }
   };
   return this.learnerService.postWithSubscribe(option);
 }
 
 getQueryFromBooks(){
-  let userId = '12233333'
+  let userId = this.userService.userid;
   const option = {
     url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + userId,
   };
