@@ -11,14 +11,16 @@
   <div>
     <!--Header-->
     <div class="sb-modal-header">
-      <p>This is test</p> 
+
+      
+
       {{resourceService?.frmelmnts?.lbl[creationFormLable]}}
     </div>
     <!--/Header-->
   
     <!--Content-->
     <div class="sb-modal-content o-y-visible" *ngIf="formFieldProperties && categoryMasterList">
-      <p>This is test</p> 
+
 
       <app-content-creation-default-template #formData [formFieldProperties]="formFieldProperties"
         [categoryMasterList]="categoryMasterList">
