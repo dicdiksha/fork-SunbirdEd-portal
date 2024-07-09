@@ -85,40 +85,43 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
 
     openModalOncePerMonthOnWorkingDay() {
       console.log("openModalOncePerMonthOnWorkingDay--");
-      // Get current date
-      let currentDate = new Date();
+       // Get current date
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
 
-      // Calculate next month
-      let nextMonth = currentDate.getMonth() + 1;
-      let nextYear = currentDate.getFullYear();
-      if (nextMonth > 11) {
-          nextMonth = 0; // January (0) of next year
-          nextYear++;
-      }
+    // Set the date to the first day of the next month
+    let nextMonth = currentMonth + 1;
+    let nextYear = currentYear;
+    if (nextMonth > 11) {
+        nextMonth = 0; // January (0) of next year
+        nextYear++;
+    }
 
-      // Initialize variables for finding the working day
-      let foundWorkingDay = false;
-      let dayOfMonth = 1; // Start with the first day of the next month
+    // Initialize variables
+    let firstWorkingDayFound = false;
+    let dayOfMonth = 1;
+    let firstWorkingDayOfMonth;
 
-      // Loop through the days of the next month until we find a working day
-      while (!foundWorkingDay) {
-          let nextDate = new Date(nextYear, nextMonth, dayOfMonth);
-          console.log("day--",nextDate.getDay());
-          // Check if it's a weekday (Monday to Friday)
-          if (nextDate.getDay() > 1 && nextDate.getDay() <= 6) {
-              // Found the next working day in the next month
-              foundWorkingDay = true;
-              console.log("checked weekdays..");                     
-              // Check if this date matches today's date
-              if (nextDate.getDate() === currentDate.getDate() &&
-                  nextDate.getMonth() === currentDate.getMonth()) {
-                    console.log("true");                     
-                  // This is the day to open the modal
-                  this.showModal=true; // Call your function to open the modal
-              }
-          }
-          dayOfMonth++;
-      }
+    // Loop through the days of the next month until we find the first working day
+    while (!firstWorkingDayFound) {
+        let nextDate = new Date(nextYear, nextMonth, dayOfMonth);
+
+        // Check if it's a weekday (Monday to Friday)
+        if (nextDate.getDay() >= 1 && nextDate.getDay() <= 5) {
+            firstWorkingDayOfMonth = nextDate;
+            firstWorkingDayFound = true;
+        }
+
+        dayOfMonth++;
+    }
+
+    // Check if the first working day of the month matches today's date
+    if (firstWorkingDayOfMonth.getDate() === currentDate.getDate() &&
+        firstWorkingDayOfMonth.getMonth() === currentDate.getMonth() &&
+        firstWorkingDayOfMonth.getFullYear() === currentDate.getFullYear()) {
+        this.showModal=true; // Call your function to open the modal
+    }
   }
 
   ngOnDestroy() {
