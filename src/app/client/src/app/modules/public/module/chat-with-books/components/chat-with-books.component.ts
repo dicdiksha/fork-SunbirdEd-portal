@@ -1,24 +1,24 @@
 import {
   PaginationService, ResourceService, ConfigService, ToasterService, OfflineCardService, ILoaderMessage, UtilService, NavigationHelperService, IPagination, LayoutService, COLUMN_TYPE
 } from '@sunbird/shared';
-import { SearchService, OrgDetailsService, UserService, FrameworkService, SchemaService} from '@sunbird/core';
+import { SearchService, OrgDetailsService, UserService, FrameworkService, SchemaService } from '@sunbird/core';
 import { combineLatest, Subject, of } from 'rxjs';
-import { Component, OnInit, OnDestroy, EventEmitter, AfterViewInit,OnChanges, SimpleChanges,DoCheck  } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter, AfterViewInit, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash-es';
 import { IInteractEventEdata, IImpressionEventInput, TelemetryService } from '@sunbird/telemetry';
 import { takeUntil } from 'rxjs/operators';
 import { CacheService } from 'ng2-cache-service';
 import { ContentManagerService } from './../../offline/services';
-import { get, map as _map} from 'lodash-es';
+import { get, map as _map } from 'lodash-es';
 import { LearnerService } from '../../../../../modules/core/services/learner/learner.service';
 @Component({
   selector: 'app-chat-with-books',
   templateUrl: './chat-with-books.component.html',
   styleUrls: ['./chat-with-books.component.scss']
 })
-export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCheck ,AfterViewInit {
-  public searchQuery : string = '';
+export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoCheck, AfterViewInit {
+  public searchQuery: string = '';
 
   public unsubscribe$ = new Subject<void>();
   public telemetryImpression: IImpressionEventInput;
@@ -60,7 +60,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCh
     public userService: UserService, public frameworkService: FrameworkService,
     public cacheService: CacheService, public navigationhelperService: NavigationHelperService, public layoutService: LayoutService,
     public contentManagerService: ContentManagerService, private offlineCardService: OfflineCardService,
-    public telemetryService: TelemetryService, private schemaService: SchemaService,private learnerService: LearnerService) {
+    public telemetryService: TelemetryService, private schemaService: SchemaService, private learnerService: LearnerService) {
   }
   ngOnInit() {
 
@@ -107,7 +107,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCh
       this.SECOND_PANEL_LAYOUT = this.layoutService.redoLayoutCSS(1, null, COLUMN_TYPE.fullLayout);
     }
   }
-  
+
   moveToTop() {
     window.scroll({
       top: 0,
@@ -156,72 +156,73 @@ export class ChatWithBooksComponent implements OnInit, OnChanges,OnDestroy, DoCh
   }
 
 
- public isUserLoggedIn(): boolean {
-  return this.userService && (this.userService.loggedIn || false);
-}
+  public isUserLoggedIn(): boolean {
+    return this.userService && (this.userService.loggedIn || false);
+  }
 
-logViewAllTelemetry(event) {
-  const telemetryData = {
+  logViewAllTelemetry(event) {
+    const telemetryData = {
       cdata: [{
-          type: 'section',
-          id: event.name
+        type: 'section',
+        id: event.name
       }],
       edata: {
-          id: 'view-all'
+        id: 'view-all'
       }
-  };
-  this.getInteractEdata(telemetryData);
-}
+    };
+    this.getInteractEdata(telemetryData);
+  }
 
-getInteractEdata(event) {
-  const cardClickInteractData = {
+  getInteractEdata(event) {
+    const cardClickInteractData = {
       context: {
-          cdata: event.cdata,
-          env: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.env,
+        cdata: event.cdata,
+        env: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.env,
       },
       edata: {
-          id: get(event, 'edata.id'),
-          type: 'click',
-          pageid: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.pageid
+        id: get(event, 'edata.id'),
+        type: 'click',
+        pageid: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.pageid
       },
       object: get(event, 'object')
-  };
-  this.telemetryService.interact(cardClickInteractData);
-}
+    };
+    this.telemetryService.interact(cardClickInteractData);
+  }
 
-ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges) {
 
-}
+  }
 
-ngDoCheck() {
-  // Custom change detection logic
-  // console.log('Change detection run');
-  // this.moveToBottom()
-} 
+  ngDoCheck() {
+    // Custom change detection logic
+    // console.log('Change detection run');
+    // this.moveToBottom()
+  }
 
-onDataChange(event: any) {
-  this.moveToBottom()
-}
+  onDataChange(event: any) {
+    this.moveToBottom()
+  }
 
-saveBooksQuery(){
-  const option = {
-    url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
-    data: {
-      "request": {
+  saveBooksQuery() {
+    const option = {
+      url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
+      data: {
+        "request": {
           "id": this.userService.userid,
           "saveQuery": this.searchQuery
-          }
-          }
-  };
-  return this.learnerService.postWithSubscribe(option);
-}
+        }
+      }
+    };
+    const response = this.learnerService.postWithSubscribe(option);
+    console.log("response===", response)
+  }
 
-getQueryFromBooks(){
-  let userId = this.userService.userid
-  const option = {
-    url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + userId,
-  };
-  return this.learnerService.get(option);
-}
+  getQueryFromBooks() {
+    let userId = this.userService.userid
+    const option = {
+      url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + userId,
+    };
+    return this.learnerService.get(option);
+  }
 
 }
