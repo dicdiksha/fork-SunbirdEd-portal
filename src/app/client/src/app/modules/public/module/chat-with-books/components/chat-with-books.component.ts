@@ -12,6 +12,8 @@ import { CacheService } from 'ng2-cache-service';
 import { ContentManagerService } from './../../offline/services';
 import { get, map as _map } from 'lodash-es';
 import { LearnerService } from '../../../../../modules/core/services/learner/learner.service';
+import { UUID } from 'angular2-uuid';
+
 @Component({
   selector: 'app-chat-with-books',
   templateUrl: './chat-with-books.component.html',
@@ -204,11 +206,13 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
   }
 
   saveBooksQuery() {
+    const _uuid = UUID.UUID();
     const option = {
       url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
       data: {
         "request": {
           "id": this.userService.userid,
+          "userId": _uuid,
           "saveQuery": this.searchQuery
         }
       }
