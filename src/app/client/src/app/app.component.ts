@@ -288,7 +288,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    this.router.navigate(['/signup'], { queryParams: { loginMode: 'gmail' } });
     this.checkToShowPopups();
     this.isIOS = this.utilService.isIos;
     this.isDesktopApp = this.utilService.isDesktopApp;
