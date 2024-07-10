@@ -35,7 +35,6 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
   /** To store the certificate details data */
   recipient: string;
   courseName: string;
-  courseDuration: string;
   issuedOn: string;
   watchVideoLink: string;
   validateRCCertificate: boolean = false;
@@ -203,17 +202,20 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
    * Function to validate certificate if URL has `data` params
    */
   validateCertificate() {
+    console.log('validateCertificate -------  ')
     this.loader = true;
     let url = _.get(this.activatedRoute, 'snapshot.queryParams.data').toString();
     url = url.replace(/ /g, "+");
     this.CsCertificateService
       .getEncodedData(url)
       .then((resp) => {
+        console.log('resp -------  ', resp)
         let requestBody = {
           certificateData: resp,
           schemaName: 'certificate',
           certificateId: _.get(this.activatedRoute, 'snapshot.params.uuid'),
         };
+         console.log('requestBody -------  ', requestBody)
         this.CsCertificateService.verifyCertificate(requestBody, {
           apiPath: '/learner/certreg/v2',
           apiPathLegacy: '/certreg/v1',
@@ -223,14 +225,12 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
         console.log('validateCertificate data-----', data)
             const certData = _.get(data, 'certificateData');
         console.log('validateCertificate certData-----', certData)
-
             this.loader = false;
             if (_.get(data, 'verified')) {
               console.log('validateCertificate if-----', data)
               this.viewCertificate = true;
               this.recipient = _.get(certData, 'issuedTo');
               this.courseName = _.get(certData, 'trainingName');
-              this.courseDuration = _.get(certData, 'courseDuration');
               this.issuedOn = dayjs(new Date(_.get(certData, 'issuanceDate'))).format('DD MMM YYYY');
             } else {
               this.viewCertificate = false;
@@ -254,10 +254,12 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
    * Function to validate certificate if URL has `t` params
    */
   validateTCertificate() {
+    console.log('validateTCertificate----')
     let requestBody = {
       schemaName: 'certificate',
       certificateId: _.get(this.activatedRoute, 'snapshot.params.uuid'),
     };
+    console.log('validateTCertificate requestBody----', requestBody)
     this.CsCertificateService.verifyCertificate(requestBody, {
       apiPath: '/learner/certreg/v2',
       apiPathLegacy: '/certreg/v1',
@@ -266,13 +268,13 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
       (data) => {
         console.log('validataTCertificate-----', data)
         const certData = _.get(data, 'certificateData');
+        console.log('validateTCertificate certData----', certData)
         this.loader = false;
         if (_.get(data, 'verified')) {
         console.log('validataTCertificate if-----', data)
           this.viewCertificate = true;
           this.recipient = _.get(certData, 'issuedTo');
           this.courseName = _.get(certData, 'trainingName');
-          this.courseDuration = _.get(certData, 'courseDuration');
           this.issuedOn = dayjs(new Date(_.get(certData, 'issuanceDate'))).format('DD MMM YYYY');
         } else {
           this.viewCertificate = false;
