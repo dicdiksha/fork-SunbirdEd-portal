@@ -59,7 +59,6 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
     if(_.get(this.userService, 'loggedIn')){
       this.openModalOncePerMonthOnWorkingDay();
     }
-    setTimeout(()=>{
       this.popupControlService.changePopupStatus(false);
       this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
         .catch(() => {
@@ -83,51 +82,51 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
           this.closeModal();
           localStorage.setItem('isReturnFromThirdParty', 'false');
         }
-    },6000);
       console.log("location-selection.component page called");
   }
 
     openModalOncePerMonthOnWorkingDay() {
-      this.showModal =false;
-      console.log("openModalOncePerMonthOnWorkingDay--");
-       // Get current date
-    let currentDate = new Date();
-    let currentMonth = currentDate.getMonth();
-    let currentYear = currentDate.getFullYear();
+      this.showModal =false;  
+      let currentDate = new Date();
+      let currentMonth = currentDate.getMonth();
+      let currentYear = currentDate.getFullYear();
+  
+      // Set the date to the first day of the next month
+      let nextMonth = currentMonth + 1;
+      let nextYear = currentYear;
+      if (nextMonth > 11) {
+          nextMonth = 0; // January (0) of next year
+          nextYear++;
+      }
+  
+      // Find the first working day of the next month
+      let firstWorkingDayOfMonth = this.getFirstWorkingDay(nextYear, nextMonth);
+  
+      // Check if the first working day of the month matches today's date
+      if (this.isSameDate(firstWorkingDayOfMonth, currentDate)) {
+          this.showModal = true; // Set showModal to true to open the modal
+      }
+  }
+  
+  // Helper function to find the first working day of a given month
+  getFirstWorkingDay(year, month) {
+      let dayOfMonth = 1;
+      while (true) {
+          let nextDate = new Date(year, month, dayOfMonth);
 
-    // Set the date to the first day of the next month
-    let nextMonth = currentMonth + 1;
-    let nextYear = currentYear;
-    if (nextMonth > 11) {
-        nextMonth = 0; // January (0) of next year
-        nextYear++;
-    }
-
-    // Initialize variables
-    let firstWorkingDayFound = false;
-    let dayOfMonth = 1;
-    let firstWorkingDayOfMonth;
-
-    // Loop through the days of the next month until we find the first working day
-    while (!firstWorkingDayFound) {
-        let nextDate = new Date(nextYear, nextMonth, dayOfMonth);
-
-        // Check if it's a weekday (Monday to Friday)
-        if (nextDate.getDay() >= 1 && nextDate.getDay() <= 5) {
-            firstWorkingDayOfMonth = nextDate;
-            firstWorkingDayFound = true;
-        }
-
-        dayOfMonth++;
-    }
-
-    // Check if the first working day of the month matches today's date
-    if (firstWorkingDayOfMonth.getDate() === currentDate.getDate() &&
-        firstWorkingDayOfMonth.getMonth() === currentDate.getMonth() &&
-        firstWorkingDayOfMonth.getFullYear() === currentDate.getFullYear()) {
-          console.log("success...");
-        this.showModal=true; // Call your function to open the modal
-    }
+          // Check if it's a weekday (Monday to Friday)
+          if (nextDate.getDay() >= 1 && nextDate.getDay() <= 5) {
+              return nextDate; // Return the first working day found
+          }
+          dayOfMonth++;
+      }
+  }
+  
+  //Function to check if two dates are the same day
+  isSameDate(date1, date2) {
+      return date1.getDate() === date2.getDate() &&
+          date1.getMonth() === date2.getMonth() &&
+          date1.getFullYear() === date2.getFullYear();
   }
 
   ngOnDestroy() {
