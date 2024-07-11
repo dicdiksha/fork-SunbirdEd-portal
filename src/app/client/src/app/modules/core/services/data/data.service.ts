@@ -247,11 +247,9 @@ export class DataService {
     const httpOptions: HttpOptions = {
       headers: requestParam.header ? this.getHeader(requestParam.header) : this.getHeader(),
       params: requestParam.param
-    };
-    console.log('postWithSubscribe', this.baseUrl + '------' + requestParam.url, requestParam.data)
+    }
     return this.http.post(this.baseUrl + requestParam.url, requestParam.data, httpOptions).pipe(
       mergeMap((data: ServerResponse) => {
-        console.log("postWithSubscribedata========", data)
         if (data.responseCode !== 'OK') {
           return observableThrowError(data);
         }
@@ -259,6 +257,14 @@ export class DataService {
       }
       )
     )
+  }
+
+  readWithSubscribe(requestParam: RequestParam) {
+    const httpOptions: HttpOptions = {
+      headers: requestParam.header ? this.getHeader(requestParam.header) : this.getHeader(),
+      params: requestParam.param
+    }
+    return this.http.get(this.baseUrl + requestParam.url)
   }
 
 }

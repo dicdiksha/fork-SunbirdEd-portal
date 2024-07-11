@@ -11,15 +11,9 @@
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''">
         <ng-container class="h-100">
           <div class="filters-area h-100">
-            <ul>
-                <li>
-                    <a href="" class="active">Lorem ipsum dolor sit amet consectetur adipisicing elit.</a>
-                </li>
-                <li>
-                    <a href="">Distinctio sapiente deserunt accusamus, culpa blanditiis incidunt.</a>
-                </li>
-                <li>
-                    <a href="">Magni corrupti natus ratione, adipisci nobis suscipit consectetur esse voluptas! Magni officia vero vitae pariatur</a>
+            <ul *ngIf="searchQueryList.length>0">
+                <li  *ngFor="let search of searchQueryList">
+                    <a href="{{search?.id}}" >{{search?.searchQuery}}</a>
                 </li>
             </ul>
         </div>
@@ -35,7 +29,6 @@
               <!-- Chats container -->
               <div class="chat-container" id="chat-data" (input)="onDataChange($event)">
                {{apiData}}
-
               </div>
               <!-- Typing container -->
               <div class="typing-container">
