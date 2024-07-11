@@ -127,7 +127,7 @@ module.exports = function (app) {
 
 
   app.get('/learner/user/v1/managed/*', proxyManagedUserRequest());
-
+  app.get('/learner/v1/chatWithBooks/read/:userId', proxyManagedUserRequest());
   // Route to check user email id exists (or) already registered
   app.get('/learner/user/v1/exists/email/:emailId', googleService.validateRecaptcha);
 
@@ -205,7 +205,12 @@ function proxyManagedUserRequest() {
     limit: reqDataLimitOfContentUpload,
     proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
     proxyReqPathResolver: function (req) {
-      let urlParam = req.originalUrl.replace('/learner/', '');
+      let urlParam = '';
+      if(req.originalUrl.includes('chatWithBooks')){
+        urlParam = req.originalUrl.replace('/learner/', 'user/');
+      } else {
+        urlParam = req.originalUrl.replace('/learner/', '');
+      }
       let query = require('url').parse(req.url).query;
       if (query) {
         return require('url').parse(learnerURL + urlParam + '?' + query).path
