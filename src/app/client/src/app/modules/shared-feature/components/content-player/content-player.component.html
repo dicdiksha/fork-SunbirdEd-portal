@@ -66,11 +66,11 @@
 <div [ngClass]="layoutConfiguration ? 'sbt-inside-page-container' : ''">
   <div class="relative9 video-player-and-timeline" [style.display]="!showLoader ? '' : 'none'" *ngIf="contentData">
     <div class="side-bar" *ngIf="timestampDetailList.length > 0">
-      <h6>Click on the Timestamp to learn more about <span class="searchQuery">{{searchQuery}}</span></h6>
+      <h6>Click on the Timestamp to learn more about <span class="searchQuery">{{searchQuery}}</span><span tooltip="The Timestamps are shown in order of Relevance" class="videoToottip" flow="right"><i class="fa fa-info-circle" aria-hidden="true"></i></span></h6>
       <div class="card player-timeline w-100">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" (click)="getstartTime(item.start_time)" *ngFor="let item of timestampDetailList">
-            Go to {{convertIntoMinutes(item.start_time)}} min with {{item.match_percentage}}% Relevance</li>
+            Go to {{convertIntoMinutes(item.start_time)}} minute</li>
         </ul>
       </div>
     </div>
