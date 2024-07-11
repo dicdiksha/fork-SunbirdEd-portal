@@ -258,11 +258,7 @@ export class DataService {
         return observableOf(data);
       }
       )
-    ).subscribe(
-      data => {
-        console.log('subscribe=============',data);
-      }
-    );;
+    )
   }
 
 }

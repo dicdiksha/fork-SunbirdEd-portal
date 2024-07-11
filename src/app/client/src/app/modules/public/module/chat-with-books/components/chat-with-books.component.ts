@@ -217,7 +217,9 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
         }
       }
     };
-    const response = this.learnerService.postWithSubscribe(option);
+    const response = this.learnerService.postWithSubscribe(option).subscribe(res=>{
+      console.log("response subscribe===", res)
+    });
     console.log("response===", response)
   }
 
