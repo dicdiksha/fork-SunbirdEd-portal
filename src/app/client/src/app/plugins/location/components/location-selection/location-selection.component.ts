@@ -56,8 +56,9 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
 
   ngOnInit() {
     this.isUserLoggedIn = _.get(this.userService, 'loggedIn');
+    let updatedDate = _.get(this.userService, 'userProfile.updatedDate');
     if(this.isUserLoggedIn){
-      this.openModalOncePerMonth(_.get(this.userService, 'userProfile.updatedDate'));
+      this.openModalOncePerMonth(new Date(updatedDate));
     }
     this.popupControlService.changePopupStatus(false);
     this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
