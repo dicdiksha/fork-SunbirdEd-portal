@@ -249,7 +249,7 @@ export class DataService {
       params: requestParam.param
     };
     console.log('postWithSubscribe', this.baseUrl + '------' + requestParam.url, requestParam.data)
-    this.http.post(this.baseUrl + requestParam.url, requestParam.data, httpOptions).pipe(
+    return this.http.post(this.baseUrl + requestParam.url, requestParam.data, httpOptions).pipe(
       mergeMap((data: ServerResponse) => {
         console.log("postWithSubscribedata========", data)
         if (data.responseCode !== 'OK') {
