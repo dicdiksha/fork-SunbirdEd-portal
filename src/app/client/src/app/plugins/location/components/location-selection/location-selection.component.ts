@@ -136,10 +136,11 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   async updateUserLocation() {
-    console.log("this.userservice---",this.userService);
+    console.log("*****DIKSHA*****",this.userService);
     if (this.showModal) {
       try {
         const result: any = await this.sbFormLocationSelectionDelegate.updateUserLocation();
+        console.log("*****DIKSHA*****",result);
   
         /* istanbul ignore else */
         if (result.userProfile) {
@@ -164,6 +165,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
       }
     } else if (_.get(this.userService, 'loggedIn') && _.get(this.userService, 'userid')) {
       const result: any = await this.sbFormLocationSelectionDelegate.formGroup;
+      console.log("*****DIKSHA*****",result);
       const locationDetails: SbLocation[] = Object.keys(_.get(result, 'value.children.persona'))
         .reduce<SbLocation[]>((acc, key) => {
           const locationDetail: SbLocation | null = _.get(result, 'value.children.persona')[key];
@@ -172,6 +174,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
           }
           return acc;
         }, []);
+        console.log("*****DIKSHA*****",locationDetails)
       const userTypes = [{ type: 'teacher' }];
       const payload: any = {
         userId: _.get(this.userService, 'userid'),

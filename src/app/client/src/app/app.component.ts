@@ -224,6 +224,7 @@ export class AppComponent implements OnInit, OnDestroy {
         (_.isArray(_.get(user, 'userProfile.externalIds')) && _.get(user, 'userProfile.externalIds').length === 0)
       ) {
         this.router.navigate(['/signup'], { queryParams: { loginMode: 'gmail' } });
+        console.log("*****DIKSHA*****",this.queryParams)
       }
     });
   }

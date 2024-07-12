@@ -30,8 +30,10 @@ export class LocationService {
       url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
       data: data
     };
+    console.log("*****DIKSHA*****",options)
     return this.learnerService.patch(options).pipe(map(
       (res: ServerResponse) => {
+        console.log("*****DIKSHA*****",res)
         setTimeout(() => {
           this.userService.getUserProfile();
         }, this.configService.appConfig.timeOutConfig.setTime);
