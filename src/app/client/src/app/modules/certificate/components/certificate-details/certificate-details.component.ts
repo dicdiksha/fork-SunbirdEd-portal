@@ -36,6 +36,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
   recipient: string;
   courseName: string;
   issuedOn: string;
+  courseDuration: string;
   watchVideoLink: string;
   validateRCCertificate: boolean = false;
   @ViewChild('codeInputField') codeInputField: ElementRef;
@@ -98,6 +99,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
         this.viewCertificate = true;
         this.recipient = _.get(certData, 'recipient.name');
         this.courseName = _.get(certData, 'badge.name');
+        this.courseDuration =_.get(certData, 'courseDuration');
         this.issuedOn = dayjs(new Date(_.get(certData, 'issuedOn'))).format('DD MMM YYYY');
       },
       (err) => {
@@ -231,6 +233,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
               this.viewCertificate = true;
               this.recipient = _.get(certData, 'issuedTo');
               this.courseName = _.get(certData, 'trainingName');
+              this.courseDuration =_.get(certData, 'courseDuration')
               this.issuedOn = dayjs(new Date(_.get(certData, 'issuanceDate'))).format('DD MMM YYYY');
             } else {
               this.viewCertificate = false;
@@ -275,6 +278,7 @@ export class CertificateDetailsComponent implements OnInit , OnDestroy {
           this.viewCertificate = true;
           this.recipient = _.get(certData, 'issuedTo');
           this.courseName = _.get(certData, 'trainingName');
+          this.courseDuration =_.get(certData, 'courseDuration')
           this.issuedOn = dayjs(new Date(_.get(certData, 'issuanceDate'))).format('DD MMM YYYY');
         } else {
           this.viewCertificate = false;
