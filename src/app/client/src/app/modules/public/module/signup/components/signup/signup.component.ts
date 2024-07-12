@@ -122,7 +122,6 @@ export class SignupComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   changeStep() {
-    console.log('*****DIKSHA*****',this.signupStage)
     switch(this.signupStage) {
       case this.Stage.BASIC_INFO:
         this.signupStage = this.Stage.ONBOARDING_INFO;

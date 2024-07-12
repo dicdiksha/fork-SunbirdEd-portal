@@ -186,20 +186,18 @@ export class UserService {
       url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userid}`,
       param: this.config.urlConFig.params.userReadParam
     };
-    console.log("*****DIKSHA*****",option);
+    console.log("112388 User service option ",option);
     this.learnerService.getWithHeaders(option).subscribe(
       (data: ServerResponse) => {
         if (data.ts) {
-          console.log("*****DIKSHA*****",data.ts); 
           // data.ts is taken from header and not from api response ts, and format in IST
           this.timeDiff = data.ts;
         }
-        console.log("*****DIKSHA***** ",data);
+        console.log("112388 user service set user profile ",data);
         this.setUserProfile(data);
       },
       (err: ServerResponse) => {
         this._userData$.next({ err: err, userProfile: this._userProfile as any });
-        console.log("*****DIKSHA*****",this.userData$)
       }
     );
   }
@@ -227,14 +225,12 @@ export class UserService {
    */
   private setUserProfile(res: ServerResponse) {
     const profileData = res.result.response;
-    console.log("*****DIKSHA*****",profileData);
     const orgRoleMap = {};
     const hashTagIds = [];
     this._channel = _.get(profileData, 'rootOrg.hashTagId');
     this._slug = _.get(profileData, 'rootOrg.slug');
     profileData.skills = _.get(profileData, 'skills') || [];
     hashTagIds.push(this._channel);
-    console.log("*****DIKSHA*****",hashTagIds);
     let organisationIds = [];
     if (profileData.rootOrgId) {
       organisationIds.push(profileData.rootOrgId);
