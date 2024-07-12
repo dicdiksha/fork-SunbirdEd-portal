@@ -12,14 +12,11 @@ export class CertificateService {
   constructor(public learnerService: LearnerService, public configService: ConfigService) {  }
 
   validateCertificate(data): Observable<ServerResponse> {
-    console.log('validateCertificate data-----', data)
     const option = {
       url: this.configService.urlConFig.URLS.USER.VALIDATE_CERTIFICATE,
       data: data
     };
-    console.log('validateCertificate option-----', option)
     return this.learnerService.post(option);
-
   }
 
   fetchCertificatePreferences(data): Observable<ServerResponse> {

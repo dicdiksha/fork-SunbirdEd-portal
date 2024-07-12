@@ -43,10 +43,9 @@
       <h4 *ngIf="recipient" class="sb-certificatePage-holder-name">
         {{recipient}}
       </h4>
-      <p *ngIf="courseName && issuedOn && courseDuration" class="sb-certificatePage-holder-desc">
+      <p *ngIf="courseName && issuedOn" class="sb-certificatePage-holder-desc">
         {{resourceService?.frmelmnts?.lbl?.completingCourseSuccessfully}} 
         <strong class="d-block">“{{courseName}}”</strong>
-        <strong class="d-block">“{{courseDuration}}”</strong>
         <span class="d-block">{{resourceService?.frmelmnts?.lbl?.onDiksha | interpolate:'{instance}':instance}}<strong> {{issuedOn}}</strong></span>
       </p>
       
@@ -92,10 +91,9 @@
       <h4 *ngIf="recipient" class="sb-certificatePage-holder-name">
         {{recipient}} 
       </h4>
-      <p *ngIf="courseName && issuedOn && courseDuration" class="sb-certificatePage-holder-desc">
+      <p *ngIf="courseName && issuedOn" class="sb-certificatePage-holder-desc">
         {{resourceService?.frmelmnts?.lbl?.completingCourseSuccessfully}}
         <strong class="d-block">“{{courseName}}”</strong>
-        <strong class="d-block">“{{courseDuration}}”</strong>
         <span class="d-block">{{resourceService?.frmelmnts?.lbl?.onDiksha | interpolate:'{instance}':instance}}<strong>
             {{issuedOn}}</strong></span>
       </p>
