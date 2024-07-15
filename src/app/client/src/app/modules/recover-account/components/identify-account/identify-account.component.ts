@@ -51,7 +51,7 @@ export class IdentifyAccountComponent implements OnInit {
     this.form = this.formBuilder.group({
       identifier: new FormControl(null, [Validators.required,
         Validators.pattern(/^([6-9]\d{9}|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,4})$/)]),
-        name: new FormControl(null, [Validators.required])
+        firstName: new FormControl(null, [Validators.required])
     });
     this.form.valueChanges.subscribe(val => {
       this.nameNotExist = false;
