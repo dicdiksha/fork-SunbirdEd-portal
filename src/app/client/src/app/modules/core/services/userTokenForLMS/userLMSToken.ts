@@ -99,12 +99,17 @@ export class userLMSToken {
                                         emailid: data?.result?.response?.email,
                                         phone: data?.result?.response?.phone,
                                         userid: data?.result?.response?.userId,
+                                        userName: data?.result?.response?.userName,
+                                        maskedPhone : data?.result?.response?.maskedPhone,
+                                        maskedEmail : data?.result?.response?.maskedEmail,
                                         profileUserType: data?.result?.response?.profileUserType?.type,
                                         profileUserSubType: data?.result?.response?.profileUserSubType?.subType,
                                         rootOrgName: data?.result?.response?.rootOrg?.description,
                                         board: data?.result?.response?.framework?.board[0] ? data?.result?.response?.framework?.board[0] : null,
+                                        medium: data?.result?.response?.framework?.medium[0] ? data?.result?.response?.framework?.medium[0] : null,
+                                        class: data?.result?.response?.framework?.gradeLevel[0] ? data?.result?.response?.framework?.gradeLevel[0] : null,
                                         ...locationObject, // keys name {state, district, block, cluster, school, code}
-                                    }
+                                      }
                                     // resolve the promise with userDataObject
                                     console.log("userDataObject....", userDataObject);
                                     resolve(userDataObject);
