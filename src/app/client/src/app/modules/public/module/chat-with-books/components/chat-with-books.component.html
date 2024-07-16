@@ -11,6 +11,7 @@
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''">
         <ng-container class="h-100">
           <div class="filters-area h-100">
+            <p class="header font-weight-bold mb-8">Recent Search</p>
             <ul *ngIf="searchQueryList.length>0">
               <li  *ngFor="let search of searchQueryList">
                   <a href="{{search?.id}}" >{{search?.searchQuery}}</a>
@@ -27,8 +28,8 @@
             in-view-container>
             <div class="chatgpt-box h-100">
               <!-- Chats container -->
-              <div class="chat-container" id="chat-data" (input)="onDataChange($event)">
-               {{apiData}}
+              <div class="chat-container" #chatData id="chat-data" (input)="onDataChange($event)">
+           
 
               </div>
               <!-- Typing container -->
@@ -38,9 +39,9 @@
                     <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required [(ngModel)]="searchQuery"></textarea>
                     <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i class="fa fa-arrow-right"></i></span>
                   </div>
-                  <div class="typing-controls">
+                  <!-- <div class="typing-controls">
                     <span id="delete-btn" class="material-symbols-rounded"><i class="fa fa-trash-alt"></i></span>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>

@@ -267,4 +267,14 @@ export class DataService {
     return this.http.get(this.baseUrl + requestParam.url)
   }
 
+
+  chatWithBooks(data:any) {
+    const aiHttpOptions: HttpOptions = {
+      headers: {
+        "Accept":"application/json","Content-Type":"application/json"
+      }
+    };
+    return this.http.post("http://144.24.102.67:8502/chat",data, aiHttpOptions)
+  }
+
 }

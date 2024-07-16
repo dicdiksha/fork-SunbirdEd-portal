@@ -13,6 +13,7 @@
     padding: 1rem;
     position: relative;
     width: 100%;
+    min-height: 300px;
     border-radius: 1.5rem;
     background: #e9e8d9;
     box-shadow: 0.375rem 0.375rem 0.125rem 0 rgba(0,0,0,0.1);
@@ -32,9 +33,12 @@
                 color: #333;
                 text-overflow: ellipsis;
                 text-decoration: none;
+                border-radius: 10px;
+                background: rgba(0, 0, 0, 0.05);
+                text-decoration: none;
                 &:hover {
                     border-radius: 10px;
-                    background: rgba(0, 0, 0, 0.05);
+                    background: rgba(0, 0, 0, 0.09);
                     text-decoration: none;
                 }
             }
@@ -64,6 +68,8 @@
     overflow-y: auto;
     height: 70vh;
     max-height: 100vh;
+    padding: 10px;
+    border-radius: 10px;
     // border-radius: 1.5rem;
     // background-color: rgba(0, 0, 0, 0.05);
     // padding-bottom: 150px;
@@ -251,7 +257,35 @@
   .typing-controls span:hover {
     background: #5b5e71;
   }
-  
+
+  p.ai-question{
+    background: #ddd;
+    padding: 5px 10px;
+    overflow: hidden;
+    max-width: 100%;
+    border-radius:15px;
+	  width: max-content;
+    float: left;
+  }
+
+  p.ai-answer{
+    background: #fff;
+    padding: 5px 10px;
+    overflow: hidden;
+    max-width: 100%;
+    border-radius:15px;
+	  width: max-content;
+    float: right;
+  }
+  p.ai-answer::before{
+    background:url(../../../../../../assets/images/logo.png);
+    display: inline-block;
+    width: 21px;
+    height: 22px;
+    margin-right: 5px;
+    content: "";
+    background-size: 100%;
+  }
   /* Reponsive Media Query */
   @media screen and (max-width: 600px) {
     .default-text h1 {
