@@ -128,7 +128,6 @@ module.exports = function (app) {
 
   app.get('/learner/user/v1/managed/*', proxyManagedUserRequest());
   app.get('/learner/v1/chatWithBooks/read/:userId', proxyManagedUserRequest());
-
   // Route to check user email id exists (or) already registered
   app.get('/learner/user/v1/exists/email/:emailId', googleService.validateRecaptcha);
 

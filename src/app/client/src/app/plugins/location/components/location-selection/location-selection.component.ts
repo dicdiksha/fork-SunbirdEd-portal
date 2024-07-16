@@ -56,33 +56,32 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
 
   ngOnInit() {
     this.isUserLoggedIn = _.get(this.userService, 'loggedIn');
-    let updatedDate = _.get(this.userService, 'userProfile.updatedDate');
-    if(this.isUserLoggedIn){
-      this.openModalOncePerMonth(new Date(updatedDate));
+    if(_.get(this.userService, 'loggedIn')){
+      this.openModalOncePerMonthOnWorkingDay();
     }
-    this.popupControlService.changePopupStatus(false);
-    this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
-      .catch(() => {
-        this.closeModal();
-        this.toasterService.error(this.resourceService.messages.fmsg.m0049);
-      });
+      this.popupControlService.changePopupStatus(false);
+      this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
+        .catch(() => {
+          this.closeModal();
+          this.toasterService.error(this.resourceService.messages.fmsg.m0049);
+        });
 
-      this.router.events.subscribe(event => {
-        if (event instanceof NavigationEnd) {
-          let substring1 = "play/content";
-          let substring2 = "contentType=Resource";
-          if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
-            console.log("urlAfterRedirects condition called");
-            this.closeModal();
+        this.router.events.subscribe(event => {
+          if (event instanceof NavigationEnd) {
+            let substring1 = "play/content";
+            let substring2 = "contentType=Resource";
+            if (event.urlAfterRedirects.includes(substring1) && event.urlAfterRedirects.includes(substring2) && event.id === 1) {
+              console.log("urlAfterRedirects condition called");
+              this.closeModal();
+            }
           }
-        }
-      });
+        });
 
-      console.log("isReturnFromThirdParty", localStorage.getItem('isReturnFromThirdParty'));
-      if (localStorage.getItem('isReturnFromThirdParty') === 'true') {
-        this.closeModal();
-        localStorage.setItem('isReturnFromThirdParty', 'false');
-      }
+        console.log("isReturnFromThirdParty", localStorage.getItem('isReturnFromThirdParty'));
+        if (localStorage.getItem('isReturnFromThirdParty') === 'true') {
+          this.closeModal();
+          localStorage.setItem('isReturnFromThirdParty', 'false');
+        }
       console.log("location-selection.component page called");
   }
   
@@ -100,6 +99,50 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
       const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in a day
       const timeDiff = Math.abs(date2.getTime() - date1.getTime());
       return Math.round(timeDiff / oneDay);
+  }
+
+    openModalOncePerMonthOnWorkingDay() {
+      this.showModal =false;  
+      let currentDate = new Date();
+      let currentMonth = currentDate.getMonth();
+      let currentYear = currentDate.getFullYear();
+  
+      // Set the date to the first day of the next month
+      let nextMonth = currentMonth + 1;
+      let nextYear = currentYear;
+      if (nextMonth > 11) {
+          nextMonth = 0; // January (0) of next year
+          nextYear++;
+      }
+  
+      // Find the first working day of the next month
+      let firstWorkingDayOfMonth = this.getFirstWorkingDay(nextYear, nextMonth);
+  
+      // Check if the first working day of the month matches today's date
+      if (this.isSameDate(firstWorkingDayOfMonth, currentDate)) {
+          this.showModal = true; // Set showModal to true to open the modal
+      }
+  }
+  
+  // Helper function to find the first working day of a given month
+  getFirstWorkingDay(year, month) {
+      let dayOfMonth = 1;
+      while (true) {
+          let nextDate = new Date(year, month, dayOfMonth);
+
+          // Check if it's a weekday (Monday to Friday)
+          if (nextDate.getDay() >= 1 && nextDate.getDay() <= 5) {
+              return nextDate; // Return the first working day found
+          }
+          dayOfMonth++;
+      }
+  }
+  
+  //Function to check if two dates are the same day
+  isSameDate(date1, date2) {
+      return date1.getDate() === date2.getDate() &&
+          date1.getMonth() === date2.getMonth() &&
+          date1.getFullYear() === date2.getFullYear();
   }
 
   ngOnDestroy() {
