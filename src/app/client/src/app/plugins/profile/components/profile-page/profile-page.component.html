@@ -526,6 +526,7 @@
 
   <app-location-selection
     (close)="onLocationModalClose($event)"
+    [showEditUserDetailsPopup]="showEditUserDetailsPopup"
     *ngIf="showEditUserDetailsPopup">
 
     <div slot="popup-sub-header">

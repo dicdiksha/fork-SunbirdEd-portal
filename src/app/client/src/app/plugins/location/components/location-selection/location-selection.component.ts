@@ -19,6 +19,7 @@ import {Location as SbLocation} from '@project-sunbird/client-services/models/lo
 export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isClosable = true;
   @Input() showModal = true;
+  @Input() showEditUserDetailsPopup : boolean = false;
   @Input() deviceProfile: IDeviceProfile;
   @Output() close = new EventEmitter<any>();
   @Output() registerSubmit = new EventEmitter<any>();
@@ -57,7 +58,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   ngOnInit() {
     this.isUserLoggedIn = _.get(this.userService, 'loggedIn');
     let updatedDate = _.get(this.userService, 'userProfile.updatedDate');
-    if(this.isUserLoggedIn){
+    if(this.isUserLoggedIn && !this.showEditUserDetailsPopup){
       this.openModalOncePerMonth(new Date(updatedDate));
     }
     this.popupControlService.changePopupStatus(false);
