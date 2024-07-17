@@ -1,7 +1,7 @@
 
 import { of as observableOf, throwError as observableThrowError, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { ServerResponse, RequestParam, HttpOptions } from '@sunbird/shared';
+import { ServerResponse, RequestParam, HttpOptions,ConfigService } from '@sunbird/shared';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UUID } from 'angular2-uuid';
@@ -268,13 +268,13 @@ export class DataService {
   }
 
 
-  chatWithBooks(data:any) {
+  chatWithBooks(aiUrl,data:any) {
     const aiHttpOptions: HttpOptions = {
       headers: {
         "Accept":"application/json","Content-Type":"application/json"
       }
     };
-    return this.http.post("http://144.24.102.67:8502/chat",data, aiHttpOptions)
+    return this.http.post(aiUrl,data, aiHttpOptions)
   }
 
 }

@@ -378,7 +378,8 @@
     "UCI": "/uci",
     "CHAT_WITH_BOOKS": {
       "SAVE": "v1/chatWithBooks/save",
-      "READ": "v1/chatWithBooks/read"
+      "READ": "v1/chatWithBooks/read",
+      "AI": "http://bookchat.diksha.gov.in:8502/chat"
     }
   }
 }
