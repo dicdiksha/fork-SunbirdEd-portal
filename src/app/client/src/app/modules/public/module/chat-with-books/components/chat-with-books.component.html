@@ -11,13 +11,13 @@
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''">
         <ng-container class="h-100">
           <div class="filters-area h-100">
-            <p class="header font-weight-bold mb-8">Recent Search</p>
+            <p class="header font-weight-bold mb-8">Recent Queries</p>
             <ul *ngIf="searchQueryList.length>0">
-              <li  *ngFor="let search of searchQueryList">
-                  <a href="{{search?.id}}" >{{search?.searchQuery}}</a>
+              <li *ngFor="let search of searchQueryList">
+                <a href="{{search?.id}}">{{search?.searchQuery}}</a>
               </li>
             </ul>
-        </div>
+          </div>
         </ng-container>
       </div>
     </div>
@@ -28,16 +28,69 @@
             in-view-container>
             <div class="chatgpt-box h-100">
               <!-- Chats container -->
-              <div class="chat-container" #chatData id="chat-data" (input)="onDataChange($event)">
-           
+              <div class="chat-container" #chatData id="chat-data">
+                <ng-container *ngIf="apiData.length>0">
+                  <ng-container *ngFor="let data of apiData;">
+                    <div class="ai-question">
+                      <div class="ai-question-img"><img alt="logo image" src="../../../../../../assets/images/profile-icon.svg">
+                      </div>
+                      <div class="ai-question-text">{{data?.question}}</div>
+                    </div>
+
+                    <div class="ai-answer">
+                      <div class="ai-answer-section">
+                      <div class="ai-answer-img"><img alt="logo image" src="../../../../../../assets/images/logo.png"></div>
+                      <div class="ai-answer-text">{{data?.answer}}</div>
+                    </div>
+                      <ng-container>
+                        <div class="ai-data-accordion">
+                          <mat-accordion>
+                            <mat-expansion-panel>
+                              <mat-expansion-panel-header>
+                                <mat-panel-title class="sb-mat-accordion__title">
+                                  References
+                                </mat-panel-title>
+                              </mat-expansion-panel-header>
+
+                              <div class="mat-expansion-panel-content" role="reference"
+                                aria-labelledby="mat-expansion-panel-header-4">
+                                <div class="mat-expansion-panel-body">
+                                  <div class="sb-mat-accordion__content"
+                                    *ngFor="let reference of data?.reference; let i = index">
+                                    <h5>Reference {{i+1}}</h5>
+                                    <ul>
+                                      <li><span>Class:</span>{{reference?.metadata?.class}}</li>
+                                      <li><span>Book Name:</span>{{reference?.metadata?.book_name}}</li>
+                                      <li><span>Chapter Name:</span>{{reference?.metadata?.chapter_name}}</li>
+                                      <li><span>Page Number:</span>{{reference?.metadata?.page}}</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </mat-expansion-panel>
+                          </mat-accordion>
+                        </div>
+                      </ng-container>
+
+                    </div>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="apiData.length <= 0">
+                  <div class="default-content"><h2>Diksha: Chat with books</h2></div>
+                </ng-container>
+
 
               </div>
               <!-- Typing container -->
               <div class="typing-container">
                 <div class="typing-content">
                   <div class="typing-textarea">
-                    <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required [(ngModel)]="searchQuery"></textarea>
-                    <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i class="fa fa-arrow-right"></i></span>
+                    <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required
+                      [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
+                    <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
+                        class="fa fa-arrow-right"></i></span>
                   </div>
                   <!-- <div class="typing-controls">
                     <span id="delete-btn" class="material-symbols-rounded"><i class="fa fa-trash-alt"></i></span>

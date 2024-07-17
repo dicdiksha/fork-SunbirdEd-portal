@@ -19,9 +19,9 @@ import { UUID } from 'angular2-uuid';
   templateUrl: './chat-with-books.component.html',
   styleUrls: ['./chat-with-books.component.scss']
 })
-export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoCheck, AfterViewInit {
+export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   public searchQuery: string = '';
-  public searchQueryList = [];
+  searchQueryList = [];
   public unsubscribe$ = new Subject<void>();
   public telemetryImpression: IImpressionEventInput;
   public inViewLogs = [];
@@ -35,7 +35,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
   SECOND_PANEL_LAYOUT;
   isDesktopApp = false;
   showBackButton = false;
-  apiData = '';
+  apiData = [];
 
   constructor(public searchService: SearchService, public router: Router,
     public activatedRoute: ActivatedRoute, public paginationService: PaginationService,
@@ -51,7 +51,6 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
     this.sessionID = UUID.UUID();
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.initLayout();
-    // this.moveToBottom();
     this.getQueryFromBooks();
   }
 
@@ -90,17 +89,12 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
     }
   }
 
-  moveToTop() {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
-  }
-
   moveToBottom() {
-    const scrollableDiv = document.getElementById("chat-data");
-    scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+    setTimeout(() => {
+      const scrollableDiv = document.getElementById("chat-data");
+      scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+    }, 100);
+
   }
 
 
@@ -128,7 +122,6 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
   ngAfterViewInit() {
     setTimeout(() => {
       this.setTelemetryData();
-      this.moveToBottom()
     });
   }
 
@@ -175,17 +168,10 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
 
   }
 
-  ngDoCheck() {
-    // Custom change detection logic
-    // console.log('Change detection run');
-    // this.moveToBottom()
-  }
-
-  onDataChange(event: any) {
-    this.moveToBottom()
-  }
-
   saveBooksQuery() {
+    if (!this.searchQuery) {
+      return
+    }
     const _uuid = UUID.UUID();
     const option = {
       url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
@@ -198,46 +184,40 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, DoC
       }
     }
 
-    const q: HTMLParagraphElement = this.renderer.createElement('p');
-    q.className = "ai-question";
-    q.innerHTML = this.searchQuery;
-    this.renderer.appendChild(this.chatData.nativeElement, q)
-    this.searchQueryList.unshift({ 'id': _uuid, 'searchQuery': this.searchQuery }) //wil remove it later
-
-    this.learnerService.chatWithBooks({ question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
+    this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
-        this.apiData = res?.answer;
-        const a: HTMLParagraphElement = this.renderer.createElement('p');
-        a.className = "ai-answer";
-        a.innerHTML = res?.answer;
-        this.renderer.appendChild(this.chatData.nativeElement, a)
+        this.apiData.push({ 'question': this.searchQuery, 'answer': res?.answer, 'reference': res?.context });
+        this.searchQueryList.unshift({ 'id': _uuid, 'searchQuery': this.searchQuery });
+        //save data in DB
+        if (this.isUserLoggedIn()) {
+          this.learnerService.postWithSubscribe(option).subscribe(res => {
+            if (res.responseCode !== 'OK') {
+              //no action
+            }
+          });
+        }
         this.moveToBottom()
-        this.searchQuery = '';  //wil remove it later
+        this.searchQuery = '';
       }
     });
 
-   
-    // this.learnerService.postWithSubscribe(option).subscribe(res => {
-    //   console.log("response subscribe===", res)
-    //   if (res.responseCode !== 'OK') {
-    //     this.searchQueryList.unshift({ 'id': res.result.id, 'searchQuery': this.searchQuery })
-    //     this.searchQuery = '';
-    //   }
-    // });
+
 
   }
 
   getQueryFromBooks() {
-    let userId = this.userService.userid
-    const option = {
-      url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + 'e6a50170-d2e9-edde-bb97-e0fbbb60fcff',
-    }
-    this.learnerService.readWithSubscribe(option).subscribe(res => {
-      console.log("response subscribe===", res)
-      // if (res.responseCode !== 'OK') {
+    if (this.isUserLoggedIn()) {
+      let userId = this.userService.userid
+      const option = {
+        url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + userId,
+      }
+      this.learnerService.readWithSubscribe(option).subscribe(res => {
+        console.log("response subscribe===", res)
+        // if (res.responseCode !== 'OK') {
 
-      // }
-    });
+        // }
+      });
+    }
   }
 
 }
