@@ -200,7 +200,13 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
         this.moveToBottom()
         this.searchQuery = '';
       }
-    });
+    })
+
+    this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AIS, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
+      if (res) {
+        console.log("res====",res)
+      }
+    })
 
 
 
