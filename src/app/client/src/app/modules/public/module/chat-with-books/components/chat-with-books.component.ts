@@ -169,6 +169,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
   }
 
   saveBooksQuery() {
+    this.searchQuery = this.searchQuery.trim();
     if (!this.searchQuery) {
       return
     }
