@@ -379,7 +379,7 @@
     "CHAT_WITH_BOOKS": {
       "SAVE": "v1/chatWithBooks/save",
       "READ": "v1/chatWithBooks/read",
-      "AI": "https://bookchat.diksha.gov.in:8502/chat",
+      "AI": "http://bookchat.diksha.gov.in:8502/chat",
       "AIS": "https://bookchat.diksha.gov.in:8502/chat"
     }
   }
