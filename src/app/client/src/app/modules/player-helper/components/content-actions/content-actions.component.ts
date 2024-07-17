@@ -67,8 +67,8 @@ export class ContentActionsComponent implements OnInit, OnChanges, OnDestroy {
     // Replacing cbse/ncert value with cbse
     if (_.toLower(_.get(this.contentData, 'board')) === 'cbse') {
       //117337 - removed hardcoded cbse/ncert
-      //this.contentData.board = 'CBSE/NCERT';
-      this.contentData.board = 'CBSE';
+      this.contentData.board = 'CBSE/NCERT';
+      // this.contentData.board = 'CBSE';
     }
     const isVideoMimetype = _.includes(['video/mp4', 'video/webm'], _.get(this.contentData, 'mimeType'));
     this.activatedRoute.params.subscribe((params) => {
