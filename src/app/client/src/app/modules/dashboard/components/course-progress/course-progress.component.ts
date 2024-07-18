@@ -7,7 +7,7 @@ import * as _ from 'lodash-es';
 import { UserService, FormService } from '@sunbird/core';
 import {
   ResourceService, ToasterService, ServerResponse, PaginationService, ConfigService,
-  NavigationHelperService, IPagination, OnDemandReportsComponent
+  NavigationHelperService, IPagination, OnDemandReportsComponent,UtilService
 } from '@sunbird/shared';
 import { CourseProgressService, UsageService } from './../../services';
 import { ICourseProgressData, IBatchListData, IForumContext } from './../../interfaces';
@@ -210,7 +210,7 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
     config: ConfigService,
     public onDemandReportService: OnDemandReportService,
     public formService: FormService,
-    public navigationhelperService: NavigationHelperService, private usageService: UsageService,
+    public navigationhelperService: NavigationHelperService, private usageService: UsageService,private utilService: UtilService
    ) {
     this.user = user;
     this.route = route;
@@ -284,6 +284,7 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
 	* @param {string} batchId batch identifier
   */
   setBatchId(batch?: any): void {
+    console.log('batch===',batch)
     this.fetchForumIdReq = null;
     this.showWarningDiv = false;
     this.queryParams.batchIdentifier = _.get(batch, 'value.id');
@@ -292,6 +293,8 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
     this.currentBatch = _.get(batch, 'value');;
     // this.currentBatch.lastUpdatedOn = dayjs(this.currentBatch.lastUpdatedOn).format('DD-MMM-YYYY hh:mm a');
     this.batchId = _.get(batch, 'value.id');
+    console.log('batch===1',this.batchId)
+    console.log('batch===2',this.currentBatch)
     this.setCounts(this.currentBatch);
     this.populateCourseDashboardData(_.get(batch, 'value'));
     if (this.selectedTab === 1) {
@@ -582,6 +585,11 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
   * course id and timeperiod
   */
   ngOnInit() {
+    let appBaseUrl = this.utilService.getAppBaseUrl();
+    console.log('base_url',appBaseUrl)
+    let origin = (<HTMLInputElement>document.getElementById('baseUrl'))
+    ? (<HTMLInputElement>document.getElementById('baseUrl')).value : document.location.origin;
+    console.log('base_url ==',origin)
     // ---- Mock data Start-----
     const apiData = {
       userConsent: 'No',
