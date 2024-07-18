@@ -184,9 +184,9 @@ export class ExploreCourseComponent implements OnInit, OnDestroy, AfterViewInit 
 
         // Replacing cbse/ncert value with cbse
         //117337 - removed hardcoded cbse/ncert
-        if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
-            filters.board = ['cbse'];
-        }
+        // if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+        //     filters.board = ['cbse'];
+        // }
 
         const softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
         if (this.queryParams.key) {

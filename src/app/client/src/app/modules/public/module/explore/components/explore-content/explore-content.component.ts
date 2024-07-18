@@ -11,7 +11,7 @@ import { IInteractEventEdata, IImpressionEventInput, TelemetryService } from '@s
 import { takeUntil, map, mergeMap, first, debounceTime, tap, delay } from 'rxjs/operators';
 import { CacheService } from 'ng2-cache-service';
 import { ContentManagerService } from '../../../offline/services';
-import { omit, groupBy, get, uniqBy, toLower, find, map as _map, forEach, each } from 'lodash-es';
+import {omit, groupBy, get, uniqBy, toLower, find, map as _map, forEach, each} from 'lodash-es';
 import { frameworkList } from './../../../../../content-search/components/search-data';
 
 @Component({
@@ -78,13 +78,13 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(queryParams => {
       this.queryParams = { ...queryParams };
-      if (queryParams.publisher) this.utilService.setNcertPublisher(true);
+      if(queryParams.publisher) this.utilService.setNcertPublisher(true);
     });
     this.searchService.getContentTypes().pipe(takeUntil(this.unsubscribe$)).subscribe(formData => {
       this.allTabData = _.find(formData, (o) => o.title === 'frmelmnts.tab.all');
       this.formData = formData;
       this.globalSearchFacets = (this.queryParams && this.queryParams.searchFilters) ?
-        JSON.parse(this.queryParams.searchFilters) : _.get(this.allTabData, 'search.facets');
+      JSON.parse(this.queryParams.searchFilters) : _.get(this.allTabData, 'search.facets');
       this.listenLanguageChange();
       this.initFilters = true;
     }, error => {
@@ -114,7 +114,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       }
     );
     this.searchAll = this.resourceService.frmelmnts.lbl.allContent;
-    this.contentManagerService.contentDownloadStatus$.subscribe(contentDownloadStatus => {
+    this.contentManagerService.contentDownloadStatus$.subscribe( contentDownloadStatus => {
       this.contentDownloadStatus = contentDownloadStatus;
       this.addHoverData();
     });
@@ -195,17 +195,17 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
   private generateRandomString(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
-
+  
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
       result += characters.charAt(randomIndex);
     }
-
+  
     return result;
   }
   private fetchContents() {
     const pathname = window.location.pathname.split('/')[1];
-
+    
     const selectedMediaType = _.isArray(_.get(this.queryParams, 'mediaType')) ? _.get(this.queryParams, 'mediaType')[0] :
       _.get(this.queryParams, 'mediaType');
     const mimeType = _.find(_.get(this.allTabData, 'search.filters.mimeType'), (o) => {
@@ -228,7 +228,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       }
     });
 
-
+  
     _.forEach(this.formData, (form, key) => {
       const pageTitle = _.get(this.resourceService, form.title);
       if (pageTitle && pageType && (pageTitle === pageType)) {
@@ -238,7 +238,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     //const softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
     // Openforgeid 133157 remove softConstraints for ALL tab
     let softConstraints = _.get(this.activatedRoute.snapshot, 'data.softConstraints') || {};
-
+    
     softConstraints = this.userService.slug ? {} : softConstraints;
 
     if (this.queryParams.key) {
@@ -258,26 +258,27 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     } else {
       queryFields.push(dummyFieldName);
     }
-
+	
     const option: any = {
       filters: _.omitBy(filters || {}, value => _.isArray(value) ? (!_.get(value, 'length') ? true : false) : false),
       fields: queryFields,//_.get(this.allTabData, 'search.fields'),
-      limit: _.get(this.allTabData, 'search.limit') ? _.get(this.allTabData, 'search.limit')
-        : this.configService.appConfig.SEARCH.PAGE_LIMIT,
+      limit: _.get(this.allTabData, 'search.limit') ?  _.get(this.allTabData, 'search.limit')
+      : this.configService.appConfig.SEARCH.PAGE_LIMIT,
       pageNumber: this.paginationDetails.currentPage,
       query: this.queryParams.key,
-      sort_by: { lastPublishedOn: 'desc' },
+      sort_by: {lastPublishedOn: 'desc'},
       mode: 'soft',
       softConstraints: softConstraints,
       facets: this.globalSearchFacets,
       params: this.configService.appConfig.ExplorePage.contentApiQueryParams || {}
     };
-    _.filter(Object.keys(this.queryParams), filterValue => {
-      if (((_.get(this.allTabData, 'search.facets').indexOf(filterValue) !== -1))) {
-        option.filters[filterValue] = (typeof (this.queryParams[filterValue]) === "string") ? this.queryParams[filterValue].split(',') : this.queryParams[filterValue];
+    _.filter(Object.keys(this.queryParams),filterValue => { 
+      if(((_.get(this.allTabData , 'search.facets').indexOf(filterValue) !== -1)))
+      {
+          option.filters[filterValue] = (typeof(this.queryParams[filterValue]) === "string" ) ? this.queryParams[filterValue].split(',') : this.queryParams[filterValue];
 
       }
-    });
+  });
     if (this.queryParams.softConstraints) {
       try {
         option.softConstraints = JSON.parse(this.queryParams.softConstraints);
@@ -290,76 +291,76 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     }
     // Replacing cbse/ncert value with cbse
     //117337 - removed hardcoded cbse/ncert
-    if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+    // if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+    //         filters.board = ['cbse'];
+    //     }
+    // const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
+    if (_.toLower(_.get(filters, 'board[0]')) === 'cbse' || _.toLower(_.get(filters, 'board')) === 'cbse') {
       filters.board = ['cbse'];
-    }
-    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
-    //   if (_.toLower(_.get(filters, 'board[0]')) === 'cbse' || _.toLower(_.get(filters, 'board')) === 'cbse') {
-    //     filters.board = ['cbse'];
-    // }
-    //   const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse');
+  }
+    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse');
     if (cbseNcertExists) {
       option.filters.se_boards = ['CBSE'];
     } else {
-      if (pathname != 'explore' && this.queryParams.selectedTab === "all") {
-        option.filters.se_boards = [frameworkList[pathname]['name']];
+      if(pathname != 'explore' && this.queryParams.selectedTab ==="all"){
+        option.filters.se_boards =  [ frameworkList[pathname]['name']];
       }
-
+      
     }
 
     //117337 - For NCERT remove visibility Parent and retain other on All Tab
-    if (this.queryParams.selectedTab === "all" && _.toLower(option.filters.se_boards) === 'ncert') {
+    if( this.queryParams.selectedTab==="all" && _.toLower(option.filters.se_boards) === 'ncert' ){
       option.filters.visibility = option.filters.visibility.filter(item => item !== "Parent");
     }
-
+    
     this.searchService.contentSearch(option)
       .pipe(
         mergeMap(data => {
-          //   const { subject: selectedSubjects = [] } = (this.selectedFilters || {}) as { subject: [] };
-          //   const filteredContents = omit(groupBy(get(data, 'result.content') || get(data, 'result.QuestionSet'), content => {
-          //     return ((this.queryParams['primaryCategory'] && this.queryParams['primaryCategory'].length > 0) ? content['subject'] : content['primaryCategory']);
-          // }), ['undefined']);
-          // for (const [key, value] of Object.entries(filteredContents)) {
-          //     const isMultipleSubjects = key && key.split(',').length > 1;
-          //     if (isMultipleSubjects) {
-          //         const subjects = key && key.split(',');
-          //         subjects.forEach((subject) => {
-          //             if (filteredContents[subject]) {
-          //                 filteredContents[subject] = uniqBy(filteredContents[subject].concat(value), 'identifier');
-          //             } else {
-          //                 filteredContents[subject] = value;
-          //             }
-          //         });
-          //         delete filteredContents[key];
-          //     }
-          // }
-          // const sections = [];
-          // for (const section in filteredContents) {
-          //     if (section) {
-          //         if (selectedSubjects.length && !(find(selectedSubjects, selectedSub => toLower(selectedSub) === toLower(section)))) {
-          //             continue;
-          //         }
-          //         sections.push({
-          //             name: section,
-          //             contents: filteredContents[section]
-          //         });
-          //     }
-          // }
-          // _map(sections, (section) => {
-          //     forEach(section.contents, contents => {
-          //         contents.cardImg = contents.appIcon || 'assets/images/book.png';
-          //     });
-          //     return section;
-          // });
-          //this.contentList = sections;
-          if (get(data, 'result.content') && get(data, 'result.QuestionSet')) {
-            this.contentList = _.concat(get(data, 'result.content'), get(data, 'result.QuestionSet'));
-          } else if (get(data, 'result.content')) {
-            this.contentList = get(data, 'result.content');
-          } else {
-            this.contentList = get(data, 'result.QuestionSet');
-          }
-          this.addHoverData();
+        //   const { subject: selectedSubjects = [] } = (this.selectedFilters || {}) as { subject: [] };
+        //   const filteredContents = omit(groupBy(get(data, 'result.content') || get(data, 'result.QuestionSet'), content => {
+        //     return ((this.queryParams['primaryCategory'] && this.queryParams['primaryCategory'].length > 0) ? content['subject'] : content['primaryCategory']);
+        // }), ['undefined']);
+        // for (const [key, value] of Object.entries(filteredContents)) {
+        //     const isMultipleSubjects = key && key.split(',').length > 1;
+        //     if (isMultipleSubjects) {
+        //         const subjects = key && key.split(',');
+        //         subjects.forEach((subject) => {
+        //             if (filteredContents[subject]) {
+        //                 filteredContents[subject] = uniqBy(filteredContents[subject].concat(value), 'identifier');
+        //             } else {
+        //                 filteredContents[subject] = value;
+        //             }
+        //         });
+        //         delete filteredContents[key];
+        //     }
+        // }
+       // const sections = [];
+        // for (const section in filteredContents) {
+        //     if (section) {
+        //         if (selectedSubjects.length && !(find(selectedSubjects, selectedSub => toLower(selectedSub) === toLower(section)))) {
+        //             continue;
+        //         }
+        //         sections.push({
+        //             name: section,
+        //             contents: filteredContents[section]
+        //         });
+        //     }
+        // }
+        // _map(sections, (section) => {
+        //     forEach(section.contents, contents => {
+        //         contents.cardImg = contents.appIcon || 'assets/images/book.png';
+        //     });
+        //     return section;
+        // });
+        //this.contentList = sections;
+        if(get(data, 'result.content') && get(data, 'result.QuestionSet')){
+          this.contentList = _.concat(get(data, 'result.content'), get(data, 'result.QuestionSet'));
+        } else if(get(data, 'result.content')){
+          this.contentList = get(data, 'result.content');
+        } else {
+          this.contentList = get(data, 'result.QuestionSet');
+        }
+        this.addHoverData();
           const channelFacet = _.find(_.get(data, 'result.facets') || [], facet => _.get(facet, 'name') === 'channel');
           if (channelFacet) {
             const rootOrgIds = this.orgDetailsService.processOrgData(_.get(channelFacet, 'values'));
@@ -395,7 +396,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       });
   }
   addHoverData() {
-    this.contentList = this.utilService.addHoverData(this.contentList, true);
+    this.contentList = this.utilService.addHoverData(this.contentList, true);  
   }
   moveToTop() {
     window.scroll({
@@ -466,7 +467,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
   private listenLanguageChange() {
     this.resourceService.languageSelected$.pipe(takeUntil(this.unsubscribe$)).subscribe((languageData) => {
       this.setNoResultMessage();
-      if (_.get(this.contentList, 'length')) {
+      if (_.get(this.contentList, 'length') ) {
         if (this.isDesktopApp) {
           this.addHoverData();
         }
@@ -477,21 +478,21 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
 
   private setNoResultMessage() {
     this.resourceService.languageSelected$.subscribe(item => {
-      let title = this.utilService.transposeTerms(get(this.resourceService, 'frmelmnts.lbl.noBookfoundTitle'), 'frmelmnts.lbl.noBookfoundTitle', get(item, 'value'));
-      if (this.queryParams.key) {
-        const title_part1 = _.replace(this.resourceService.frmelmnts.lbl.desktop.yourSearch, '{key}', this.queryParams.key);
-        const title_part2 = this.resourceService.frmelmnts.lbl.desktop.notMatchContent;
-        title = title_part1 + ' ' + title_part2;
-      }
+    let title = this.utilService.transposeTerms(get(this.resourceService, 'frmelmnts.lbl.noBookfoundTitle'), 'frmelmnts.lbl.noBookfoundTitle', get(item, 'value'));    
+    if (this.queryParams.key) {
+      const title_part1 = _.replace(this.resourceService.frmelmnts.lbl.desktop.yourSearch, '{key}', this.queryParams.key);
+      const title_part2 = this.resourceService.frmelmnts.lbl.desktop.notMatchContent;
+      title = title_part1 + ' ' + title_part2;
+    }
       this.noResultMessage = {
         'title': title,
         'subTitle': this.utilService.transposeTerms(get(this.resourceService, 'frmelmnts.lbl.noBookfoundSubTitle'), 'frmelmnts.lbl.noBookfoundSubTitle', get(item, 'value')),
         'buttonText': this.utilService.transposeTerms(get(this.resourceService, 'frmelmnts.lbl.noBookfoundButtonText'), 'frmelmnts.lbl.noBookfoundButtonText', get(item, 'value')),
         'showExploreContentButton': false
       };
-
+      
     });
-
+    
   }
 
   updateCardData(downloadListdata) {
@@ -556,7 +557,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       });
   }
 
-  logTelemetry(content, actionId) {
+logTelemetry(content, actionId) {
     const telemetryInteractObject = {
       id: content.identifier,
       type: content.contentType,
@@ -592,9 +593,9 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     searchQueryParams.defaultSortBy = JSON.stringify({ lastPublishedOn: 'desc' });
     searchQueryParams['exists'] = undefined;
     searchQueryParams['primaryCategory'] = (this.queryParams.primaryCategory && this.queryParams.primaryCategory.length) ?
-      this.queryParams.primaryCategory : [event.name];
+     this.queryParams.primaryCategory : [event.name];
     (this.queryParams.primaryCategory && this.queryParams.primaryCategory.length) ? (searchQueryParams['subject'] = [event.name]) :
-      (searchQueryParams['se_subjects'] = this.queryParams.se_subjects);
+    (searchQueryParams['se_subjects'] = this.queryParams.se_subjects);
     searchQueryParams['selectedTab'] = 'all';
     if (this.queryParams.channel) {
       searchQueryParams['channel'] = this.queryParams.channel;
@@ -603,39 +604,39 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     searchQueryParams['appliedFilters'] = true;
     const sectionUrl = '/explore' + '/view-all/' + event.name.replace(/\s/g, '-');
     this.router.navigate([sectionUrl, 1], { queryParams: searchQueryParams, state: {} });
-  }
+ }
 
-  public isUserLoggedIn(): boolean {
-    return this.userService && (this.userService.loggedIn || false);
-  }
+ public isUserLoggedIn(): boolean {
+  return this.userService && (this.userService.loggedIn || false);
+}
 
-  logViewAllTelemetry(event) {
-    const telemetryData = {
+logViewAllTelemetry(event) {
+  const telemetryData = {
       cdata: [{
-        type: 'section',
-        id: event.name
+          type: 'section',
+          id: event.name
       }],
       edata: {
-        id: 'view-all'
+          id: 'view-all'
       }
-    };
-    this.getInteractEdata(telemetryData);
-  }
+  };
+  this.getInteractEdata(telemetryData);
+}
 
-  getInteractEdata(event) {
-    const cardClickInteractData = {
+getInteractEdata(event) {
+  const cardClickInteractData = {
       context: {
-        cdata: event.cdata,
-        env: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.env,
+          cdata: event.cdata,
+          env: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.env,
       },
       edata: {
-        id: get(event, 'edata.id'),
-        type: 'click',
-        pageid: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.pageid
+          id: get(event, 'edata.id'),
+          type: 'click',
+          pageid: this.isUserLoggedIn() ? 'library' : this.activatedRoute.snapshot.data.telemetry.pageid
       },
       object: get(event, 'object')
-    };
-    this.telemetryService.interact(cardClickInteractData);
-  }
+  };
+  this.telemetryService.interact(cardClickInteractData);
+}
 }
 

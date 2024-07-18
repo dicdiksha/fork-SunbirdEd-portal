@@ -144,7 +144,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           this.filterChange.emit({ status: 'FETCHING' });
           let boardName = _.get(queryParams, 'board[0]') || _.get(this.boards, '[0]');
           //117337 - removed hardcoded cbse/ncert
-          boardName = boardName === 'CBSE/NCERT' ? 'CBSE' : boardName;
+          //boardName = boardName === 'CBSE/NCERT' ? 'CBSE' : boardName;
           return zip(this.getFramework({ boardName }), this.getAudienceTypeFormConfig())
             .pipe(map(([filters, audienceTypeFilter]: [object, object]) => ({ ...filters, audience: audienceTypeFilter })));
         })
