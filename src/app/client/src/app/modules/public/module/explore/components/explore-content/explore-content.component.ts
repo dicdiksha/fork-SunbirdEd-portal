@@ -288,6 +288,10 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       option.params.framework = this.frameworkId;
     }
     // Replacing cbse/ncert value with cbse
+    //117337 - removed hardcoded cbse/ncert
+    // if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+    //         filters.board = ['cbse'];
+    //     }
     const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
     if (cbseNcertExists) {
       option.filters.se_boards = ['CBSE'];
