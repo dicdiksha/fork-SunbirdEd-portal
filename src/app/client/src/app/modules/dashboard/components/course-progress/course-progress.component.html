@@ -82,7 +82,9 @@
             </span>
 
             <span *ngIf="currentBatch.participantCount !== null" class="course-participants course-participants-label">
-              <span class="font-weight-bold">{{currentBatch.participantCount}}</span>
+              <!-- <span class="font-weight-bold">{{currentBatch.participantCount}}</span> -->
+              <span *ngIf="!showParticipantLoader"  class="font-weight-bold">{{showParticipantCount}}</span>
+              <img width="24" *ngIf="showParticipantLoader" src="../../../../../assets/images/loader.gif">
             </span>
           </div>
 

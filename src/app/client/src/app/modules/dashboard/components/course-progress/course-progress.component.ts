@@ -7,7 +7,7 @@ import * as _ from 'lodash-es';
 import { UserService, FormService } from '@sunbird/core';
 import {
   ResourceService, ToasterService, ServerResponse, PaginationService, ConfigService,
-  NavigationHelperService, IPagination, OnDemandReportsComponent
+  NavigationHelperService, IPagination, OnDemandReportsComponent,UtilService
 } from '@sunbird/shared';
 import { CourseProgressService, UsageService } from './../../services';
 import { ICourseProgressData, IBatchListData, IForumContext } from './../../interfaces';
@@ -191,6 +191,9 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
   reportTypes = [];
   userRoles;
   selectedTab = 2;
+  appBaseUrl: string;
+  showParticipantCount = 0;
+  showParticipantLoader = false;
   /**
 	 * Constructor to create injected service(s) object
    * @param {UserService} user Reference of UserService
@@ -210,7 +213,7 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
     config: ConfigService,
     public onDemandReportService: OnDemandReportService,
     public formService: FormService,
-    public navigationhelperService: NavigationHelperService, private usageService: UsageService,
+    public navigationhelperService: NavigationHelperService, private usageService: UsageService,private utilService: UtilService
    ) {
     this.user = user;
     this.route = route;
@@ -292,6 +295,7 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
     this.currentBatch = _.get(batch, 'value');;
     // this.currentBatch.lastUpdatedOn = dayjs(this.currentBatch.lastUpdatedOn).format('DD-MMM-YYYY hh:mm a');
     this.batchId = _.get(batch, 'value.id');
+    this.participantCount(this.batchId);
     this.setCounts(this.currentBatch);
     this.populateCourseDashboardData(_.get(batch, 'value'));
     if (this.selectedTab === 1) {
@@ -582,6 +586,7 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
   * course id and timeperiod
   */
   ngOnInit() {
+    this.appBaseUrl = this.utilService.getAppBaseUrl();	
     // ---- Mock data Start-----
     const apiData = {
       userConsent: 'No',
@@ -730,4 +735,36 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
       this.loadOndemandReports(2);
     }
   }
+
+  participantCount(batchId){
+    // URL of the file
+    this.showParticipantCount = 0;
+    this.showParticipantLoader = true;
+    const fileUrl = this.appBaseUrl+'/data/reports/total_batchWise_enrolment_count/coursewise_total_enroll_count.json';
+    // Fetch the file
+    fetch(fileUrl)
+    .then(response => {
+        // Check if the response is OK
+        if (!response.ok) {
+        throw new Error('Network response was not ok');
+        }
+        // Read the response as JSON
+        return response.json();
+    })
+    .then(data => {
+        // Do something with the JSON data
+       let count =  data.find(t=>(t.batchId == batchId ))?.count;
+       if(count){
+         this.showParticipantCount = count;
+       }
+       this.showParticipantLoader = false;
+    })
+    .catch(error => {
+        // Handle errors
+        this.showParticipantLoader = false;
+        console.error('There was a problem with the fetch operation:', error);
+    });
+
+ }
+ 
 }
