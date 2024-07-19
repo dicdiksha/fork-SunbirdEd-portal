@@ -201,6 +201,7 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (this.isUserLoggedIn()) {
                     this.prepareVisits([]);
                 }
+                //117337 - removed hardcoded cbse/ncert
                 if (_.get(params, 'board') && params.board[0] === 'CBSE') {
                     params.board[0] = 'CBSE/NCERT';
                 }
@@ -215,41 +216,49 @@ async ngOnInit() {
     if(pathname != 'explore') {
         const selectedTab = urlQuery.get("selectedTab") != undefined || urlQuery.get("selectedTab") != null ? urlQuery.get("selectedTab") : 'home';
         const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
-        if (tenant) {
-        const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
-        this.router.navigate(
-            [],
-            {
-                relativeTo: this.activatedRoute,
-                queryParams,
-                queryParamsHandling: 'merge', // remove to replace all query params by provided
-                skipLocationChange: false
-            }
-        );
-        let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
-            if(guestUserDetails && Object.keys(guestUserDetails).length){
-                console.log('inside')
-                if(!guestUserDetails.framework){
-                    guestUserDetails.framework = {}
+            if (tenant) {
+                //117337 - removed hardcoded cbse/ncert
+                const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                // const queryParams: Params = { board: tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+                console.log("queryParams===",queryParams)
+            console.log("queryParams===",queryParams)
+            this.router.navigate(
+                [],
+                {
+                    relativeTo: this.activatedRoute,
+                    queryParams,
+                    queryParamsHandling: 'merge', // remove to replace all query params by provided
+                    skipLocationChange: false
                 }
-                guestUserDetails.framework.board = [queryParams.board];
-                guestUserDetails.framework.id = queryParams.id;
-                localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+            );
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+                if(guestUserDetails && Object.keys(guestUserDetails).length){
+                    if(!guestUserDetails.framework){
+                        guestUserDetails.framework = {}
+                    }
+                    guestUserDetails.framework.board = [queryParams.board];
+                    guestUserDetails.framework.id = queryParams.id;
+                    localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+                }
+            }
+        } else {
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+            if(guestUserDetails && Object.keys(guestUserDetails).length){
+                // guestUserDetails.framework.board = ['CBSE'];
+                // guestUserDetails.framework.id = 'ncert_k-12';
+                // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+            } else {
+                //117337 - removed hardcoded cbse/ncert
+                this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+                // this.router.navigateByUrl('/explore?board=CBSE&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+           
             }
         }
-    } else {
-        let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
-        if(guestUserDetails && Object.keys(guestUserDetails).length){
-            // guestUserDetails.framework.board = ['CBSE'];
-            // guestUserDetails.framework.id = 'ncert_k-12';
-            // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
-        } else {
-            this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
-        }
-    }
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-    await delay(100);
-    
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        await delay(100);
+
+        
+
         this.isDesktopApp = this.utilService.isDesktopApp;
         this.setUserPreferences();
         this.subscription$ = this.activatedRoute.queryParams.subscribe(queryParams => {
@@ -418,6 +427,7 @@ async ngOnInit() {
         //this.cacheService.set('searchFilters', filters, { expires: Date.now() + _cacheTimeout });
         this.showLoader = true;
         this.selectedFilters = pick(filters, _.get(currentPageData , 'metaData.filters'));
+        //117337 - removed hardcoded cbse/ncert
         if (this.selectedFilters && this.selectedFilters['board'] && this.selectedFilters['board'][0] === 'CBSE/NCERT') {
             this.selectedFilters['board'][0] = 'CBSE';
         }
@@ -506,6 +516,7 @@ async ngOnInit() {
                             if (((_.get(currentPageData, 'metaData.filters').indexOf(filterValue) !== -1))) {
                                 let param = {};
                                 param[filterValue] = (typeof (params[filterValue]) === "string") ? params[filterValue].split(',') : params[filterValue];
+                               //117337 - removed hardcoded cbse/ncert
                                 if (param[filterValue].length === 1 && param[filterValue][0] === 'CBSE/NCERT') {
                                     param[filterValue][0] = "CBSE";                                
                                 }
@@ -1172,6 +1183,7 @@ async ngOnInit() {
         });
 
         const paramValuesInLowerCase = _.mapValues(updatedCategoriesMapping, value => {
+            //117337 - removed hardcoded cbse/ncert
             if (_.toLower(value) === 'cbse') { return 'CBSE/NCERT'; }
             return Array.isArray(value) ? _.map(value, _.toLower) : _.toLower(value);
         });
@@ -1394,6 +1406,7 @@ async ngOnInit() {
         let pathSegment;
         if( this.userPreference.framework.board){
             let board = this.userPreference.framework.board[0];
+             //117337 - removed hardcoded cbse/ncert
             if(board==="CBSE/NCERT"){
                 board="CBSE";
             }

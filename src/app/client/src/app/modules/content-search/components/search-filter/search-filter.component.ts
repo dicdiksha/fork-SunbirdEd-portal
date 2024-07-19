@@ -235,6 +235,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       const selectedOption = _.find(this.boards, { name: _.get(this.queryFilters, 'board[0]') }) ||
         _.find(this.boards, { name: _.get(this.defaultFilters, 'board[0]') }) || this.boards[0];
       this.selectedBoard = { label: this.optionLabel.Board, value: 'board', selectedOption: _.get(selectedOption, 'name') };
+      //117337 - removed hardcoded cbse/ncert
+      this.selectedBoard.selectedOption = this.selectedBoard.selectedOption === 'CBSE' ? 'CBSE/NCERT' : this.selectedBoard.selectedOption;
+      // this.selectedBoard.selectedOption = this.selectedBoard.selectedOption;
       this.selectedBoard.selectedOption = this.selectedBoard.selectedOption === 'CBSE' ? 'CBSE/NCERT' : this.selectedBoard.selectedOption;
       this.selectedOption = this.selectedBoard;
     }
