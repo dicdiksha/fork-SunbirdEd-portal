@@ -291,14 +291,14 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     }
     // Replacing cbse/ncert value with cbse
     //117337 - removed hardcoded cbse/ncert
-    // if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
-    //         filters.board = ['cbse'];
-    //     }
-    // const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
-    if (_.toLower(_.get(filters, 'board[0]')) === 'cbse' || _.toLower(_.get(filters, 'board')) === 'cbse') {
-      filters.board = ['cbse'];
-  }
-    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse');
+    if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+            filters.board = ['cbse'];
+        }
+    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
+  //   if (_.toLower(_.get(filters, 'board[0]')) === 'cbse' || _.toLower(_.get(filters, 'board')) === 'cbse') {
+  //     filters.board = ['cbse'];
+  // }
+  //   const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse');
     if (cbseNcertExists) {
       option.filters.se_boards = ['CBSE'];
     } else {
