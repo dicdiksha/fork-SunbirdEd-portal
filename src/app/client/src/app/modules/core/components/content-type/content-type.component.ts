@@ -135,10 +135,11 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
         window.open('/'+pathname,'_self');
       } else {
         if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'CBSE')){
+           //117337 - removed hardcoded cbse/ncert
           !data.isLoginMandatory ?
           this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
             { queryParams: { ...params,board: 'CBSE/NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
-        } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
+         } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
           !data.isLoginMandatory ?
           this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
             { queryParams: { ...params,board: 'NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
