@@ -509,7 +509,7 @@ export class SearchService {
           // Replacing cbse value with cbse/ncert
           _.map(facet['values'], val => {
             //117337 - removed hardcoded cbse/ncert
-           // if (_.toLower(val.name) === 'cbse') { val.name = 'CBSE/NCERT'; }
+           if (_.toLower(val.name) === 'cbse') { val.name = 'CBSE/NCERT'; }
            if (_.toLower(val.name) === 'cbse') { val.name = 'CBSE'; }
           });
           break;
