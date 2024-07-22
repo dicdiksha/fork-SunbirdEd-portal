@@ -16,7 +16,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { PopupControlService } from '../../../../service/popup-control.service';
 import { PublicPlayerService } from '@sunbird/public';
 import { TocCardType, PlatformType } from '@dicdikshaorg/common-consumption';
-import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
+import { CsGroupAddableBloc } from '@dicdikshaorg/client-services/blocs';
 import { ContentManagerService } from '../../../public/module/offline/services';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ContentModalComponent } from '../../content-modal/content-modal.component';

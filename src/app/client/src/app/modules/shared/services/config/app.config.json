@@ -866,6 +866,7 @@
       "genericMimeType": [
         "application/pdf",
         "video/mp4",
+        "audio/mp3",
         "video/x-youtube",
         "video/youtube",
         "application/vnd.ekstep.html-archive",
@@ -876,6 +877,7 @@
       ],
       "pdf": "application/pdf",
       "mp4": "video/mp4",
+      "mp3": "audio/mp3",
       "youtube": "video/x-youtube",
       "pYoutube": "video/youtube",
       "html": "application/vnd.ekstep.html-archive",
@@ -931,6 +933,7 @@
     "genericMimeType": [
       "application/pdf",
       "video/mp4",
+      "audio/mp3",
       "video/x-youtube",
       "video/youtube",
       "application/vnd.ekstep.html-archive",
