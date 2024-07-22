@@ -1,7 +1,16 @@
 @use "~@project-sunbird/sb-styles/assets/mixins/mixins" as *;
 
-.sb-add-activity-content-cards{
- @include respond-above(md){
-     grid-template-columns: repeat(4,1fr);
- }
-}
+// .sb-add-activity-content-cards{
+//  @include respond-above(md){
+//      grid-template-columns: repeat(4,1fr);
+//  }
+// }
+
+@media (min-width: 1440px) {
+    .sb-add-activity-content-cards{
+         grid-template-columns: repeat(4, 1fr);
+         grid-gap:2rem;
+         }
+  }
+ 
+  
