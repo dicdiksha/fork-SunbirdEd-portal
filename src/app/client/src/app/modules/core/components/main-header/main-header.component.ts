@@ -665,6 +665,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.getUrl();
     this.activatedRoute.queryParams.subscribe(queryParams => this.queryParam = { ...queryParams });
     this.tenantService.tenantData$.subscribe(({ tenantData }) => {
+      console.log("this.queryParam", this.queryParam);
       this.tenantInfo.logo = tenantData ? tenantData.logo : undefined;
       this.tenantInfo.titleName = (tenantData && tenantData.titleName) ? tenantData.titleName.toUpperCase() : undefined;
     });
