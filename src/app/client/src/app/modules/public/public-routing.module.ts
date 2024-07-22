@@ -15,9 +15,9 @@ const routes: Routes = [
   {
     path: 'explore', loadChildren: () => import('./module/explore/explore.module').then(m => m.ExploreModule)
   },
-  {
-    path: 'exploren', loadChildren: () => import('./module/explore-new/explore-new.module').then(m => m.ExploreNewModule)
-  },
+  // {
+  //   path: 'exploren', loadChildren: () => import('./module/explore-new/explore-new.module').then(m => m.ExploreNewModule)
+  // },
   {
     path: 'explore-course', loadChildren: () => import('./module/course/course.module').then(m => m.CourseModule)
   },
@@ -44,7 +44,10 @@ const routes: Routes = [
   },
   {
     path: 'guest-profile', loadChildren: () => import('./module/guest-profile/guest-profile.module').then(m => m.GuestProfileModule)
-  }
+  },
+  {
+    path: 'katbook', loadChildren: () => import('./module/katbook/katbook.module').then(m => m.KatbookModule)
+  },
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

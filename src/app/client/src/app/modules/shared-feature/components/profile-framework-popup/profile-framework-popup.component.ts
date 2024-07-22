@@ -61,9 +61,10 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
       this.allowedFields = ['board', 'medium', 'gradeLevel'];
     }
     // Replacing CBSE with CBSE/NCERT
-    if (_.toLower(_.get(this.selectedOption, 'board')) === 'cbse') {
-      this.selectedOption['board'] = ['CBSE/NCERT'];
-    }
+    //117337 - removed cbse/ncert
+    // if (_.toLower(_.get(this.selectedOption, 'board')) === 'cbse') {
+    //   this.selectedOption['board'] = ['CBSE/NCERT'];
+    // }
     
     
     this.editMode = _.some(this.selectedOption, 'length') || false;
@@ -207,9 +208,11 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
       this.enableSubmitButton();
       return;
     }
-    if (_.get(this.selectedOption, field.code) === 'CBSE/NCERT') {
-      this.frameWorkId = _.get(_.find(field.range, { name: 'CBSE' }), 'identifier');
-    } else if (_.get(this.boardOptions, 'range.length')) {
+    //117337 - removed cbse/ncert
+    // if (_.get(this.selectedOption, field.code) === 'CBSE/NCERT') {
+    //   this.frameWorkId = _.get(_.find(field.range, { name: 'CBSE' }), 'identifier');
+    // } else
+    if (_.get(this.boardOptions, 'range.length')) {
       this.frameWorkId = _.get(_.find(this.boardOptions.range, { name: _.get(this.selectedOption, field.code) }), 'identifier');
     } else {
       this.frameWorkId = _.get(_.find(field.range, { name: _.get(this.selectedOption, field.code) }), 'identifier');
@@ -307,13 +310,14 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
     selectedOption.gradeLevel = _.get(this.selectedOption, 'gradeLevel') ? [this.selectedOption.gradeLevel] : [];
     selectedOption.subject = _.get(this.selectedOption, 'subject') ? (typeof this.selectedOption.subject === 'string' ? [this.selectedOption.subject] : this.selectedOption.subject)  : [];
     selectedOption.id = this.frameWorkId;
-    if (selectedOption.board) {
-      _.forEach(selectedOption.board, (data, index) => {
-        if (data === 'CBSE/NCERT') {
-          selectedOption.board[index] = 'CBSE';
-        }
-      });
-    }
+    //117337 - removed cbse/ncert
+    // if (selectedOption.board) {
+    //   _.forEach(selectedOption.board, (data, index) => {
+    //     if (data === 'CBSE/NCERT') {
+    //       selectedOption.board[index] = 'CBSE';
+    //     }
+    //   });
+    // }
     if (this.dialogRef && this.dialogRef.close) {
       this.dialogRef.close();
     }
@@ -321,7 +325,14 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
   }
   private enableSubmitButton() {
     const optionalFields = _.map(_.filter(this._formFieldProperties, formField => !_.get(formField, 'required')), 'code');
-    const enableSubmitButton = _.every(this.selectedOption, (value, index) => {
+    
+    //117337 - removed meadium from selection option check for enable submit button
+    let tempOptions = this.selectedOption;
+    if(tempOptions.board && tempOptions.board=="NCERT"){
+      delete tempOptions.medium;
+    }
+
+    const enableSubmitButton = _.every(tempOptions, (value, index) => {
       return _.includes(optionalFields, index) ? true : value.length;
     });
     if (enableSubmitButton) {

@@ -12,7 +12,7 @@ import { PopupControlService } from '../../../../service/popup-control.service';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 import { Subject, of, throwError } from 'rxjs';
 import { PublicPlayerService, ComponentCanDeactivate } from '@sunbird/public';
-import { CsGroupAddableBloc } from '@project-sunbird/client-services/blocs';
+import { CsGroupAddableBloc } from '@dicdikshaorg/client-services/blocs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ContentModalComponent } from '../../content-modal/content-modal.component';
 

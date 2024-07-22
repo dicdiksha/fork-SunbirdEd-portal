@@ -198,6 +198,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     });
 
     this.subscription = this.utilService.currentRole.subscribe(async (result) => {
+      console.log("UserService_1", this.userService);
       if (result) {
         this.userType = result;
         if (this.userType != 'adminstrator') {
@@ -236,6 +237,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   setUserPreferences() {
+    console.log("UserService_2", this.userService);
     try {
         if (this.userService.loggedIn) {
             this.userPreference = { framework: this.userService.defaultFrameworkFilters };
@@ -275,6 +277,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     }
   }
   getTelemetryContext() {
+    console.log("UserService_3", this.userService);
     const userProfile = this.userService.userProfile;
     const buildNumber = (<HTMLInputElement>document.getElementById('buildNumber'));
     const version = buildNumber && buildNumber.value ? buildNumber.value.slice(0, buildNumber.value.lastIndexOf('.')) : '1.0';
@@ -309,6 +312,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   private isCustodianOrgUser() {
+    console.log("UserService_3", this.userService);
     this.orgDetailsService.getCustodianOrgDetails().subscribe((custodianOrg) => {
       if (_.get(this.userService, 'userProfile.rootOrg.rootOrgId') === _.get(custodianOrg, 'result.response.value')) {
         this.isValidCustodianOrgUser = true;
@@ -353,6 +357,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     })
   }
   navigateToHome() {
+    console.log("UserService_4", this.userService);
     const formServiceInputParams = {
       formType: this.baseCategoryForm.formType,
       formAction: this.baseCategoryForm.formAction,
@@ -509,6 +514,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   fetchManagedUsers() {
+    console.log("UserService_5", this.userService);
     const requests = [this.managedUserService.managedUserList$];
     if (_.get(this.userService, 'userProfile.managedBy')) {
       requests.push(this.managedUserService.getParentProfile());
@@ -536,6 +542,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   toggleSideMenu(value: boolean) {
+    console.log("UserService_6", this.userService);
     this.showSideMenu = !this.showSideMenu;
     if (this.userService.loggedIn) {
       if (this.showSideMenu) {
@@ -591,6 +598,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   switchUser(event) {
+    console.log("UserService_7", this.userService);
     let userSubscription;
     const selectedUser = _.get(event, 'data.data');
     const userId = selectedUser.identifier;
@@ -621,6 +629,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log("UserService_8", this.userService);
     this.programDashboardRole = this.config.rolesConfig.headerDropdownRoles.programDashboardRole;
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.connectionService.monitor()
@@ -829,6 +838,16 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   clearFiltersCache () {
     if (this.cacheService.exists('searchFilters')) {
       this.cacheService.remove('searchFilters');
+    }
+  }
+
+  navigateToLMSWeb() {
+    console.log("navigateToLMSWeb", this.userService);
+    console.log("this.userProfile", this.userProfile);
+    // write servie here to get token
+    let token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjMGI3YzUzNS1iZTM4LTQzMmUtYjBjMS0yODBhZGVjNzhhZjMiLCJpc3MiOiJla3N0ZXAiLCJzdWIiOiI1MTUxNTIiLCJhdWQiOiJodHRwczovL2Rpa3NoYS5nb3YuaW4vIiwibmFtZSI6InNzb3Rlc3RfbmV3Iiwic3RhdGVfaWQiOiJla3N0ZXAiLCJzY2hvb2xfaWQiOiIyMzQzODExMDMwOCIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vZGlrc2hhLmdvdi5pbi9yZXNvdXJjZXMiLCJpYXQiOjE3MTQwNTY3MzIsIm5iZiI6MTcxNDA1NjczMiwiZXhwIjoxNzE0MDYwMzMyfQ.iPaKeakNAeOcVB828wE7oGYvS8B2PjFvVMwnMpbczHKd_7N1jL4M3MFBo-TekBHdRLLogkAGuNhNNulF1H85a9-T3l4KD1PlC5SlULDdQL7_iQWWEQ7n5zYGfLgzggHHfg9zyF7PulX8N4hSwrahT26319D7lRenc4_KkD2DlZB3y8Jdn9YZ4yuxYZ2JE_9WsMdRwPAkPNPhHYBzSxm-Y58KD6jm4MudE_mCdsuBU1LFjQdGFdRsmNDcB3gp195uB0TnlbUMzQYsi5_EPenMrnjv7c3R-sS8JS6nf5LO9DliegvtJM8jhLrxpgckuyIFTbjlyyEXKxSXpXrSjFOksQ';
+    if (this.userService.loggedIn) {
+      this.navigateByUrl(`https://dev-mylearn.diksha.gov.in/diksha/diksha_sso.php?token=${token}`);
     }
   }
 }

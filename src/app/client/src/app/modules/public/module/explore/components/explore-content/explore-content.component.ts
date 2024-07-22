@@ -290,7 +290,15 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       option.params.framework = this.frameworkId;
     }
     // Replacing cbse/ncert value with cbse
-    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
+    //117337 - removed hardcoded cbse/ncert
+    // if (_.toLower(_.get(filters, 'board[0]')) === 'cbse/ncert' || _.toLower(_.get(filters, 'board')) === 'cbse/ncert') {
+    //         filters.board = ['cbse'];
+    //     }
+    // const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse/ncert');
+    if (_.toLower(_.get(filters, 'board[0]')) === 'cbse' || _.toLower(_.get(filters, 'board')) === 'cbse') {
+      filters.board = ['cbse'];
+  }
+    const cbseNcertExists = [_.get(filters, 'board[0]'), _.get(filters, 'board'), _.get(filters, 'se_boards[0]'), _.get(filters, 'se_boards')].some(board => _.toLower(board) === 'cbse');
     if (cbseNcertExists) {
       option.filters.se_boards = ['CBSE'];
     } else {
@@ -299,6 +307,12 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       }
       
     }
+
+    //117337 - For NCERT remove visibility Parent and retain other on All Tab
+    if( this.queryParams.selectedTab==="all" && _.toLower(option.filters.se_boards) === 'ncert' ){
+      option.filters.visibility = option.filters.visibility.filter(item => item !== "Parent");
+    }
+    
     this.searchService.contentSearch(option)
       .pipe(
         mergeMap(data => {

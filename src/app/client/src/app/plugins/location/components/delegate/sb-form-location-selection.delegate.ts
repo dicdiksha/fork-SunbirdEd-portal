@@ -1,4 +1,4 @@
-import {Location as SbLocation} from '@project-sunbird/client-services/models/location';
+import {Location as SbLocation} from '@dicdikshaorg/client-services/models/location';
 import {FieldConfig, FieldConfigOption} from '@dicdikshaorg/common-form-elements';
 import {FormGroup} from '@angular/forms';
 import {delay, distinctUntilChanged, map, mergeMap, take} from 'rxjs/operators';
@@ -105,11 +105,20 @@ export class SbFormLocationSelectionDelegate {
       this.shouldUserProfileLocationUpdate = true;
       let anchor = document.querySelector('.item--about') as HTMLElement;
       let pathSegment;
-      if( this.userService.guestUserProfile.framework.board){
+      if(this.userService.loggedIn){
+        pathSegment = this.userService._slug;
+      }
+      else if( this.userService.guestUserProfile.framework.board){
+      if(this.userService.loggedIn){
+        pathSegment = this.userService._slug;
+      }
+    }
+      else if( this.userService.guestUserProfile.framework.board){
         let board = this.userService.guestUserProfile.framework.board[0];
-        if(board==="CBSE/NCERT"){
-            board="CBSE";
-        }
+        //117337 - removed cbse/ncert
+        // if(board==="CBSE/NCERT"){
+        //     board="CBSE";
+        // }
         pathSegment = Object.keys(frameworkList).find(key => frameworkList[key].name === board);
       }
       if (pathSegment && frameworkList[pathSegment]?.tenantPageExist) {
@@ -206,6 +215,7 @@ export class SbFormLocationSelectionDelegate {
         acc[l.type] = l.name;
         return acc;
       }, {});
+      localStorage.setItem('userType',this.formGroup.value.persona)
       const task = this.deviceRegisterService.updateDeviceProfile(request).toPromise()
         .then(() => ({ deviceProfile: 'success' }))
         .catch(() => ({ deviceProfile: 'fail' }));
@@ -213,7 +223,6 @@ export class SbFormLocationSelectionDelegate {
     }
 
     if (this.shouldUserProfileLocationUpdate && this.userService.loggedIn) {
-      console.log("Logged in user...");
       const formValue = this.formGroup.value;
       const profileUserTypes = [];
       let userType;
@@ -234,7 +243,7 @@ export class SbFormLocationSelectionDelegate {
       } else {
         profileUserTypes.push({ type: formValue.persona });
       }
-      console.log("updateUserLocation--- this.userService---",this.userService);
+      
       const payload: any = {
         userId: _.get(this.userService, 'userid'),
         profileLocation: locationDetails,
@@ -417,7 +426,7 @@ export class SbFormLocationSelectionDelegate {
                     if (this.userService.userProfile.profileUserTypes && this.userService.userProfile.profileUserTypes.length) {
                       this.userService.userProfile.profileUserTypes.forEach(element => {
                         if (element.subType) {
-                          defaultSubpersona.push(element.subType);
+                            defaultSubpersona.push(element.subType);
                         }
                       });
                     } else {
@@ -447,9 +456,33 @@ export class SbFormLocationSelectionDelegate {
             }
 
             this.changesMap[`children.persona.${personaLocationConfig.code}`] = personaLocationConfig.default;
-            personaLocationConfig.default =
-              _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
-              personaLocationConfig.default;
+            
+            //#143235 - extract all subroles for selected state
+            if(personaLocationConfig.code && personaLocationConfig.code == "subPersona"){
+            let latestSubroleValues = [];
+            if(personaLocationConfig.templateOptions.options){
+              personaLocationConfig.templateOptions.options.forEach(option=> {
+                latestSubroleValues.push(option.value);
+              });
+            }
+          
+            let prevFormValues = _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
+                                  personaLocationConfig.default;
+            if(prevFormValues){
+              if (typeof prevFormValues === 'string') {
+                prevFormValues = [prevFormValues];
+              }
+              let filteredValues = prevFormValues.filter(value => latestSubroleValues.includes(value));
+              personaLocationConfig.default = filteredValues;
+            }
+            else{
+              personaLocationConfig.default = prevFormValues;
+            }
+          }else{
+              personaLocationConfig.default =
+                _.get(this.prevFormValue, `children.persona.${personaLocationConfig.code}`) ||
+                personaLocationConfig.default;
+            }
           }
         }
       }
@@ -489,7 +522,8 @@ export class SbFormLocationSelectionDelegate {
 
           suggestions = [
             { type: 'state', name: this.deviceProfile.userDeclaredLocation.state },
-            { type: 'district', name: this.deviceProfile.userDeclaredLocation.district }
+            { type: 'district', name: this.deviceProfile.userDeclaredLocation.district },
+            { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
           ];
         }
       }
@@ -515,7 +549,8 @@ export class SbFormLocationSelectionDelegate {
 
           suggestions = [
             { type: 'state', name: this.deviceProfile.ipLocation.state },
-            { type: 'district', name: this.deviceProfile.ipLocation.district }
+            { type: 'district', name: this.deviceProfile.ipLocation.district },
+            { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
           ];
         }
       }
@@ -529,7 +564,8 @@ export class SbFormLocationSelectionDelegate {
 
         suggestions = [
           { type: 'state', name: _.get(this.deviceProfile, 'ipLocation.state') },
-          { type: 'district', name: _.get(this.deviceProfile, 'ipLocation.district') }
+          { type: 'district', name: _.get(this.deviceProfile, 'ipLocation.district') },
+          { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
         ];
       } else {
         // render using userDeclaredLocation
@@ -540,7 +576,8 @@ export class SbFormLocationSelectionDelegate {
 
         suggestions = [
           { type: 'state', name: this.deviceProfile.userDeclaredLocation.state },
-          { type: 'district', name: this.deviceProfile.userDeclaredLocation.district }
+          { type: 'district', name: this.deviceProfile.userDeclaredLocation.district },
+          { type: 'role', name: (localStorage.getItem('userType') || '').toLowerCase() || 'other' }
         ];
       }
     }
