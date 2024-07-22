@@ -410,15 +410,7 @@
             <i class="icon-svg icon-svg--sm icon-dashboard mr-8"><svg class="icon icon-svg--primary">
               <use xlink:href="./assets/images/sprite.svg#dashboard"></use>
             </svg></i>
-              <span>{{resourceService?.frmelmnts?.tab?.nishthaDashboard}}</span> 
-          </li>
-
-          <li class="list-item" tabindex="0" role="link" *ngIf='!isDesktopApp && permissionService.permissionAvailable'
-            appPermission [permission]='lmsDashboard' (click)="toggleSideMenu(false);navigateToLMSWeb()">
-            <i class="icon-svg icon-svg--sm icon-dashboard mr-8"><svg class="icon icon-svg--primary">
-              <use xlink:href="./assets/images/sprite.svg#dashboard"></use>
-            </svg></i>
-              <span>{{resourceService?.frmelmnts?.tab?.lmsDashboard}}</span> 
+              <span>{{resourceService?.frmelmnts?.tab?.courseDashboard}}</span> 
           </li>
         
           <li class="list-item" *ngIf='!isDesktopApp && permissionService.permissionAvailable' appPermission

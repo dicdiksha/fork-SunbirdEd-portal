@@ -3,7 +3,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Inject } from '
 import { CertRegService, CoursesService, OrgDetailsService, PlayerService, SearchService, UserService, FormService } from '@sunbird/core';
 import { ConfigService, IUserData, LayoutService, NavigationHelperService, ResourceService, ServerResponse, ToasterService, UtilService, ConnectionService } from '@sunbird/shared';
 import * as _ from 'lodash-es';
-import { Subject, Subscription,zip} from 'rxjs';
+import { Subject, Subscription, zip } from 'rxjs';
 import { IImpressionEventInput, IInteractEventEdata, TelemetryService } from '@sunbird/telemetry';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CacheService } from 'ng2-cache-service';
@@ -11,10 +11,9 @@ import { takeUntil } from 'rxjs/operators';
 import { CertificateDownloadAsPdfService } from 'sb-svg2pdf';
 import { CsCourseService } from '@dicdikshaorg/client-services/services/course/interface';
 import { FieldConfig, FieldConfigOption } from '@dicdikshaorg/common-form-elements';
-import { CsCertificateService } from '@dicdikshaorg/client-services/services/certificate/interface';
+import { CsCertificateService } from '@project-sunbird/client-services/services/certificate/interface';
 import { HttpClient } from '@angular/common/http';
-import { jsPDF } from 'jspdf';
-import * as d3 from 'd3';
+import jsPDF from 'jspdf';
 import { ManagedUserService } from '../../../../modules/core/services/managed-user/managed-user.service';
 @Component({
   templateUrl: './profile-page.component.html',
@@ -103,7 +102,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     private connectionService: ConnectionService,
     @Inject('CS_CERTIFICATE_SERVICE')
     private CsCertificateService: CsCertificateService) {
-      this.getNavParams();
+    this.getNavParams();
   }
 
   getNavParams() {
@@ -115,7 +114,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     const requests = [this.managedUserService.managedUserList$];
     zip(...requests).subscribe((data) => {
       let userListToProcess = _.get(data[0], 'result.response.content');
-      console.log("userListToProcess=====",userListToProcess)
+      console.log("userListToProcess=====", userListToProcess)
       if (userListToProcess) {
         this.subUserAccount = userListToProcess.length
       }
@@ -123,7 +122,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.toasterService.error(_.get(this.resourceService, 'messages.emsg.m0005'));
     }
     );
-    console.log('requests===============',requests)
+    console.log('requests===============', requests)
     this.activatedRoute.queryParams.subscribe((params) => {
       console.log("112388 ngOnInit param ", params);
       if (params['showEditUserDetailsPopup']) {
@@ -183,7 +182,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
   //     await this.browser.close();
   //   }
   // }
-  
   initLayout() {
     this.layoutConfiguration = this.layoutService.initlayoutConfig();
     this.layoutService.switchableLayout().pipe(takeUntil(this.unsubscribe$)).subscribe(layoutConfig => {
@@ -423,10 +421,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log(resp, 'resp');
         if (_.get(resp, 'printUri')) {
           console.log(resp, ' afterresp');
-          const fileType = this.getFileTypeFromUri(resp.printUri);
-        const fileName = `${courseObj.trainingName}.${fileType}`;
-        this.downloadFile(resp.printUri, fileName, fileType);
-
+          // const fileType = this.getFileTypeFromUri(resp.printUri);
+          // const fileName = `${courseObj.trainingName}.${fileType}`;
+          // this.convertSvgToPdf(resp.printUri, fileName, fileType);
+          this.convertSvgToPdf(resp.printUri, courseObj.trainingName);
           // this.certDownloadAsPdf.download(resp.printUri, null, courseObj.trainingName);
         } else {
           this.toasterService.error(this.resourceService.messages.emsg.m0076);
@@ -441,49 +439,78 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     return extension ? extension : 'pdf'; // Default to 'pdf' if no extension is found
   }
 
-  downloadFile(svgUri: string, fileName: string, fileType: string): void {
-    console.log('svgUri----', svgUri)
-    fetch(svgUri)
-      .then(response => response.text())
-      .then(svgText => {
-    console.log('svgText----', svgText)
+  convertSvgToPdf(svgContent: string, fileName: string): void {
+    console.log(fileName, 'filename', svgContent);
+    const svgElement = new DOMParser().parseFromString(svgContent, 'image/svg+xml').documentElement;
 
-        const svgElement = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
-    console.log('svgElement----', svgElement)
+    // Function to convert units to pixels
+    const unitToPixels = (value: string): number => {
+        const units = value.match(/[a-zA-Z%]+/);
+        const number = parseFloat(value);
 
-        const svgData = d3.select(svgElement).html();
-    console.log('svgData----', svgData)
+        if (!units) return number; // No units, return as pixels
 
- 
-        const pdf = new jsPDF();
-    console.log('pdf----', pdf)
+        switch (units[0]) {
+            case 'px':
+                return number;
+            case 'mm':
+                return number * 3.7795275591; // 1 mm = 3.7795275591 px
+            case 'cm':
+                return number * 37.795275591; // 1 cm = 37.795275591 px
+            case 'in':
+                return number * 96; // 1 inch = 96 px
+            case 'pt':
+                return number * 1.3333333333; // 1 point = 1.3333333333 px
+            case 'pc':
+                return number * 16; // 1 pica = 16 px
+            default:
+                return number;
+        }
+    };
 
-        pdf.addImage(svgData, 'JPEG', 0, 0, 500, 500);
-    console.log('pdf addimage----', pdf)
-        
-        pdf.save('my-svg.pdf');
-        // const canvas = document.createElement('canvas');
-        // const context = canvas.getContext('2d');
-        // const svgString = new XMLSerializer().serializeToString(svgElement);
-        // const img = new Image();
-        // const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-        // const url = URL.createObjectURL(svgBlob);
+    // Function to convert inches to points
+    const inchesToPoints = (inches: number): number => {
+        return inches * 72; // 1 inch = 72 points
+    };
 
-        // img.onload = () => {
-        //   canvas.width = img.width;
-        //   canvas.height = img.height;
-        //   context.drawImage(img, 0, 0);
+    // Determine SVG dimensions
+    const svgWidth = unitToPixels(svgElement.getAttribute('width') || '210mm');
+    const svgHeight = unitToPixels(svgElement.getAttribute('height') || '297mm');
 
-        //   const pdf = new jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
-        //   pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
-        //   pdf.save(fileName);
-        //   URL.revokeObjectURL(url);
-        // };
-        // img.src = url;
-      })
-      .catch(error => {
-        console.error('Error converting SVG to PDF', error);
-      });
+    // Convert dimensions to points
+    const svgWidthPt = this.pixelsToPoints(svgWidth);
+    const svgHeightPt = this.pixelsToPoints(svgHeight);
+
+    // Create a high-resolution canvas
+    const scale = 40; // Adjust scale for highest resolution
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    canvas.width = svgWidth * scale;
+    canvas.height = svgHeight * scale;
+
+    const svgString = new XMLSerializer().serializeToString(svgElement);
+    const img = new Image();
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+        context.scale(scale, scale); // Scale the context to maintain high resolution
+        context.drawImage(img, 0, 0, svgWidth, svgHeight);
+
+        const pdfWidth = inchesToPoints(11.66); // Convert width to points
+        const pdfHeight = inchesToPoints(8); // Convert height to points
+
+        const pdf = new jsPDF('landscape', 'pt', [pdfWidth, pdfHeight]);
+        pdf.addImage(canvas.toDataURL('image/png',1.0), 'PNG', 0, 0, pdfWidth, pdfHeight,undefined, 'FAST');
+        pdf.save(`${fileName}.pdf`);
+        URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+
+  private pixelsToPoints(px: number): number {
+    return px * 72 / 96; // 1 point = 1/72 inch, 1 inch = 96 pixels
   }
 
 
@@ -645,11 +672,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.userProfile.stateValidated) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
-      } else if(this.subUserAccount){
+      } else if (this.subUserAccount) {
         const msg = 'Your role does not allow you to delete your account. Please contact support!'
         this.toasterService.warning(msg);
-       }
-       else {
+      }
+      else {
         this.router.navigate([url]);
       }
     } else {
@@ -684,7 +711,7 @@ export class ProfilePageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-//    this.closeBrowser();
+    //    this.closeBrowser();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

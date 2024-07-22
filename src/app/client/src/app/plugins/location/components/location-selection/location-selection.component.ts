@@ -19,6 +19,7 @@ import {Location as SbLocation} from '@dicdikshaorg/client-services/models/locat
 export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isClosable = true;
   @Input() showModal = true;
+  @Input() showEditUserDetailsPopup : boolean = false;
   @Input() deviceProfile: IDeviceProfile;
   @Output() close = new EventEmitter<any>();
   @Output() registerSubmit = new EventEmitter<any>();
@@ -28,6 +29,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   sbFormLocationSelectionDelegate: SbFormLocationSelectionDelegate;
   isSubmitted = false;
   public locationSelectionModalId = 'location-selection';
+  isUserLoggedIn:boolean =false;
 
   constructor(
     public resourceService: ResourceService,
@@ -54,6 +56,11 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   ngOnInit() {
+    this.isUserLoggedIn = _.get(this.userService, 'loggedIn');
+    let updatedDate = _.get(this.userService, 'userProfile.updatedDate');
+    if(this.isUserLoggedIn && !this.showEditUserDetailsPopup){
+      this.openModalOncePerMonth(new Date(updatedDate));
+    }
     this.popupControlService.changePopupStatus(false);
     this.sbFormLocationSelectionDelegate.init(this.deviceProfile, this.showModal)
       .catch(() => {
@@ -78,6 +85,22 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
         localStorage.setItem('isReturnFromThirdParty', 'false');
       }
       console.log("location-selection.component page called");
+  }
+  
+  openModalOncePerMonth(referenceDate) {
+    this.showModal =false;
+    const currentDate = new Date();
+    const differenceInDays = this.calculateDateDifference(referenceDate, currentDate);
+
+    if (differenceInDays >= 30) {
+      this.showModal = true;
+    }
+  }
+
+  calculateDateDifference(date1, date2) {
+      const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in a day
+      const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+      return Math.round(timeDiff / oneDay);
   }
 
   ngOnDestroy() {

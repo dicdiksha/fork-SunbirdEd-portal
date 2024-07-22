@@ -2,15 +2,12 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { UserService, OtpService,LearnerService } from '@sunbird/core';
-import { ResourceService, ServerResponse, ToasterService, ConfigService,NavigationHelperService } from '@sunbird/shared';
+import { ResourceService, ServerResponse, ToasterService, ConfigService,NavigationHelperService  } from '@sunbird/shared';
 import { Subject } from 'rxjs';
-// import { ProfileService } from '../../services';
-import { IInteractEventObject, IInteractEventEdata ,TelemetryService} from '@sunbird/telemetry';
+import { IInteractEventObject, IInteractEventEdata,TelemetryService } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
-// import { DeviceDetectorService } from 'ngx-device-detector';
 import { UserSearchService } from '../../../../modules/search/services/user-search/user-search.service';
 import { ActivatedRoute, Router } from '@angular/router';
-// import { LearnerService } from '../../../../modules/core/services/learner/learner.service';
 import { map} from 'rxjs/operators';
 import { CacheService } from 'ng2-cache-service';
 
@@ -35,19 +32,16 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   telemetryInteractObject: IInteractEventObject;
   verifiedUser = false;
   templateId: any = 'deleteUserAccountTemplate';
-  templateIdMobile: any = 'otpContactUpdateTemplate';
+  templateIdMobile: any = '1307171619784284292';
 
   constructor(
     public resourceService: ResourceService, 
     public userService: UserService,
     public otpService: OtpService, 
     public toasterService: ToasterService,
-    // public profileService: ProfileService, 
     private matDialog: MatDialog,
     public configService: ConfigService,
-    // private cacheService:CacheService,
-    private cacheService: CacheService,
-    // public deviceDetectorService: DeviceDetectorService,
+    private cacheService:CacheService,
     private userSearchService: UserSearchService,
     public route: Router,
     private activatedRoute: ActivatedRoute,
@@ -134,47 +128,9 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   }
 
   verificationSuccess(data) {
-    // this.userService.deleteUser().subscribe(
-    //   (data: ServerResponse) => {
-    //     if(_.get(data, 'result.response') === 'SUCCESS'){
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //       if(this.deviceDetectorService.isMobile()){
-    //         //TODO changes need to be done on the Mobile Deeplink
-    //         const url ='dev.sunbird.app://mobile?userId'+ this.userProfile.userId;
-    //         window.open(url, '_blank');
-    //       }
-    //       window.location.replace('/logoff');
-    //       this.cacheService.removeAll();
-    //     }
-    //   },
-    //   (err) => {
-    //     //TODO we need to update the error 
-    //     const errorMessage =  this.resourceService.messages.fmsg.m0085;
-    //     this.toasterService.error(errorMessage);
-    //   }
-    // );
-
     this.updateProfile();
-    
   }
 
-
-
-  setInteractEventData() {
-    const id = 'delete-account';
-    this.submitInteractEdata = {
-      id: id,
-      type: 'click',
-      pageid: 'delete-account'
-    };
-
-    this.telemetryInteractObject = {
-      id: this.userService.userid,
-      type: 'User',
-      ver: '1.0'
-    };
-  }
 
   ngOnDestroy() {
     this.unsubscribe.next();
@@ -208,10 +164,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
             url: this.configService.urlConFig.URLS.USER.UPDATE_USER_PROFILE,
             data: updateData
           };
-            console.log("profile API key",updateOptions);
             this.learnerService.patch(updateOptions).subscribe(
               (res: ServerResponse) => {
-                console.log("profile API update result",res);
                 this.blockUser();
               }
             );
@@ -219,7 +173,6 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
       },
       (err: ServerResponse) => {
         console.log("getDecriptedUserProfile error ",err);
-        // this.toasterService.error(err);
       }
     )
   }
@@ -228,16 +181,12 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     const deleteOption = { userId: this.userProfile.identifier };
     this.userSearchService.deleteUser(deleteOption).subscribe(
       (apiResponse: ServerResponse) => {
-        console.log("delete account userSearchService.deleteUser==")
         this.toasterService.success(this.resourceService.messages.smsg.m0029);
         this.handleDeleteUser()
         window.location.replace('/logoff');
         this.cacheService.removeAll();
-        // localStorage.clear();
-        // sessionStorage.clear();
-        // setTimeout(() => {
-        //   this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-        // }, 800);
+        localStorage.clear()
+        sessionStorage.clear()
       },
       err => {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
@@ -245,9 +194,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
     );
   }
 
-
   handleDeleteUser() {
-    console.log("handleDeleteUser====")
     const telemetryData = {
       context: {
         env:  this.activatedRoute.snapshot.data.telemetry.env,
@@ -258,7 +205,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         }]
       },
       edata: {
-        id: 'account-delete',
+        id: 'account-deleted',
         type: _.get(this.activatedRoute, 'snapshot.data.telemetry.type'),
         pageid: _.get(this.activatedRoute, 'snapshot.data.telemetry.pageid'),
         subtype: _.get(this.activatedRoute, 'snapshot.data.telemetry.subtype'),
@@ -266,8 +213,8 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
         duration: this.navigationhelperService.getPageLoadTime()
       }
     };
-    console.log("delete account telemetryData====",JSON.stringify(telemetryData))
     this.telemetryService.interact(telemetryData);
+    this.telemetryService.syncEvents(false);
   }
-
+  
 }

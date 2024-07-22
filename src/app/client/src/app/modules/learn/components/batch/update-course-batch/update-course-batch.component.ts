@@ -245,15 +245,15 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
     }
   }
   private isSubmitBtnDisable(batchForm): boolean {
-    const batchFormControls = ['name', 'description', 'enrollmentType', 'mentors', 'startDate', 'endDate', 'users'];
+    const batchFormControls = ['name', 'description', 'enrollmentType', 'mentors', 'startDate', 'endDate', 'users', 'enrollmentEndDate'];
     for (let i = 0; i < batchFormControls.length; i++) {
       if (batchForm.controls[batchFormControls[i]].status !== 'VALID') {
         return true;
       }
     }
-    if (batchForm.controls['enrollmentEndDate'].status !== 'VALID' && batchForm.controls['enrollmentEndDate'].pristine) {
-      return false;
-    }
+    // if (batchForm.controls['enrollmentEndDate'].status !== 'VALID' && batchForm.controls['enrollmentEndDate'].pristine) {
+    //   return false;
+    // }
     return true;
   }
   /**
@@ -554,7 +554,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy, AfterViewI
     this.unsubscribe.complete();
   }
   resetForm() {
-    if (this.batchDetails.status === 1) {
+    if (this.batchDetails.status === 1 || this.batchDetails.status === 0) {
       this.batchUpdateForm.controls['name'].reset();
       this.batchUpdateForm.controls['description'].reset();
       this.batchUpdateForm.controls['enrollmentEndDate'].reset();

@@ -30,7 +30,6 @@ export class DeleteUserComponent implements OnInit {
   pageId = 'delete-user';
   userProfile: any;
   appBaseUrl: string;
-  
   constructor(public resourceService: ResourceService, public toasterService: ToasterService, public router: Router,
     public userService: UserService,  private userSearchService: UserSearchService,public route: Router,
     private activatedRoute: ActivatedRoute, public navigationhelperService: NavigationHelperService,
@@ -90,35 +89,6 @@ export class DeleteUserComponent implements OnInit {
     this.navigationhelperService.navigateToLastUrl();
   }
 
-  // onSubmitForm() {
-  //   if (this.enableSubmitBtn) {
-  //     this.enableSubmitBtn = false;
-  //     this.showContactPopup = false; // true when full functionality will work with otp
-  //     this.conditions = []
-  //     this.inputFields.forEach((element) => {
-  //       element.nativeElement.checked = false;
-  //     });
-  //     const option = { 
-  //     userId: this.userProfile.identifier };
-  //     this.userSearchService.deleteUser(option).subscribe(
-  //       (apiResponse: ServerResponse) => {
-  //         this.toasterService.success(this.resourceService.messages.smsg.m0029);
-  //         localStorage.clear();
-  //         sessionStorage.clear();
-  //         setTimeout(() => {
-  //           this.route.navigate(['../../'], {relativeTo: this.activatedRoute});
-  //         }, 500);
-          
-  //       },
-  //       err => {
-  //         this.toasterService.error(this.resourceService.messages.emsg.m0005);
-  //       }
-  //     );
-  //   }else{
-  //     this.toasterService.warning(this.resourceService.messages.imsg.m0092)
-  //   }
-  // }
-
   onSubmitForm() {
     if (this.enableSubmitBtn) {
       this.enableSubmitBtn = false;
@@ -156,15 +126,15 @@ export class DeleteUserComponent implements OnInit {
     this.validateModal();
   }
 
-  // ngAfterViewChecked() {
-  //   this.enableSubmitBtn = false;
-  //   this.showContactPopup = false;
-  //   this.conditions = []
-  //   this.inputFields.forEach((element) => {
-  //     element.nativeElement.checked = false;
-  //   });
-  //   let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
-  //   this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
-  // }
+  ngAfterViewChecked() {
+    this.enableSubmitBtn = false;
+    this.showContactPopup = true;
+    this.conditions = []
+    this.inputFields.forEach((element) => {
+      element.nativeElement.checked = false;
+    });
+    let langObj = _.get(this.resourceService, 'frmelmnts.lbl');
+    this.list = Object.keys(langObj).filter(key => key.includes('condition')).map(key => langObj[key]);
+  }
 
 }
