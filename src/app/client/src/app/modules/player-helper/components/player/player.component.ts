@@ -12,7 +12,7 @@ import { IInteractEventEdata } from '@sunbird/telemetry';
 import { UserService, FormService } from '../../../core/services';
 import { OnDestroy } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { CsContentProgressCalculator } from '@project-sunbird/client-services/services/content/utilities/content-progress-calculator';
+import { CsContentProgressCalculator } from '@dicdikshaorg/client-services/services/content/utilities/content-progress-calculator';
 import { ContentService } from '@sunbird/core';
 import { PublicPlayerService } from '@sunbird/public';
 
@@ -164,8 +164,21 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
    */
   ngAfterViewInit() {
     if (this.playerConfig) {
-      console.log("player.component.ts ngAfterViewInit called");
       this.loadPlayer();
+    }
+    if(!this.showNewPlayer){
+      const interval = setInterval(() => {
+        const iframe = document.getElementById('contentPlayer') as HTMLIFrameElement;
+        if(iframe){
+          let innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+          let isVideoEnded = innerDoc.body.innerHTML.match('vjs-ended');
+          if (isVideoEnded) {
+              clearInterval(interval);
+              this.contentRatingModal = true;
+              this.showRatingModalAfterClose = true;
+          }
+        }
+      }, 1000);
     }
   }
 
@@ -174,7 +187,6 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     this.showNewPlayer = false;
     this.cdr.detectChanges();
     if (this.playerConfig) {
-      console.log("player.component.ts ngOnChanges called");
       this.playerOverlayImage = this.overlayImagePath ? this.overlayImagePath : _.get(this.playerConfig, 'metadata.appIcon');
       this.loadPlayer();
     }

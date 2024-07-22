@@ -10,7 +10,7 @@ import { TncService } from '@sunbird/core';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { ProfileService } from '@sunbird/profile';
 import { LocationService } from '../../../../../../plugins/location';
-import {Location as SbLocation} from '@project-sunbird/client-services/models/location';
+import {Location as SbLocation} from '@dicdikshaorg/client-services/models/location';
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.component.html',

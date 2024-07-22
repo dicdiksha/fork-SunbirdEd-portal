@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 //import { EditorCursor } from '@project-sunbird/sunbird-collection-editor-v9';
 import { EditorCursor } from '@dicdikshaorg/sunbird-collection-editor';
-import { CsModule } from '@project-sunbird/client-services';
+import { CsModule } from '@dicdikshaorg/client-services';
 import { PublicPlayerService } from '@sunbird/public';
 import { CsLibInitializerService } from './../../../../service/CsLibInitializer/cs-lib-initializer.service';
 import { map } from 'rxjs/operators';
