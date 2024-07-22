@@ -288,14 +288,14 @@ export class SearchService {
           "facets": [],
           "fields": [],
           "filters": {
-              "channel": "",
-              "primaryCategory": [],
-              "visibility": [],
+              "channel": requestParam?.filters?.channel? requestParam?.filters?.channel:'',
+              "primaryCategory": requestParam?.filters?.primaryCategory? requestParam?.filters?.primaryCategory:[],
+              "visibility": requestParam?.filters?.visibility? requestParam?.filters?.visibility:[],
               "identifier": "",
-              "se_gradeLevels": [],
-              "se_subjects": [],
-              "se_mediums": [],
-              "se_boards": []
+              "se_gradeLevels": requestParam?.filters?.se_gradeLevels? requestParam?.filters?.se_gradeLevels:[],
+              "se_subjects": requestParam?.filters?.se_subjects? requestParam?.filters?.se_subjects:[],
+              "se_mediums":requestParam?.filters?.se_mediums? requestParam?.filters?.se_mediums:[],
+              "se_boards": requestParam?.filters?.se_boards? requestParam?.filters?.se_boards:[]
           },
           "limit": 20,
           "mode": "soft",
@@ -304,7 +304,7 @@ export class SearchService {
       }
   }
   if(this.searchType =='video'){
-    sessionStorage.setItem('key',this.searchQuery)
+    sessionStorage.setItem('key',this.searchQuery);
     return this.http.post<any>(`${this.apiUrl}`, data);
   }
   else{
