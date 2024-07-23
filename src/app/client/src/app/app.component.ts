@@ -56,6 +56,11 @@ export class AppComponent implements OnInit, OnDestroy {
    * this variable is used to show the global consent pop up
    */
   public showGlobalConsentPopUpSection = false;
+
+  /**this variable is used add a class property to hold the flag. */
+  private preventGlobalConsentClose: boolean = false;
+
+
   /**
    * Used to config telemetry service and device register api. Possible values
    * 1. org hashtag for Anonymous user
@@ -679,11 +684,18 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** method to control whether the global consent popup can be closed */
   public closeConsentPopUp() {
+    if (!this.preventGlobalConsentClose) {
     this.showGlobalConsentPopUpSection = false;
     this.isglobalConsent = false;
     this.globalConsent = '';
     this.checkFrameworkSelected();
+    }
+  }
+
+  public preventCloseGlobalConsent(prevent: boolean) {
+    this.preventGlobalConsentClose = prevent;
   }
 
   /**
