@@ -28,20 +28,23 @@
             in-view-container>
             <div class="chatgpt-box h-100">
               <!-- Chats container -->
-              <div class="chat-container" #chatData id="chat-data">
+              <!-- <div class="chat-container" #chatData id="chat-data"> -->
+              <div #chatData id="chat-data">
                 <ng-container *ngIf="apiData.length>0">
                   <ng-container *ngFor="let data of apiData;">
-                    <div class="ai-question">
-                      <div class="ai-question-img"><img alt="logo image" src="../../../../../../assets/images/profile-icon.svg">
+                    <div class="ai-question" *ngIf="data?.question">
+                      <div class="ai-question-img"><img alt="logo image"
+                          src="../../../../../../assets/images/profile-icon.svg">
                       </div>
                       <div class="ai-question-text">{{data?.question}}</div>
                     </div>
 
-                    <div class="ai-answer">
+                    <div class="ai-answer" *ngIf="data?.answer">
                       <div class="ai-answer-section">
-                      <div class="ai-answer-img"><img alt="logo image" src="../../../../../../assets/images/logo.png"></div>
-                      <div class="ai-answer-text">{{data?.answer}}</div>
-                    </div>
+                        <div class="ai-answer-img"><img alt="logo image" src="../../../../../../assets/images/logo.png">
+                        </div>
+                        <div class="ai-answer-text">{{data?.answer}}</div>
+                      </div>
                       <ng-container>
                         <div class="ai-data-accordion">
                           <mat-accordion>
@@ -74,29 +77,33 @@
                       </ng-container>
 
                     </div>
+
                   </ng-container>
                 </ng-container>
 
                 <ng-container *ngIf="apiData.length <= 0">
-                  <div class="default-content"><h2>Diksha: Chat with books</h2></div>
+                  <div class="default-content">
+                    <h2>Diksha: Chat with books</h2>
+                  </div>
                 </ng-container>
 
 
               </div>
               <!-- Typing container -->
-              <div class="typing-container">
-                <div class="typing-content">
-                  <div class="typing-textarea">
-                    <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required
-                      [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
-                    <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
-                        class="fa fa-arrow-right"></i></span>
-                  </div>
-                  <!-- <div class="typing-controls">
-                    <span id="delete-btn" class="material-symbols-rounded"><i class="fa fa-trash-alt"></i></span>
-                  </div> -->
-                </div>
+              
+            </div>
+          </div>
+          <div class="typing-container">
+            <div class="typing-content">
+              <div class="typing-textarea">
+                <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required
+                  [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
+                <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
+                    class="fa fa-arrow-right"></i></span>
               </div>
+              <!-- <div class="typing-controls">
+                <span id="delete-btn" class="material-symbols-rounded"><i class="fa fa-trash-alt"></i></span>
+              </div> -->
             </div>
           </div>
         </div>

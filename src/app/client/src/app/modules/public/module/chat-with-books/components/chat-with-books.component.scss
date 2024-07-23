@@ -72,15 +72,12 @@
 
 /* Chats container styling */
 .chat-container {
-  padding: 0px 15px 15px 15px;
-  overflow-y: auto;
-  height: 70vh;
-  max-height: 100vh;
-  padding: 10px;
-  border-radius: 10px;
-  // border-radius: 1.5rem;
-  // background-color: rgba(0, 0, 0, 0.05);
-  // padding-bottom: 150px;
+  // padding: 0px 15px 15px 15px;
+  // overflow-y: auto;
+  // height: 70vh;
+  // max-height: 100vh;
+  // padding: 10px;
+  // border-radius: 10px;
 }
 
 :where(.chat-container, textarea)::-webkit-scrollbar {

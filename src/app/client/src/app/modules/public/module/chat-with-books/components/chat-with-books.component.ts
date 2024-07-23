@@ -169,7 +169,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
   }
 
   saveBooksQuery() {
-    if (!this.searchQuery) {
+    if (!this.searchQuery && this.searchQuery.trim() == '') {
       return
     }
     const _uuid = UUID.UUID();
@@ -183,11 +183,11 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
         }
       }
     }
-
+    this.searchQueryList.unshift({ 'id': _uuid, 'searchQuery': this.searchQuery });
+    this.apiData.push({ 'question': this.searchQuery, 'answer': '', 'reference': '' });
     this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
-        this.apiData.push({ 'question': this.searchQuery, 'answer': res?.answer, 'reference': res?.context });
-        this.searchQueryList.unshift({ 'id': _uuid, 'searchQuery': this.searchQuery });
+        this.apiData.push({ 'question': '', 'answer': res?.answer, 'reference': res?.context });
         //save data in DB
         if (this.isUserLoggedIn()) {
           this.learnerService.postWithSubscribe(option).subscribe(res => {
@@ -197,9 +197,9 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
           });
         }
         this.moveToBottom()
-        this.searchQuery = '';
       }
-    });
+    })
+    this.searchQuery = '';
 
 
 
