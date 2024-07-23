@@ -54,7 +54,7 @@
     "@angular/router": "^11.2.14",
     "@dicdikshaorg/chatbot-client": "3.0.4",
     "@dicdikshaorg/client-services": "2.10.0",
-    "@dicdikshaorg/common-consumption": "4.12.21",
+    "@dicdikshaorg/common-consumption": "4.12.22",
     "@dicdikshaorg/common-form-elements": "5.1.30",
     "@dicdikshaorg/sb-content-section": "5.0.1",
     "@dicdikshaorg/sunbird-collection-editor": "4.5.0",
