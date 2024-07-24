@@ -219,7 +219,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
       }
       this.learnerService.readWithSubscribe(option).subscribe((res: any) => {
         console.log('res====',res)
-        if (res.responseCode !== 'OK') {
+        if (res.responseCode == 'OK') {
           //no action
 
           // Get today's date in 'dd-mm-yyyy' format
