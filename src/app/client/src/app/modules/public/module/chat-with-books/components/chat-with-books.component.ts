@@ -218,6 +218,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
         url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + this.userService.userid,
       }
       this.learnerService.readWithSubscribe(option).subscribe((res: any) => {
+        console.log('res====',res)
         if (res.responseCode !== 'OK') {
           //no action
 
@@ -229,7 +230,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
             const [day, month, year] = dateStr.split('-');
             return `${day}-${month}-${year}`;
           };
-
+          console.log('res1====',res?.result)
           // Group data by date
           const groupedData = res?.result?.response.reduce((acc, item) => {
             const date = item.searchQueryDate.split(' ')[0]; // Get date part only
@@ -241,7 +242,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
             acc[formattedDate].push(item);
             return acc;
           }, {});
-
+          console.log('res2====',groupedData)
           // Add "Today" entry if there are items for today
           const result = Object.keys(groupedData).map(date => {
             if (date === today) {
@@ -250,6 +251,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
               return { "Previous 30 days": groupedData[date] };
             }
           });
+          console.log('res1====',result)
           this.searchQueryList = result.reverse();
         }
       });
