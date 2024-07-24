@@ -215,41 +215,44 @@ async ngOnInit() {
     if(pathname != 'explore') {
         const selectedTab = urlQuery.get("selectedTab") != undefined || urlQuery.get("selectedTab") != null ? urlQuery.get("selectedTab") : 'home';
         const tenant = frameworkList[pathname] ?? frameworkList[urlQuery.get("board")];
-        if (tenant) {
-        const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
-        this.router.navigate(
-            [],
-            {
-                relativeTo: this.activatedRoute,
-                queryParams,
-                queryParamsHandling: 'merge', // remove to replace all query params by provided
-                skipLocationChange: false
-            }
-        );
-        let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
-            if(guestUserDetails && Object.keys(guestUserDetails).length){
-                console.log('inside')
-                if(!guestUserDetails.framework){
-                    guestUserDetails.framework = {}
+            if (tenant) {
+                //117337 - removed hardcoded cbse/ncert
+                const queryParams: Params = { board: tenant['name'] == 'CBSE' ? 'CBSE/NCERT' : tenant['name'],id:tenant['identifier'],selectedTab:selectedTab};
+            this.router.navigate(
+                [],
+                {
+                    relativeTo: this.activatedRoute,
+                    queryParams,
+                    queryParamsHandling: 'merge', // remove to replace all query params by provided
+                    skipLocationChange: false
                 }
-                guestUserDetails.framework.board = [queryParams.board];
-                guestUserDetails.framework.id = queryParams.id;
-                localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+            );
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+                if(guestUserDetails && Object.keys(guestUserDetails).length){
+                    if(!guestUserDetails.framework){
+                        guestUserDetails.framework = {}
+                    }
+                    guestUserDetails.framework.board = [queryParams.board];
+                    guestUserDetails.framework.id = queryParams.id;
+                    localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+                }
+            }
+        } else {
+            let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
+            if(guestUserDetails && Object.keys(guestUserDetails).length){
+                // guestUserDetails.framework.board = ['CBSE'];
+                // guestUserDetails.framework.id = 'ncert_k-12';
+                // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
+            } else {
+                this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
+           
             }
         }
-    } else {
-        let guestUserDetails = JSON.parse(localStorage.getItem('guestUserDetails')) ?? {};
-        if(guestUserDetails && Object.keys(guestUserDetails).length){
-            // guestUserDetails.framework.board = ['CBSE'];
-            // guestUserDetails.framework.id = 'ncert_k-12';
-            // localStorage.setItem('guestUserDetails', JSON.stringify(guestUserDetails));
-        } else {
-            this.router.navigateByUrl('/explore?board=CBSE/NCERT&gradeLevel=Class 1&gradeLevel=Class 2&&id=ncert_k-12&selectedTab=home');
-        }
-    }
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-    await delay(100);
-    
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        await delay(100);
+
+        
+
         this.isDesktopApp = this.utilService.isDesktopApp;
         this.setUserPreferences();
         this.subscription$ = this.activatedRoute.queryParams.subscribe(queryParams => {
