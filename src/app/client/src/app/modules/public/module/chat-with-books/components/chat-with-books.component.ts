@@ -177,9 +177,7 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
       url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
       data: {
         "request": {
-          "id": _uuid,
-          "userId": this.userService.userid,
-          "saveQuery": this.searchQuery
+          "id": this.userService.userid, "userId": _uuid, "searchQuery": this.searchQuery
         }
       }
     }
