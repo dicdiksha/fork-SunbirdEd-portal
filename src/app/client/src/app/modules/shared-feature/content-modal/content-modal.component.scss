@@ -30,17 +30,21 @@ object, iframe {
     font-size: 0.875rem;
     font-weight: 600;
     position: absolute;
-    right: 25px;
-    top: 108px;
-    background: #dc3545;
+    font-family: Helvetica, sans-serif !important;
+    /* font-size: medium; */
+    font-size: 16px;
+    font-weight: 500;
+    left: 280px;
+    top: 57.5px;
+    background: transparent;
     color: #fff;
-    border: 1px solid #dc3545;
+    border: 1px solid transparent;
     cursor: pointer;
     padding: 0.25rem 0.5rem;
     z-index: 0;
     @media screen and (max-width: 991px) {
-        right: 10px;
-        top: 92px;
+        left: 130px;
+        top: 53px;
         padding-top: 6px;
         padding-bottom: 6px;
         font-size: 11px;
