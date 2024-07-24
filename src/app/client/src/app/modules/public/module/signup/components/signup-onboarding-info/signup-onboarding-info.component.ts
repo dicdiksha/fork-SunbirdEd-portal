@@ -35,6 +35,7 @@ export class SignupOnboardingInfoComponent implements OnInit {
     }
   }
   onRegisterSubmit(event) {
+     event.preventDefault();
     // If user is minor and login mode is gmail, then continue accepting email / phone for verification
     if (_.get(this.startingForm, 'basicInfo.isMinor') && _.get(this.startingForm, 'routeParams.loginMode') === 'gmail') {
       this.subformInitialized.emit(event);
