@@ -449,12 +449,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   joyThemePopup() {
     const joyThemePopup = localStorage.getItem('joyThemePopup');
-    // if (joyThemePopup === 'true') {
-    //   this.checkTncAndFrameWorkSelected();
-    // } else {
-    //   this.showJoyThemePopUp = true;
-    // }
+    if (joyThemePopup === 'true') {
     this.checkTncAndFrameWorkSelected();
+      } else {
+    this.showJoyThemePopUp = true;
+  
+  //  this.checkTncAndFrameWorkSelected();
   }
 
   checkLocationStatus() {
