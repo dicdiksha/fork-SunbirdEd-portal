@@ -10,9 +10,9 @@
       </div>
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''" class="h-100">
         <div class="filters-area h-100">
-          <ng-container *ngIf="searchQueryList.length <= 0">
+          <div class="default-img">
             <h6><img src="../../../../../../assets/images/diksha-logo.svg" alt=""> {{'Chat With Books'}}</h6>
-          </ng-container>
+          </div>
           <ng-container *ngIf="searchQueryList.length>0">
             <ng-container *ngFor="let search of searchQueryList;">
             <h6>{{getKeys(search)}}</h6>
