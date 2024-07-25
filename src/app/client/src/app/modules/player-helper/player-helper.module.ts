@@ -25,7 +25,7 @@ import { SunbirdEpubPlayerModule } from '@dicdikshaorg/epub-player-v9';
 import { QumlPlayerService } from './service/quml-player/quml-player.service';
 import { QumlLibraryModule, QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 // import { EditorCursor } from '@project-sunbird/sunbird-collection-editor-v9';
-import { EditorCursor } from '@dicdikshaorg/sunbird-collection-editor';
+import { EditorCursor } from 'sunbird-collection-editor-v9-satya';
 
 
 @NgModule({
