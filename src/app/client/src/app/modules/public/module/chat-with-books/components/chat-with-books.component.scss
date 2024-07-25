@@ -26,7 +26,7 @@
   h6 {
     margin-bottom: 10px;
     font-size: 12px;
-    font-weight: normal;
+    font-weight: 600;
   }
 
   ul {
@@ -441,6 +441,16 @@ span.material-symbols-rounded {
   overflow-y: scroll;
 }
 
+.default-img{
+  h6 {
+    font-size: medium;
+    border-bottom: 1px #ddd solid;
+    padding: 4px;
+    img {
+      width: 16px;
+    }
+  }
+}
 
 /* Reponsive Media Query */
 @media screen and (max-width: 600px) {

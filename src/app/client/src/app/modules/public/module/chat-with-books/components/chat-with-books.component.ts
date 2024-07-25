@@ -213,14 +213,16 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
 
   getQueryFromBooks() {
     if (this.isUserLoggedIn()) {
-      let userId = this.userService.userid
       const option = {
         url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + this.userService.userid,
       }
       this.learnerService.readWithSubscribe(option).subscribe((res: any) => {
-        console.log('res====',res)
-        if (res.responseCode == 'OK') {
-          //no action
+        if (res.responseCode !== 'OK') {
+          const sortedSearchQueries = res?.result?.response.sort((a, b) => {
+            const dateA = this.parseDate(a.searchQueryDate);
+            const dateB = this.parseDate(b.searchQueryDate);
+            return dateA.getTime() - dateB.getTime();
+          });
 
           // Get today's date in 'dd-mm-yyyy' format
           const today = new Date().toLocaleDateString('en-GB').split('/').join('-');
@@ -232,7 +234,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
           };
           console.log('res1====',res?.result)
           // Group data by date
-          const groupedData = res?.result?.response.reduce((acc, item) => {
+          const groupedData = sortedSearchQueries.reduce((acc, item) => {
             const date = item.searchQueryDate.split(' ')[0]; // Get date part only
             const formattedDate = formatDate(date);
 
@@ -260,6 +262,11 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
 
   getKeys(object) {
     return Object.keys(object);
+  }
+
+  parseDate(dateString) {
+    const [day, month, year, time] = dateString.split(/[\s-]/);
+    return new Date(`${year}-${month}-${day}T${time}`);
   }
 
 }
