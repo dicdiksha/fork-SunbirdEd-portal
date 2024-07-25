@@ -11,7 +11,7 @@
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''" class="h-100">
         <div class="filters-area h-100">
           <div class="default-img">
-            <h6><img src="../../../../../../assets/images/diksha-logo.svg" alt=""> {{'Chat With Books'}}</h6>
+            <h6><img src="../../../../../../assets/images/diksha-logo.svg" alt="">{{resourceService?.frmelmnts?.lbl?.chatWithBooks}}</h6>
           </div>
           <ng-container *ngIf="searchQueryList.length>0">
             <ng-container *ngFor="let search of searchQueryList;">
@@ -39,19 +39,19 @@
                 <div class="four-sections">
                   <div class="section-one">
                     <p><i class="far fa-book-reader"></i></p>
-                    <p>National platform for school education in India.</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks1}}</p>
                   </div>
                   <div class="section-two">
                     <p><i class="far fa-language"></i></p>
-                    <p>Provides multilingual digital resources for students.</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks2}}</p>
                   </div>
                   <div class="section-three">
                     <p><i class="far fa-user-graduate"></i></p>
-                    <p>Provides professional development and training for teachers.</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks3}}</p>
                   </div>
                   <div class="section-four">
                     <p><i class="far fa-desktop"></i></p>
-                    <p>Accessible via mobile app and website for flexible learning.</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks4}}</p>
                   </div>
                 </div>
               </div>
@@ -78,7 +78,7 @@
                           <mat-expansion-panel>
                             <mat-expansion-panel-header>
                               <mat-panel-title class="sb-mat-accordion__title">
-                                References
+                                {{resourceService?.frmelmnts?.lbl?.references}}
                               </mat-panel-title>
                             </mat-expansion-panel-header>
 
@@ -87,12 +87,12 @@
                               <div class="mat-expansion-panel-body">
                                 <div class="sb-mat-accordion__content"
                                   *ngFor="let reference of data?.reference; let i = index">
-                                  <h5>Reference {{i+1}}</h5>
+                                  <h5>{{resourceService?.frmelmnts?.lbl?.references}} {{i+1}}</h5>
                                   <ul>
-                                    <li><span>Class:</span>{{reference?.metadata?.class}}</li>
-                                    <li><span>Book Name:</span>{{reference?.metadata?.book_name}}</li>
-                                    <li><span>Chapter Name:</span>{{reference?.metadata?.chapter_name}}</li>
-                                    <li><span>Page Number:</span>{{reference?.metadata?.page}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.class}}:</span>{{reference?.metadata?.class}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.bookName}}:</span>{{reference?.metadata?.book_name}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.chapterName}}:</span>{{reference?.metadata?.chapter_name}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.pageNumber}}:</span>{{reference?.metadata?.page}}</li>
                                   </ul>
                                 </div>
                               </div>
@@ -112,7 +112,7 @@
         <div class="typing-container">
           <div class="typing-content">
             <div class="typing-textarea">
-              <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required
+              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.pageNumber}}" required
                 [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
               <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
                   class="fa fa-arrow-right"></i></span>
