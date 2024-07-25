@@ -116,7 +116,13 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
     }));
   }
   private getCustodianOrgDataForGuest() {
-    console.log('getCustodianOrgDataForGuest channelId===',this.guestUserHashTagId)
+    /**
+     * These 3 line are only for dev environment 
+     * don't push on prod
+     */
+    if(!this.guestUserHashTagId){
+      return
+    }
     return this.channelService.getFrameWork(this.guestUserHashTagId).pipe(map((channelData: any) => {
       this.custOrgFrameworks = _.get(channelData, 'result.channel.frameworks') || [];
       this.custOrgFrameworks = _.sortBy(this.custOrgFrameworks, 'index');
