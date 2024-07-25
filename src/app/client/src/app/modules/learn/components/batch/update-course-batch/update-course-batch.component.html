@@ -33,8 +33,8 @@
               </div>
             </div>
             <div class="four wide column">
-              <div>
-                <label>{{resourceService?.frmelmnts?.cert?.lbl?.issueCertificate}}</label>
+              <div class="sb-field-group">
+                <label class="required">{{resourceService?.frmelmnts?.cert?.lbl?.issueCertificate}}</label>
                 <div class="d-flex py-8 flex-w-wrap">
                   <div class="sb-radio-btn-checkbox sb-radio-btn-primary">
                     <input (change)="handleInputChange('issue-certificate-yes')" formControlName="issueCertificate"
