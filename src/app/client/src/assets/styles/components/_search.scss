@@ -164,14 +164,14 @@ select:-internal-autofill-selected {
   align-items: center;
   border-radius: calculateRem(28px);
   // margin:-1.5rem calculateRem(0px) calculateRem(16px);
-  @include respond-above(sm) {
-    margin:0 calculateRem(24px);
-  }
+  // @include respond-above(sm) {
+  //   margin:0 calculateRem(24px);
+  // }
   // max-width: 100%;
   width: 100%;
   box-shadow: var(--sbt-box-shadow-6px);
 
-  @include respond-above(sm) {
+  @include respond-above(md) {
     &.large {
       max-width: calculateRem(492px);
     }
@@ -347,7 +347,7 @@ select:-internal-autofill-selected {
     transition: all 0.7s ease 0s;
 }
 .sbt-search-box.large:focus-within {
-  max-width: 85% !important;
+  max-width: 93% !important;
   width: 100%;
   -webkit-transition: all 0.7s ease 0s;
     -moz-transition: all 0.7s ease 0s;
@@ -418,11 +418,14 @@ select:-internal-autofill-selected {
 @media screen and (min-width: 768px){
   .sbt-search-bar-panel:focus-within{
   }
-  .sbt-search-bar-panel{
-    .sbt-search-box.large {
-      max-width: 75%;
-    }
-  }
+  // .sbt-search-bar-panel{
+  //   .sbt-search-box.large {
+  //     max-width: 75%;
+  //   }
+  // }
+  // .sbt-search-bar-panel .sbt-search-box.large {
+  //   max-width: 75%;
+  // }
 }
 @media screen and (min-width: 1920px){
   .sbt-search-bar-panel{
@@ -441,5 +444,35 @@ select:-internal-autofill-selected {
   }
   .sbt-search-box.large:focus-within{
     max-width: 100% !important;
+  }
+}
+// @media screen and (max-width: 991px){
+//   .sbt-search-bar-panel .sbt-search-box.large {
+//     max-width: 90%;
+// }
+// }
+@media (min-width: 991px) and (max-width: 1440px){
+    .sbt-search-bar-panel .sbt-search-box.large {
+      max-width:95%;
+  }
+  .sbt-search-box.large:focus-within{
+    max-width: 100% !important;
+  }
+}
+@media (min-width: 1441px) and (max-width: 1900px){
+  .sbt-search-bar-panel .sbt-search-box.large {
+    max-width: 85%;
+ }
+}
+@media screen and (min-width: 1900px){
+  .sbt-search-bar-panel .sbt-search-box.large {
+    max-width: 60%;
+ }
+}
+@media (max-width: 991px) {
+  html[layout=joy] .sbt-dropdown-profile-area,
+  html[layout=joy] app-language-dropdown, 
+  html[layout=joy] .sbt-dropdown-language {
+      width: 100%;
   }
 }
