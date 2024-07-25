@@ -312,7 +312,10 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     if( this.queryParams.selectedTab==="all" && _.toLower(option.filters.se_boards) === 'ncert' ){
       option.filters.visibility = option.filters.visibility.filter(item => item !== "Parent");
     }
-    
+    // To empty se_boards when NCERT is selected as NCERT board is not bind to any content
+    if(option.filters.se_boards && option.filters.se_boards.length>0 && _.toLower(option.filters.se_boards).includes('ncert')){
+      option.filters.se_boards = [];
+    }
     this.searchService.contentSearch(option)
       .pipe(
         mergeMap(data => {
