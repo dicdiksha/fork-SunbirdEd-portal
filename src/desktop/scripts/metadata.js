@@ -51,11 +51,13 @@ const getFrameWorks = async (frameworks = []) => {
 const getChannels = async () => {
     const instance = await getInstance()
     let { data: rootOrgData } = await instance.get(`/api/channel/v1/read/${rootOrgHashTagId}`)
+    console.log("rootOrgData",rootOrgData);
     await fse.createFile(path.join(baseDirPath, 'channels', `${rootOrgHashTagId}.json`))
     await fse.writeJSON(path.join(baseDirPath, 'channels', `${rootOrgHashTagId}.json`), rootOrgData)
 
     const { data: custodianSettingData } = await instance.get(`/api/data/v1/system/settings/get/custodianOrgId`)
     const custodianOrgId = custodianSettingData.result.response.value;
+    console.log("custodianOrgId",custodianOrgId);
     let { data: custodianOrgData } = await instance.get(`/api/channel/v1/read/${custodianOrgId}`)
     await fse.createFile(path.join(baseDirPath, 'channels', `${custodianOrgId}.json`))
     await fse.writeJSON(path.join(baseDirPath, 'channels', `${custodianOrgId}.json`), custodianOrgData)

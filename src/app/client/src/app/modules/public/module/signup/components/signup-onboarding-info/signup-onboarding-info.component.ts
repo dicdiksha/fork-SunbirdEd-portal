@@ -35,7 +35,6 @@ export class SignupOnboardingInfoComponent implements OnInit {
     }
   }
   onRegisterSubmit(event) {
-     event.preventDefault();
     // If user is minor and login mode is gmail, then continue accepting email / phone for verification
     if (_.get(this.startingForm, 'basicInfo.isMinor') && _.get(this.startingForm, 'routeParams.loginMode') === 'gmail') {
       this.subformInitialized.emit(event);
@@ -43,6 +42,7 @@ export class SignupOnboardingInfoComponent implements OnInit {
     } else if (!_.get(this.startingForm, 'basicInfo.isMinor') && _.get(this.startingForm, 'routeParams.loginMode') === 'gmail') {
       // If user is not minor and login mode is gmail, then update basic info and redirect to resources page
       this.updateUserDetails();
+      event.preventDefault();
     } else {
       this.subformInitialized.emit(event);
       this.triggerNext.emit();
