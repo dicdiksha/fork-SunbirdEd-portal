@@ -190,7 +190,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
 
-    this.apiData.push({ 'question': this.searchQuery, 'answer': '', 'reference': '' });
+    this.apiData.push({ 'question': this.searchQuery, 'answer': '', 'reference': '', 'id': _uuid });
     this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
         this.apiData.push({ 'question': '', 'answer': res?.answer, 'reference': res?.context });
@@ -217,7 +217,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
         url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + this.userService.userid,
       }
       this.learnerService.readWithSubscribe(option).subscribe((res: any) => {
-        if (res.responseCode !== 'OK') {
+        if (res.responseCode == 'OK') {
           const sortedSearchQueries = res?.result?.response.sort((a, b) => {
             const dateA = this.parseDate(a.searchQueryDate);
             const dateB = this.parseDate(b.searchQueryDate);
@@ -267,6 +267,17 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
   parseDate(dateString) {
     const [day, month, year, time] = dateString.split(/[\s-]/);
     return new Date(`${year}-${month}-${day}T${time}`);
+  }
+
+  moveToQuery(queryId,searchQuery) {
+    const myElement = document.getElementById(queryId);
+    if (myElement) {
+      const topPos = myElement.offsetTop;
+      document.getElementById('chat-data').scrollTop = topPos - 10;
+    } else {
+      this.searchQuery = searchQuery.trim();
+      this.saveBooksQuery();
+    }
   }
 
 }
