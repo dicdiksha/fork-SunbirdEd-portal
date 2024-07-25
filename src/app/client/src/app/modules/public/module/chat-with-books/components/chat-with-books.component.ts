@@ -3,7 +3,7 @@ import {
 } from '@sunbird/shared';
 import { SearchService, OrgDetailsService, UserService, FrameworkService, SchemaService } from '@sunbird/core';
 import { combineLatest, Subject, of } from 'rxjs';
-import { Component, OnInit, OnDestroy, EventEmitter, AfterViewInit, OnChanges, SimpleChanges, DoCheck, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter, AfterViewInit, SimpleChanges, DoCheck, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash-es';
 import { IInteractEventEdata, IImpressionEventInput, TelemetryService } from '@sunbird/telemetry';
@@ -19,7 +19,7 @@ import { UUID } from 'angular2-uuid';
   templateUrl: './chat-with-books.component.html',
   styleUrls: ['./chat-with-books.component.scss']
 })
-export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchQuery: string = '';
   searchQueryList = [];
   public unsubscribe$ = new Subject<void>();
@@ -164,14 +164,11 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
     this.telemetryService.interact(cardClickInteractData);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-
-  }
-
   saveBooksQuery() {
     if (!this.searchQuery && this.searchQuery.trim() == '') {
       return
     }
+    this.searchQuery = this.searchQuery.trim();
     const _uuid = UUID.UUID();
     const option = {
       url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.SAVE,
@@ -181,14 +178,25 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
         }
       }
     }
-    this.searchQueryList.unshift({ 'id': _uuid, 'searchQuery': this.searchQuery });
+
+    const todayIndex = this.searchQueryList.findIndex(item => item.hasOwnProperty('Today'));
+    if (todayIndex !== -1) {
+      // If "Today" exists, push new data to it
+      this.searchQueryList[todayIndex]['Today'].unshift({ 'id': _uuid, 'searchQuery': this.searchQuery });
+    } else {
+      const newEntry = {};
+      newEntry['Today'] = [{ 'id': _uuid, 'searchQuery': this.searchQuery }];
+      this.searchQueryList.push(newEntry);
+    }
+
+
     this.apiData.push({ 'question': this.searchQuery, 'answer': '', 'reference': '' });
     this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
         this.apiData.push({ 'question': '', 'answer': res?.answer, 'reference': res?.context });
         //save data in DB
         if (this.isUserLoggedIn()) {
-          this.learnerService.postWithSubscribe(option).subscribe(res => {
+          this.learnerService.postWithSubscribe(option).subscribe((res: any) => {
             if (res.responseCode !== 'OK') {
               //no action
             }
@@ -207,15 +215,51 @@ export class ChatWithBooksComponent implements OnInit, OnChanges, OnDestroy, Aft
     if (this.isUserLoggedIn()) {
       let userId = this.userService.userid
       const option = {
-        url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + userId,
+        url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.READ + '/' + this.userService.userid,
       }
-      this.learnerService.readWithSubscribe(option).subscribe(res => {
-        console.log("response subscribe===", res)
-        // if (res.responseCode !== 'OK') {
+      this.learnerService.readWithSubscribe(option).subscribe((res: any) => {
+        console.log('res====',res)
+        if (res.responseCode == 'OK') {
+          //no action
 
-        // }
+          // Get today's date in 'dd-mm-yyyy' format
+          const today = new Date().toLocaleDateString('en-GB').split('/').join('-');
+
+          // Function to format date to 'dd-mm-yyyy'
+          const formatDate = (dateStr) => {
+            const [day, month, year] = dateStr.split('-');
+            return `${day}-${month}-${year}`;
+          };
+          console.log('res1====',res?.result)
+          // Group data by date
+          const groupedData = res?.result?.response.reduce((acc, item) => {
+            const date = item.searchQueryDate.split(' ')[0]; // Get date part only
+            const formattedDate = formatDate(date);
+
+            if (!acc[formattedDate]) {
+              acc[formattedDate] = [];
+            }
+            acc[formattedDate].push(item);
+            return acc;
+          }, {});
+          console.log('res2====',groupedData)
+          // Add "Today" entry if there are items for today
+          const result = Object.keys(groupedData).map(date => {
+            if (date === today) {
+              return { "Today": groupedData[date] };
+            } else {
+              return { "Previous 30 days": groupedData[date] };
+            }
+          });
+          console.log('res1====',result)
+          this.searchQueryList = result.reverse();
+        }
       });
     }
+  }
+
+  getKeys(object) {
+    return Object.keys(object);
   }
 
 }
