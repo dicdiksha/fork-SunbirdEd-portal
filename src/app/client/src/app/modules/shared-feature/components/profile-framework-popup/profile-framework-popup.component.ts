@@ -116,6 +116,7 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
     }));
   }
   private getCustodianOrgDataForGuest() {
+    console.log('getCustodianOrgDataForGuest channelId===',this.guestUserHashTagId)
     return this.channelService.getFrameWork(this.guestUserHashTagId).pipe(map((channelData: any) => {
       this.custOrgFrameworks = _.get(channelData, 'result.channel.frameworks') || [];
       this.custOrgFrameworks = _.sortBy(this.custOrgFrameworks, 'index');
@@ -276,6 +277,7 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
     return formFields;
   }
   private getCustodianOrgData() {
+    console.log('getCustodianOrgData channelId===',this.userService.hashTagId)
     return this.channelService.getFrameWork(this.userService.hashTagId).pipe(map((channelData: any) => {
       this.custOrgFrameworks = _.get(channelData, 'result.channel.frameworks') || [];
       this.custOrgFrameworks = _.sortBy(this.custOrgFrameworks, 'index');
