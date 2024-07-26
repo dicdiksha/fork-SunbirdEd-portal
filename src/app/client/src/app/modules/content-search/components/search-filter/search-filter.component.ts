@@ -144,7 +144,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           this.filterChange.emit({ status: 'FETCHING' });
           let boardName = _.get(queryParams, 'board[0]') || _.get(this.boards, '[0]');
           //117337 - removed hardcoded cbse/ncert
-          //boardName = boardName === 'CBSE/NCERT' ? 'CBSE' : boardName;
+          console.log(boardName,'boardname')
+          boardName = boardName === 'CBSE/NCERT' ? 'CBSE' : boardName;
           return zip(this.getFramework({ boardName }), this.getAudienceTypeFormConfig())
             .pipe(map(([filters, audienceTypeFilter]: [object, object]) => ({ ...filters, audience: audienceTypeFilter })));
         })
@@ -237,8 +238,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         _.find(this.boards, { name: _.get(this.defaultFilters, 'board[0]') }) || this.boards[0];
       this.selectedBoard = { label: this.optionLabel.Board, value: 'board', selectedOption: _.get(selectedOption, 'name') };
       //117337 - removed hardcoded cbse/ncert
-      // this.selectedBoard.selectedOption = this.selectedBoard.selectedOption === 'CBSE' ? 'CBSE/NCERT' : this.selectedBoard.selectedOption;
-      this.selectedBoard.selectedOption = this.selectedBoard.selectedOption;
+      this.selectedBoard.selectedOption = this.selectedBoard.selectedOption === 'CBSE' ? 'CBSE/NCERT' : this.selectedBoard.selectedOption;
+      // this.selectedBoard.selectedOption = this.selectedBoard.selectedOption;
       this.selectedOption = this.selectedBoard;
     }
   }
@@ -273,10 +274,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.allValues = {};
     _.forEach(filters, (filterValues: { name: any }[], filterKey: string) => {
       //117337 - removed hardcode cbse/ncert
-      // if (filterKey === 'board') {
-      //   const boardName = filterValues.find((board) => board.name === 'CBSE');
-      //   boardName && (boardName.name = 'CBSE/NCERT');
-      // }
+      if (filterKey === 'board') {
+        const boardName = filterValues.find((board) => board.name === 'CBSE');
+        boardName && (boardName.name = 'CBSE/NCERT');
+      }
       const values = this.allValues[filterKey] = _.map(filterValues, 'name');
       if (_.get(values, 'length')) {
         let selectedIndices;
