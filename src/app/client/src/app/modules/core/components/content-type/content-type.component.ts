@@ -101,6 +101,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     let pathname = this.userService._slug;
     if( pathname && pathname==="dikshacustodian" && this.userService._userProfile.framework.board){
       let board = this.userService._userProfile.framework.board[0];
+      //117337 - removed hardcoded cbse/ncert
       if(board==="CBSE/NCERT"){
           board="CBSE";
       }
@@ -108,6 +109,7 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
     }
     else if( !pathname && userPreference.framework.board){
       let board = userPreference.framework.board[0];
+      //117337 - removed hardcoded cbse/ncert
       if(board==="CBSE/NCERT"){
           board="CBSE";
       }
@@ -139,6 +141,11 @@ export class ContentTypeComponent implements OnInit, OnDestroy {
           !data.isLoginMandatory ?
           this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
             { queryParams: { ...params,board: 'CBSE/NCERT',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+        
+          // !data.isLoginMandatory ?
+          // this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
+          //   { queryParams: { ...params,board: 'CBSE',selectedTab: data.anonumousUserRoute.queryParam } }) : window.location.href = this.exploreNcert ? '/exploren' : data.loggedInUserRoute.route;
+       
          } else if(((params.board && params.board[0] && params.board[0] != undefined) && params.board[0] == 'ncert')){
           !data.isLoginMandatory ?
           this.router.navigate([this.exploreNcert ? '/exploren/1' : data.anonumousUserRoute.route],
