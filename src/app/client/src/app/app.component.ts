@@ -464,6 +464,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.isLocationStatusRequired()) {
       return;
     }
+    console.log("checkLocationStatus in");
     this.usersProfile = this.userService.userProfile;
     const deviceRegister = this.deviceRegisterService.getDeviceProfile();
     const custodianOrgDetails = this.orgDetailsService.getCustodianOrgDetails();
@@ -471,27 +472,34 @@ export class AppComponent implements OnInit, OnDestroy {
       const deviceProfile = res[0];
       this.deviceProfile = deviceProfile;
       if (_.get(this.userService, 'userProfile.rootOrg.rootOrgId') === _.get(res[1], 'result.response.value')) {
+        console.log("for non state user");
         // non state user
         this.isCustodianOrgUser = true;
         this.deviceProfile = deviceProfile;
         if (this.userService.loggedIn) {
+          console.log("for non state user loggedIn this.userService.loggedIn",this.userService.loggedIn);
           if (!deviceProfile.userDeclaredLocation ||
             !(this.usersProfile && this.usersProfile.userLocations && this.usersProfile.userLocations.length >= 1)) {
             this.isLocationConfirmed = false;
           }
         } else {
+          console.log("for non state user not loggedIn");
           if (!deviceProfile.userDeclaredLocation) {
             this.isLocationConfirmed = false;
           }
         }
       } else {
         // state user
+        console.log("for state user in else",this.isCustodianOrgUser);
         this.isCustodianOrgUser = false;
         if (this.userService.loggedIn) {
+          console.log("for state user loggedIn");
           if (!deviceProfile.userDeclaredLocation) {
             this.isLocationConfirmed = false;
           }
+          console.log("for state user isLocationConfirmed",this.isLocationConfirmed);
         } else {
+          console.log("for state user not loggedIn");
           if (!deviceProfile.userDeclaredLocation) {
             this.isLocationConfirmed = false;
           }
@@ -527,6 +535,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }, (err) => {
       this.isLocationConfirmed = false;
       this.showUserTypePopup = true;
+      console.log("error case", "this.isLocationConfirmed",this.isLocationConfirmed,"this.showUserTypePopup",this.showUserTypePopup);
     });
     this.getUserFeedData();
   }
@@ -636,10 +645,12 @@ export class AppComponent implements OnInit, OnDestroy {
    * checks if user has selected the framework and shows popup if not selected.
    */
   public checkFrameworkSelected() {
+    console.log("checkFrameworkSelected");
     // should not show framework popup for sign up and recover route
     if (this.isLocationStatusRequired()) {
       return;
     }
+    console.log("checkFrameworkSelected after return");
     this.zone.run(() => {
       const frameWorkPopUp: boolean = this.cacheService.get('showFrameWorkPopUp');
       if (frameWorkPopUp) {
