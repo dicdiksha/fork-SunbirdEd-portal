@@ -443,6 +443,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   isLocationStatusRequired() {
+    console.log("isLocationStatusRequired");
     const url = location.href;
     return !!(_.includes(url, 'signup') || _.includes(url, 'recover') || _.includes(url, 'sign-in'));
   }
@@ -458,6 +459,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   checkLocationStatus() {
+    console.log("checkLocationStatus");
     // should not show location popup for sign up and recover route
     if (this.isLocationStatusRequired()) {
       return;

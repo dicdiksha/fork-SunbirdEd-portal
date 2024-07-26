@@ -158,6 +158,7 @@ export class OnboardingUserSelectionComponent implements OnInit, OnDestroy {
     }
     // 
     // location.reload();
+    console.log("role popup submit")
     this.logAuditEvent(code);
   }
   logAuditEvent(code: any) {
