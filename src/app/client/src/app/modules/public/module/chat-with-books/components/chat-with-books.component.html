@@ -39,19 +39,19 @@
                 <div class="four-sections">
                   <div class="section-one">
                     <p><i class="far fa-book-reader"></i></p>
-                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks1}}</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText1}}</p>
                   </div>
                   <div class="section-two">
                     <p><i class="far fa-language"></i></p>
-                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks2}}</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText2}}</p>
                   </div>
                   <div class="section-three">
                     <p><i class="far fa-user-graduate"></i></p>
-                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks3}}</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText3}}</p>
                   </div>
                   <div class="section-four">
                     <p><i class="far fa-desktop"></i></p>
-                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBooks4}}</p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText4}}</p>
                   </div>
                 </div>
               </div>
@@ -112,7 +112,7 @@
         <div class="typing-container">
           <div class="typing-content">
             <div class="typing-textarea">
-              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.pageNumber}}" required
+              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}" required
                 [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
               <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
                   class="fa fa-arrow-right"></i></span>
