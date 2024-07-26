@@ -273,6 +273,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.selectedNgModels = {};
     this.allValues = {};
     _.forEach(filters, (filterValues: { name: any }[], filterKey: string) => {
+      //117337 - removed hardcode cbse/ncert
       if (filterKey === 'board') {
         const boardName = filterValues.find((board) => board.name === 'CBSE');
         boardName && (boardName.name = 'CBSE/NCERT');
