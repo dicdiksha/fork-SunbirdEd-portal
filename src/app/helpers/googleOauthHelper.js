@@ -238,6 +238,8 @@ const fetchUserByEmailId = async (emailId, req) => {
   })
 }
 const createUserWithMailId = async (accountDetails, client_id, req) => {
+  logger.info("calling createUserWithMailId method", {accountDetails, client_id, req});
+  console.log("calling createUserWithMailId method", {accountDetails, client_id, req});
   if (!accountDetails.name || accountDetails.name === '') {
     throw new Error('USER_NAME_NOT_PRESENT');
   }
@@ -260,6 +262,7 @@ const createUserWithMailId = async (accountDetails, client_id, req) => {
   }
   return request(options).then(data => {
     if (data.responseCode === 'OK') {
+      logger.info({options, responseData : data});
       return data;
     } else {
       logger.error({msg: client_id + 'OauthHelper: createUserWithMailId failed', additionalInfo: {data}});

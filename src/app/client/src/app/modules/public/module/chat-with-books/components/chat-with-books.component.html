@@ -10,15 +10,15 @@
       </div>
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''" class="h-100">
         <div class="filters-area h-100">
-          <!-- <ng-container *ngIf="searchQueryList?.length <= 0">
-            <h6><img src="../../../../../../assets/images/diksha-logo.svg" alt=""> {{'Chat With Books'}}</h6>
-          </ng-container> -->
-          <ng-container *ngIf="searchQueryList?.length>0">
+          <div class="default-img">
+            <h6><img src="../../../../../../assets/images/diksha-logo.svg" alt="">{{resourceService?.frmelmnts?.lbl?.chatWithBooks}}</h6>
+          </div>
+          <ng-container *ngIf="searchQueryList.length>0">
             <ng-container *ngFor="let search of searchQueryList;">
             <h6>{{getKeys(search)}}</h6>
             <ul >
               <li *ngFor="let query of search[getKeys(search)]">
-                <a href="javascript:void(0);">{{query?.searchQuery}}</a>
+                <a (click)="moveToQuery(query?.id,query?.searchQuery)" href="javascript:void(0);">{{query?.searchQuery}}</a>
               </li>
             </ul>
           </ng-container>
@@ -38,34 +38,33 @@
                 <h2><img src="../../../../../../assets/images/diksha-logo.svg" alt=""></h2>
                 <div class="four-sections">
                   <div class="section-one">
-                    <p><i class="far fa-lightbulb"></i></p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p><i class="far fa-book-reader"></i></p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText1}}</p>
                   </div>
                   <div class="section-two">
-                    <p><i class="far fa-graduation-cap"></i></p>
-                    <p>Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                    <p><i class="far fa-language"></i></p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText2}}</p>
                   </div>
                   <div class="section-three">
-                    <p><i class="far fa-notes"></i></p>
-                    <p>Excepteur sint occaecat cupidatat non proident, sunt in.</p>
+                    <p><i class="far fa-user-graduate"></i></p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText3}}</p>
                   </div>
                   <div class="section-four">
-                    <p><i class="far fa-image"></i></p>
-                    <p>Sed ut perspiciatis unde omnis iste natus error sit</p>
+                    <p><i class="far fa-desktop"></i></p>
+                    <p>{{resourceService?.frmelmnts?.lbl?.chatWithBookText4}}</p>
                   </div>
                 </div>
               </div>
             </ng-container>
             <div class="chatgpt-box w-100" *ngIf="apiData.length>0">
               <!-- Chats container -->
-              <!-- <div class="chat-container" #chatData id="chat-data"> -->
               <div class="h-100">
                 <ng-container *ngFor="let data of apiData;">
                   <div class="ai-question" *ngIf="data?.question">
                     <div class="ai-question-img"><img alt="logo image"
                         src="../../../../../../assets/images/profile-icon.svg">
                     </div>
-                    <div class="ai-question-text">{{data?.question}}</div>
+                    <div class="ai-question-text" id="{{data?.id}}">{{data?.question}}</div>
                   </div>
                   <div class="ai-answer" *ngIf="data?.answer">
                     <div class="ai-answer-section">
@@ -90,10 +89,10 @@
                                   *ngFor="let reference of data?.reference; let i = index">
                                   <h5>Reference {{i+1}}</h5>
                                   <ul>
-                                    <li><span>Class:</span>{{reference?.metadata?.class}}</li>
-                                    <li><span>Book Name:</span>{{reference?.metadata?.book_name}}</li>
-                                    <li><span>Chapter Name:</span>{{reference?.metadata?.chapter_name}}</li>
-                                    <li><span>Page Number:</span>{{reference?.metadata?.page}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.class}}:</span>{{reference?.metadata?.class}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.bookName}}:</span>{{reference?.metadata?.book_name}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.chapterName}}:</span>{{reference?.metadata?.chapter_name}}</li>
+                                    <li><span>{{resourceService?.frmelmnts?.lbl?.pageNumber}}:</span>{{reference?.metadata?.page}}</li>
                                   </ul>
                                 </div>
                               </div>
@@ -113,14 +112,11 @@
         <div class="typing-container">
           <div class="typing-content">
             <div class="typing-textarea">
-              <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required
+              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}" required
                 [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
               <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
                   class="fa fa-arrow-right"></i></span>
             </div>
-            <!-- <div class="typing-controls">
-              <span id="delete-btn" class="material-symbols-rounded"><i class="fa fa-trash-alt"></i></span>
-            </div> -->
           </div>
         </div>
       </div>

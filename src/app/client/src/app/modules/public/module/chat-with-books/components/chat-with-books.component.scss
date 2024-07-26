@@ -26,7 +26,7 @@
   h6 {
     margin-bottom: 10px;
     font-size: 12px;
-    font-weight: normal;
+    font-weight: 600;
   }
 
   ul {
@@ -52,6 +52,7 @@
         border-radius: 10px;
         // background: rgba(0, 0, 0, 0.05);
         text-decoration: none;
+        text-transform: capitalize;
 
         &:hover {
           border-radius: 10px;
@@ -71,7 +72,7 @@
   padding: 0 2%;
   min-height: 500px;
   max-height: 500px;
-  overflow-y: auto;
+  // overflow-y: auto;
   width: 100%;
 
 }
@@ -441,6 +442,16 @@ span.material-symbols-rounded {
   overflow-y: scroll;
 }
 
+.default-img{
+  h6 {
+    font-size: medium;
+    border-bottom: 1px #ddd solid;
+    padding: 4px;
+    img {
+      width: 16px;
+    }
+  }
+}
 
 /* Reponsive Media Query */
 @media screen and (max-width: 600px) {

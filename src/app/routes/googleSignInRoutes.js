@@ -24,6 +24,7 @@ module.exports = (app) => {
 
   app.get('/google/auth', (req, res) => {
     logger.info({ msg: 'google auth called' });
+    logger.info({ req,  res});
     if (!req.query.client_id || !req.query.redirect_uri || !req.query.error_callback) {
       res.redirect('/library')
       return
@@ -99,6 +100,8 @@ module.exports = (app) => {
    * 7. If any error in the flow, redirect to error_callback with all query param.
    */
   app.get('/google/auth/callback', async (req, res) => {
+
+    console.log("/google/auth/callback end point", req, res);
     logger.info({ msg: 'google auth callback called' });
     let googleProfile, isUserExist, newUserDetails, keyCloakToken, redirectUrl, errType, reqQuery = {};
     try {
@@ -111,6 +114,9 @@ module.exports = (app) => {
       }
       errType = 'GOOGLE_PROFILE_API';
       googleProfile = await googleOauth.getProfile(req).catch(handleGoogleProfileError);
+
+      console.log("googleProfile", googleProfile);
+
       logger.info({ msg: 'googleProfile fetched' + JSON.stringify(googleProfile) });
       errType = 'USER_FETCH_API';
       isUserExist = await fetchUserByEmailId(googleProfile.emailId, req).catch(handleGetUserByIdError);

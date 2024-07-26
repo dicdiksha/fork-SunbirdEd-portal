@@ -6,7 +6,7 @@
 }
 .sbt-header-bar {
   width: 100%;
-  @include respond-above(sm) {
+  @include respond-above(md) {
   height:calculateRem(80px);
   }
 }
@@ -17,13 +17,13 @@
   justify-content: flex-end;
   flex-wrap: wrap;
   // padding: 0px calculateRem(16px);
-  @include respond-above(sm) {
+  @include respond-above(md) {
     flex-wrap: nowrap;
     padding: 0px 0px;
     }
     .profile-avtar {
       display: none;
-      @include respond-above(sm) {
+      @include respond-above(md) {
         display: block;
         }
     }
@@ -38,7 +38,7 @@
     align-items: center;
     }
     .profile-avtar {
-      @include respond-above(sm) {
+      @include respond-above(md) {
         display: none;
       }
     }
