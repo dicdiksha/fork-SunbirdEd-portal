@@ -50,6 +50,8 @@ const getFrameWorks = async (frameworks = []) => {
 
 const getChannels = async () => {
     const instance = await getInstance()
+    rootOrgHashTagId = data.result.response.content[0].hashTagId;
+    console.log("rootOrgHashTagId",rootOrgHashTagId);
     let { data: rootOrgData } = await instance.get(`/api/channel/v1/read/${rootOrgHashTagId}`)
     console.log("rootOrgData",rootOrgData);
     await fse.createFile(path.join(baseDirPath, 'channels', `${rootOrgHashTagId}.json`))
