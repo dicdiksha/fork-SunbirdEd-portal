@@ -167,6 +167,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   showSwitchTheme = false
   nishthaDashboard: Array<string>;
   lmsDashboard: Array<string>;
+  mainLogo : any;
   constructor(public config: ConfigService, public resourceService: ResourceService, public router: Router,
     public permissionService: PermissionService, public userService: UserService, public tenantService: TenantService,
     public orgDetailsService: OrgDetailsService, public formService: FormService,
@@ -632,6 +633,12 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log("UserService_8", this.userService);
+    if (window.location.href.includes('dev.oci.diksha.gov.in')) {
+      this.mainLogo = 'https://dev.oci.diksha.gov.in/tenant/ntp/logo.png'; // DEV LOGO
+    } else if (window.location.href.includes('diksha.gov.in')) {
+      this.mainLogo = 'https://diksha.gov.in/tenant/ntp/logo.png'; // PROD LOGO
+    }
+
     this.programDashboardRole = this.config.rolesConfig.headerDropdownRoles.programDashboardRole;
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.connectionService.monitor()
