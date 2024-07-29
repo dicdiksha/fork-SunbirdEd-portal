@@ -443,8 +443,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   isLocationStatusRequired() {
-    console.log("isLocationStatusRequired");
+    console.log("132001 isLocationStatusRequired");
+
     const url = location.href;
+    console.log("url isLocationStatusRequired ==",url);
+    
     return !!(_.includes(url, 'signup') || _.includes(url, 'recover') || _.includes(url, 'sign-in'));
   }
 
@@ -459,12 +462,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   checkLocationStatus() {
-    console.log("checkLocationStatus");
+    console.log("132001 checkLocationStatus==",this.isLocationStatusRequired());
+
     // should not show location popup for sign up and recover route
-    if (this.isLocationStatusRequired()) {
+   if (this.isLocationStatusRequired()) {
       return;
     }
-    console.log("checkLocationStatus in");
+   
+    console.log("132001 checkLocationStatus in");
+
     this.usersProfile = this.userService.userProfile;
     const deviceRegister = this.deviceRegisterService.getDeviceProfile();
     const custodianOrgDetails = this.orgDetailsService.getCustodianOrgDetails();
