@@ -487,7 +487,7 @@ export class AppComponent implements OnInit, OnDestroy {
           console.log("deviceProfile.userDeclaredLocation",deviceProfile.userDeclaredLocation,"this.usersProfile",this.usersProfile," this.usersProfile.userLocations", this.usersProfile.userLocations);
           if (!deviceProfile.userDeclaredLocation ||
             !(this.usersProfile && this.usersProfile.userLocations && this.usersProfile.userLocations.length >= 1)) {
-            this.isLocationConfirmed = false;
+            this.isLocationConfirmed = true;
           }
           console.log("this.isLocationConfirmed",this.isLocationConfirmed);
         } else {
