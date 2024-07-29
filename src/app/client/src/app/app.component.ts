@@ -443,11 +443,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   isLocationStatusRequired() {
-    console.log("132001 isLocationStatusRequired");
-
     const url = location.href;
-    console.log("url isLocationStatusRequired ==",url);
-    
     return !!(_.includes(url, 'signup') || _.includes(url, 'recover') || _.includes(url, 'sign-in'));
   }
 
@@ -462,15 +458,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   checkLocationStatus() {
-    console.log("132001 checkLocationStatus==",this.isLocationStatusRequired());
-
     // should not show location popup for sign up and recover route
    if (this.isLocationStatusRequired()) {
       return;
     }
    
-    console.log("132001 checkLocationStatus in");
-
     this.usersProfile = this.userService.userProfile;
     const deviceRegister = this.deviceRegisterService.getDeviceProfile();
     const custodianOrgDetails = this.orgDetailsService.getCustodianOrgDetails();
@@ -478,36 +470,27 @@ export class AppComponent implements OnInit, OnDestroy {
       const deviceProfile = res[0];
       this.deviceProfile = deviceProfile;
       if (_.get(this.userService, 'userProfile.rootOrg.rootOrgId') === _.get(res[1], 'result.response.value')) {
-        console.log("for non state user");
         // non state user
         this.isCustodianOrgUser = true;
         this.deviceProfile = deviceProfile;
         if (this.userService.loggedIn) {
-          console.log("for non state user loggedIn this.userService.loggedIn",this.userService.loggedIn);
-          console.log("deviceProfile.userDeclaredLocation",deviceProfile.userDeclaredLocation,"this.usersProfile",this.usersProfile," this.usersProfile.userLocations", this.usersProfile.userLocations);
           if (!deviceProfile.userDeclaredLocation ||
             !(this.usersProfile && this.usersProfile.userLocations && this.usersProfile.userLocations.length >= 1)) {
-            this.isLocationConfirmed = true;
+            this.isLocationConfirmed = false;
           }
-          console.log("this.isLocationConfirmed",this.isLocationConfirmed);
         } else {
-          console.log("for non state user not loggedIn");
           if (!deviceProfile.userDeclaredLocation) {
             this.isLocationConfirmed = false;
           }
         }
       } else {
         // state user
-        console.log("for state user in else",this.isCustodianOrgUser);
         this.isCustodianOrgUser = false;
         if (this.userService.loggedIn) {
-          console.log("for state user loggedIn");
           if (!deviceProfile.userDeclaredLocation) {
             this.isLocationConfirmed = false;
           }
-          console.log("for state user isLocationConfirmed",this.isLocationConfirmed);
         } else {
-          console.log("for state user not loggedIn");
           if (!deviceProfile.userDeclaredLocation) {
             this.isLocationConfirmed = false;
           }
