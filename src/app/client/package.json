@@ -56,6 +56,7 @@
     "@dicdikshaorg/client-services": "2.10.0",
     "@dicdikshaorg/common-consumption": "4.12.22",
     "@dicdikshaorg/common-form-elements": "5.1.30",
+    "@dicdikshaorg/epub-player-v9": "5.0.12",
     "@dicdikshaorg/sb-content-section": "5.0.1",
     "@dicdikshaorg/sunbird-collection-editor": "4.5.0",
     "@dictrigyn/pdf-player": "^0.0.6",
