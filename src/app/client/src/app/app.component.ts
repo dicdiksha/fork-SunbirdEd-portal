@@ -484,10 +484,12 @@ export class AppComponent implements OnInit, OnDestroy {
         this.deviceProfile = deviceProfile;
         if (this.userService.loggedIn) {
           console.log("for non state user loggedIn this.userService.loggedIn",this.userService.loggedIn);
+          console.log("deviceProfile.userDeclaredLocation",deviceProfile.userDeclaredLocation,"this.usersProfile",this.usersProfile," this.usersProfile.userLocations", this.usersProfile.userLocations);
           if (!deviceProfile.userDeclaredLocation ||
             !(this.usersProfile && this.usersProfile.userLocations && this.usersProfile.userLocations.length >= 1)) {
             this.isLocationConfirmed = false;
           }
+          console.log("this.isLocationConfirmed",this.isLocationConfirmed);
         } else {
           console.log("for non state user not loggedIn");
           if (!deviceProfile.userDeclaredLocation) {
