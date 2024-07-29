@@ -27,7 +27,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { PlayerHelperModule } from '@sunbird/player-helper';
 import { ContentSearchModule } from '@sunbird/content-search';
 // import { CollectionEditorLibraryModule } from '@project-sunbird/sunbird-collection-editor-v9';
-import { CollectionEditorLibraryModule } from '@dicdikshaorg/sunbird-collection-editor';
+import { CollectionEditorLibraryModule } from 'sunbird-collection-editor-satya';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
