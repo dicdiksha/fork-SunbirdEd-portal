@@ -15,4 +15,10 @@ export class PopupControlService {
     this.popupSource.next(value);
   }
 
+  acceptTnc() {
+    // ... logic to handle TNC acceptance
+    localStorage.setItem('tncAccepted', 'true');
+    // Close the modal
+  }
+
 }
