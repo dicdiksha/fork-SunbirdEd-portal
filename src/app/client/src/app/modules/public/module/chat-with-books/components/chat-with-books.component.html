@@ -11,28 +11,32 @@
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''" class="h-100">
         <div class="filters-area h-100">
           <div class="default-img">
-            <h6><img src="../../../../../../assets/images/diksha-logo.svg" alt="">{{resourceService?.frmelmnts?.lbl?.chatWithBooks}}</h6>
+            <h6><img src="../../../../../../assets/images/diksha-logo.svg"
+                alt="">{{resourceService?.frmelmnts?.lbl?.chatWithBooks}}</h6>
           </div>
           <ng-container *ngIf="searchQueryList.length>0">
-            <ng-container *ngFor="let search of searchQueryList;">
-            <h6>{{getKeys(search)}}</h6>
-            <ul >
-              <li *ngFor="let query of search[getKeys(search)]">
-                <a (click)="moveToQuery(query?.id,query?.searchQuery)" href="javascript:void(0);">{{query?.searchQuery}}</a>
-              </li>
-            </ul>
+            <div class="search-history">
+              <ng-container *ngFor="let search of searchQueryList;">
+                <h6>{{getKeys(search)}}</h6>
+                <ul>
+                  <li *ngFor="let query of search[getKeys(search)]">
+                    <a (click)="moveToQuery(query?.id,query?.searchQuery)"
+                      href="javascript:void(0);">{{query?.searchQuery}}</a>
+                  </li>
+                </ul>
+              </ng-container>
+            </div>
           </ng-container>
-        </ng-container>
-       
+
 
         </div>
       </div>
     </div>
     <div [ngClass]="SECOND_PANEL_LAYOUT" class="w-100">
       <div [ngClass]="layoutConfiguration ? 'sbt-page-content-area' : 'ui container mt-24'">
-        <div class="content-grid relative9 h-100 w-100">
-          <div #chatData id="chat-data" [appTelemetryImpression]="telemetryImpression" class="twelve wide column content-scroll h-100"
-            in-view-container>            
+        <div class="content-grid relative9 w-100">
+          <div #chatData id="chat-data" [appTelemetryImpression]="telemetryImpression"
+            class="twelve wide column content-scroll h-100" in-view-container>
             <ng-container *ngIf="apiData.length <= 0">
               <div class="default-content">
                 <h2><img src="../../../../../../assets/images/diksha-logo.svg" alt=""></h2>
@@ -89,10 +93,18 @@
                                   *ngFor="let reference of data?.reference; let i = index">
                                   <h5>{{resourceService?.frmelmnts?.lbl?.reference}} {{i+1}}</h5>
                                   <ul>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.class}}:</span>{{reference?.metadata?.class}}</li>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.bookName}}:</span>{{reference?.metadata?.book_name}}</li>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.chapterName}}:</span>{{reference?.metadata?.chapter_name}}</li>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.pageNumber}}:</span>{{reference?.metadata?.page}}</li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.class}}:</span>{{reference?.metadata?.class}}
+                                    </li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.bookName}}:</span>{{reference?.metadata?.book_name}}
+                                    </li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.chapterName}}:</span>{{reference?.metadata?.chapter_name}}
+                                    </li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.pageNumber}}:</span>{{reference?.metadata?.page}}
+                                    </li>
                                   </ul>
                                 </div>
                               </div>
@@ -104,16 +116,18 @@
                     </ng-container>
                   </div>
                 </ng-container>
+                <p *ngIf="showLoadingMsg" class="loading">Please wait, crafting response. It might take some time <img
+                    width="9%" src="../../../../../../assets/images/parallel-loader.gif" /></p>
               </div>
               <!-- Typing container -->
             </div>
           </div>
         </div>
-        <div class="typing-container">
+        <div class="typing-container" [class.content-data]="apiData.length>0">
           <div class="typing-content">
             <div class="typing-textarea">
-              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}" required
-                [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
+              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}"
+                required [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
               <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
                   class="fa fa-arrow-right"></i></span>
             </div>
