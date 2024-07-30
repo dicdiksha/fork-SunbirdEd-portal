@@ -92,7 +92,7 @@ export class LocationSelectionComponent implements OnInit, OnDestroy, AfterViewI
     const currentDate = new Date();
     const differenceInDays = this.calculateDateDifference(referenceDate, currentDate);
 
-    if (differenceInDays >= 30) {
+    if (differenceInDays >= 30 || differenceInDays <= 5) {
       this.showModal = true;
     }
   }
