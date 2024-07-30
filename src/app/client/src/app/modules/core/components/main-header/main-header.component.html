@@ -181,9 +181,9 @@
               <!--Logo-->
               <a class="logo sbt-logo" tabindex="0" title="{{tenantInfo.titleName}}" role="link"
                 aria-label="Navigate to Homepage">
-                <img _ngcontent-hkf-c8="" (click)="navigateToHome()" class="cursor-pointer" alt="DIKSHA" src="https://dev.oci.diksha.gov.in/tenant/ntp/logo.png">
-                <div *ngIf=" 'https://dev.oci.diksha.gov.in/tenant/ntp/logo.png' != tenantInfo.logo " style="width: 2px; height: 50px; background-color: #d5d5d5; margin: 0 12px;"></div>
-                <img *ngIf=" 'https://dev.oci.diksha.gov.in/tenant/ntp/logo.png' != tenantInfo.logo " (click)="navigateToHome()" class="cursor-pointer" alt={{tenantInfo.titleName}} src="{{tenantInfo.logo}}">
+                <img _ngcontent-hkf-c8="" (click)="navigateToHome()" class="cursor-pointer" alt="DIKSHA" [src] = "mainLogo" >
+                <div *ngIf=" mainLogo != tenantInfo.logo " style="width: 2px; height: 50px; background-color: #d5d5d5; margin: 0 12px;"></div>
+                <img *ngIf=" mainLogo != tenantInfo.logo " (click)="navigateToHome()" class="cursor-pointer" alt={{tenantInfo.titleName}} src="{{tenantInfo.logo}}">
               </a>
               <!--/Logo-->
               <div class="d-flex flex-ai-center sb-responsive-header">
