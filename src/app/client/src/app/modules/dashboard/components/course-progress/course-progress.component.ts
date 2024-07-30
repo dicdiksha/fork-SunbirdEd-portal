@@ -740,8 +740,7 @@ export class CourseProgressComponent implements OnInit, OnDestroy, AfterViewInit
      // URL of the file
      this.showParticipantCount = 0;
      this.showParticipantLoader = true;
-     //const fileUrl = this.appBaseUrl+'/data/reports/total_batchWise_enrolment_count/coursewise_total_enroll_count.json';
-     const fileUrl = 'https://diksha.gov.in/data/reports/total_batchWise_enrolment_count/dev_coursewise_total_enroll_count.json';
+     const fileUrl = this.appBaseUrl+'/data/reports/total_batchWise_enrolment_count/coursewise_total_enroll_count.json';
      // Fetch the file
      fetch(fileUrl)
      .then(response => {
