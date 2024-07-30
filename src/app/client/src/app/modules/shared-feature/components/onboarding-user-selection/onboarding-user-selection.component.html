@@ -20,9 +20,9 @@
                 [attr.aria-checked]="guest?.isActive" [attr.aria-selected]="guest?.isActive"
                 (click)="selectUserType(guest)" tabindex="0">
                 <div class="p-16">
-                  <img [src]="guest?.icon" alt="{{guest?.label}}" />
+                  <img [src]="guest?.icon" alt="{{guest?.label}}" class="profile-icon" />
                   <img src="assets/images/round-check2.svg" class="check-icon" alt="check-mark" />
-                  <div class="title mt-4">{{guest?.label}}</div>
+                  <!-- <div class="title mt-4">{{guest?.label}}</div> -->
                 </div>
               </div>
             </div>
