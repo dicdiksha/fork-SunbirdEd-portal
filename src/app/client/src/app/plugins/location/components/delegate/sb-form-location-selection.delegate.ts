@@ -334,9 +334,11 @@ export class SbFormLocationSelectionDelegate {
       if (config.code === 'name') {
         if (this.userService.loggedIn) {
           config.templateOptions.hidden = false;
+          config.templateOptions.disabled = true;
           config.default = (_.get(this.userService.userProfile, 'firstName') || '') || null;
         } else if (this.guestUserDetails) {
           config.templateOptions.hidden = false;
+          config.templateOptions.disabled = true;
           config.default = (_.get(this.guestUserDetails, 'formatedName') || 'Guest');
         } else {
           config.validations = [];
