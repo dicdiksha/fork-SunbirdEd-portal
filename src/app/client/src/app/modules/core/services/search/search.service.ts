@@ -30,6 +30,7 @@ export class SearchService {
   searchQuery:string =''
   _searchedContentList: any;
   vquery:string;
+  videoLimit:number= 20;
   /**
    * Contains searched organization list
    */
@@ -262,6 +263,7 @@ export class SearchService {
   */
   contentSearch(requestParam: SearchParam, addDefaultContentTypesInRequest: boolean = true):
     Observable<ServerResponse> {
+      console.log(requestParam,'this request params')
     const option = {
       url: this.config.urlConFig.URLS.CONTENT.SEARCH,
       param: { ...requestParam.params },
@@ -285,22 +287,22 @@ export class SearchService {
     }
     let data ={
       request: {
-          "facets": [],
-          "fields": [],
-          "filters": {
-              "channel": requestParam?.filters?.channel? requestParam?.filters?.channel:'',
-              "primaryCategory": requestParam?.filters?.primaryCategory? requestParam?.filters?.primaryCategory:[],
-              "visibility": requestParam?.filters?.visibility? requestParam?.filters?.visibility:[],
-              "identifier": "",
-              "se_gradeLevels": requestParam?.filters?.se_gradeLevels? requestParam?.filters?.se_gradeLevels:[],
-              "se_subjects": requestParam?.filters?.se_subjects? requestParam?.filters?.se_subjects:[],
-              "se_mediums":requestParam?.filters?.se_mediums? requestParam?.filters?.se_mediums:[],
-              "se_boards": requestParam?.filters?.se_boards? requestParam?.filters?.se_boards:[]
+          facets: [],
+          fields: [],
+          filters: {
+              channel: requestParam?.filters?.channel? requestParam?.filters?.channel:'',
+              primaryCategory: requestParam?.filters?.primaryCategory? requestParam?.filters?.primaryCategory:[],
+              visibility: requestParam?.filters?.visibility? requestParam?.filters?.visibility:[],
+              identifier: "",
+              se_gradeLevels: requestParam?.filters?.se_gradeLevels? requestParam?.filters?.se_gradeLevels:[],
+              se_subjects: requestParam?.filters?.se_subjects? requestParam?.filters?.se_subjects:[],
+              se_mediums:requestParam?.filters?.se_mediums? requestParam?.filters?.se_mediums:[],
+              se_boards: requestParam?.filters?.se_boards? requestParam?.filters?.se_boards:[]
           },
-          "limit": 20,
-          "mode": "soft",
-          "offset": 0,
-          "query": this.searchQuery
+          limit: this.videoLimit,
+          mode: "soft",
+          offset: ((requestParam?.pageNumber)-1)*this.videoLimit,
+          query: this.searchQuery
       }
   }
   if(this.searchType =='video'){
@@ -317,22 +319,22 @@ export class SearchService {
     let searchQuery = sessionStorage.getItem('key');
     let data ={
       request: {
-          "facets": [],
-          "fields": [],
-          "filters": {
-              "channel": "",
-              "primaryCategory": [],
-              "visibility": [],
-              "identifier": "",
-              "se_gradeLevels": [],
-              "se_subjects": [],
-              "se_mediums": [],
-              "se_boards": []
+          facets: [],
+          fields: [],
+          filters: {
+              channel: "",
+              primaryCategory: [],
+              visibility: [],
+              identifier: "",
+              se_gradeLevels: [],
+              se_subjects: [],
+              se_mediums: [],
+              se_boards: []
           },
-          "limit": 20,
-          "mode": "soft",
-          "offset": 0,
-          "query": searchQuery
+          limit: 20,
+          mode: "soft",
+          offset: 0,
+          query: searchQuery
       }
   }
   return this.http.post<any>(`${this.apiUrl}`, data);

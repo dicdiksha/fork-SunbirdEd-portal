@@ -54,7 +54,7 @@
     "@angular/router": "^11.2.14",
     "@dicdikshaorg/chatbot-client": "^3.0.3",
     "@dicdikshaorg/common-consumption": "4.12.18",
-    "@dicdikshaorg/common-form-elements": "5.1.30",
+    "@dicdikshaorg/common-form-elements": "5.1.33",
     "@dicdikshaorg/epub-player-v9": "5.0.6",
     "@dicdikshaorg/player-sdk-v9": "5.1.9",
     "@dicdikshaorg/sb-content-section": "5.0.1",
