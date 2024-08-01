@@ -205,7 +205,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
         this.showLoadingMsg = false;
-        this.apiData.push({ 'question': '', 'answer': res?.answer, 'reference': res?.context });
+        this.apiData.push({ 'question': '', 'answer': res?.answer, 'reference': res?.context?.includes("Not Applicable") ? null :   res?.context});
         //save data in DB
         if (this.isUserLoggedIn()) {
           this.learnerService.postWithSubscribe(option).subscribe((res: any) => {
