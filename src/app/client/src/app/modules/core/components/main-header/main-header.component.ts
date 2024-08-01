@@ -168,6 +168,7 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
   nishthaDashboard: Array<string>;
   lmsDashboard: Array<string>;
   mainLogo : any;
+  showMainLogo : boolean = true;
   constructor(public config: ConfigService, public resourceService: ResourceService, public router: Router,
     public permissionService: PermissionService, public userService: UserService, public tenantService: TenantService,
     public orgDetailsService: OrgDetailsService, public formService: FormService,
@@ -639,6 +640,8 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
       this.mainLogo = 'https://diksha.gov.in/tenant/ntp/logo.png'; // PROD LOGO
     }
 
+    
+
     this.programDashboardRole = this.config.rolesConfig.headerDropdownRoles.programDashboardRole;
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.connectionService.monitor()
@@ -672,6 +675,11 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
     this.getUrl();
     this.activatedRoute.queryParams.subscribe(queryParams => this.queryParam = { ...queryParams });
     this.tenantService.tenantData$.subscribe(({ tenantData }) => {
+
+      // in case of ek-step tenant main logo will not show.
+      if (tenantData?.logo == "https://diksha.gov.in/tenant/ekstep/logo.png") {
+        this.showMainLogo = false 
+      }
       console.log("this.queryParam", this.queryParam);
       this.tenantInfo.logo = tenantData ? tenantData.logo : undefined;
       this.tenantInfo.titleName = (tenantData && tenantData.titleName) ? tenantData.titleName.toUpperCase() : undefined;
