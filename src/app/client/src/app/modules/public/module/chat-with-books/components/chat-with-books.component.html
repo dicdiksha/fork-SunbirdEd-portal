@@ -76,7 +76,7 @@
                       </div>
                       <div class="ai-answer-text">{{data?.answer}}</div>
                     </div>
-                    <ng-container>
+                    <ng-container *ngIf="data?.reference">
                       <div class="ai-data-accordion">
                         <mat-accordion>
                           <mat-expansion-panel>
