@@ -75,6 +75,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     this.filterType = this.configService.appConfig.explore.filterType;
   }
   ngOnInit() {
+    console.log("explore content components called");
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(queryParams => {
       this.queryParams = { ...queryParams };
@@ -437,6 +438,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     };
   }
   public playContent(event) {
+    console.log("playContent event", event);
     this.publicPlayerService.playContent(event);
   }
   public inView(event) {
@@ -505,6 +507,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   hoverActionClicked(event) {
+    console.log("event", event);
     event['data'] = event.content;
     this.contentName = event.content.name;
     this.contentData = event.data;
@@ -641,5 +644,12 @@ getInteractEdata(event) {
   };
   this.telemetryService.interact(cardClickInteractData);
 }
+
+callGCApi(event: Event){
+  console.log("getting event in ed", event);
+  event.stopPropagation(); // Prevents the event from bubbling up to the parent
+  // window.alert("Call Google Classroom API"); // new tab
+}
+
 }
 
