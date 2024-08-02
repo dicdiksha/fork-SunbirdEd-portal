@@ -102,7 +102,7 @@ module.exports = function (app) {
     })
   )
 
-  app.post('/learner/v1/chatWithBooks/update',
+  app.patch('/learner/v1/chatWithBooks/update',
     bodyParser.json(),
     proxyUtils.verifyToken(),
     isAPIWhitelisted.isAllowed(),

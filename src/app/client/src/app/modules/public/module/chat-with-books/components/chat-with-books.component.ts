@@ -298,7 +298,6 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
         "request": {
           "id": this.userService?.userid ?? '4af1c209-5055-4d5b-9d4a-a72cde6b0bc6',
           "userId": questionId,
-          "searchQuery": searchQuery.trim(),
           "searchQueryResponse": searchQueryResponse.trim(),
           "shortResponse": shortResponse.trim()
         }
