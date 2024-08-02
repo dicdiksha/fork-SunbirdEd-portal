@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { first } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class GoogleClassroomService {
     constructor(private http: HttpClient) { }
-
-    private clientId = '872658188174-tf46ui5fe852qae790rpjj7jdbnljbi9.apps.googleusercontent.com';
-    private clientSecret = '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';
-    private redirectUri = 'http://localhost:4200/google-class-room';
-
-    // Service start
     createCourse(accessToken: string, course: any): Promise<any> {
         const apiUrl = 'https://classroom.googleapis.com/v1/courses';
         const data = JSON.stringify(course);
@@ -30,33 +25,38 @@ export class GoogleClassroomService {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
         });
+
         return this.http.post(apiUrl, data, { headers }).toPromise();
     }
 
-    // Service end
+    exchangeCodeForToken(code: string): Promise<any> {
+        const clientId = '872658188174-tf46ui5fe852qae790rpjj7jdbnljbi9.apps.googleusercontent.com';
+        const clientSecret = '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';
+        // const redirectUri = 'http://localhost:4200/google-class-room';
+        const redirectUri = 'http://localhost:3000/explore/1?id=ncert_k-12&selectedTab=all';
+        const apiUrl = 'https://oauth2.googleapis.com/token';
+        const body = new HttpParams()
+            .set('code', code)
+            .set('client_id', clientId)
+            .set('client_secret', clientSecret)
+            .set('redirect_uri', redirectUri)
+            .set('grant_type', 'authorization_code');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http.post(apiUrl, body, { headers }).toPromise();
+    }
 
-    // // Component start
-    // exchangeCodeForToken(code: string) {
-    //     const url = 'https://oauth2.googleapis.com/token';
-    //     const body = new HttpParams()
-    //       .set('code', code)
-    //       .set('client_id', this.clientId)
-    //       .set('client_secret', this.clientSecret)
-    //       .set('redirect_uri', this.redirectUri)
-    //       .set('grant_type', 'authorization_code');
-    
-    //     this.http.post(url, body.toString(), {
-    //       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    //     }).subscribe((response: any) => {
-    //       const accessToken = response.access_token;
-    //       console.log('Access Token:', accessToken);
-    //       this.token = accessToken;
-    //       return accessToken;
-    //       // Save the token and use it to create courses
-    //       // this.router.navigate(['/google-class-room']);
-    //     }, error => {
-    //       console.error('Error exchanging code for token:', error);
-    //     });
-    //   }
+    // get course details using do-id 
 
+    async getCourseDetails(doId: string): Promise<any> {
+        const url = `http://localhost:3000/api/course/v1/hierarchy/${doId}?orgdetails=orgName,email&licenseDetails=name,description,url`
+        try {
+            const response = await this.http.get(url).pipe(first()).toPromise();
+            return response;
+        } catch (error) {
+            console.error('API Error:', error);
+            throw error;
+        }
+    }
 }

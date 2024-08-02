@@ -13,6 +13,7 @@ import { CacheService } from 'ng2-cache-service';
 import { ContentManagerService } from '../../../offline/services';
 import {omit, groupBy, get, uniqBy, toLower, find, map as _map, forEach, each} from 'lodash-es';
 import { frameworkList } from './../../../../../content-search/components/search-data';
+import { GoogleClassroomService } from '../../../../../core/services/google-class-room/google-class-room-service'; 
 
 @Component({
   templateUrl: './explore-content.component.html',
@@ -61,6 +62,8 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
   showModal = false;
   isDesktopApp = false;
   showBackButton = false;
+  token: any;
+  courseDetail: any = {};
 
   constructor(public searchService: SearchService, public router: Router,
     public activatedRoute: ActivatedRoute, public paginationService: PaginationService,
@@ -70,7 +73,7 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     public userService: UserService, public frameworkService: FrameworkService,
     public cacheService: CacheService, public navigationhelperService: NavigationHelperService, public layoutService: LayoutService,
     public contentManagerService: ContentManagerService, private offlineCardService: OfflineCardService,
-    public telemetryService: TelemetryService, private schemaService: SchemaService) {
+    public telemetryService: TelemetryService, private schemaService: SchemaService, public googleClassroomService: GoogleClassroomService,) {
     this.paginationDetails = this.paginationService.getPager(0, 1, this.configService.appConfig.SEARCH.PAGE_LIMIT);
     this.filterType = this.configService.appConfig.explore.filterType;
   }
@@ -81,6 +84,25 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
       this.queryParams = { ...queryParams };
       if(queryParams.publisher) this.utilService.setNcertPublisher(true);
     });
+
+    this.activatedRoute.queryParams.subscribe(paramsCode => {
+      const code = paramsCode['code'];
+
+      console.log("paramsCode", paramsCode, "CODE:->", code)
+      if (code) {
+
+        console.log("inside condition")
+        this.googleClassroomService.exchangeCodeForToken(code)
+          .then(tokenResponse => {
+            console.log("getting token.............", tokenResponse?.access_token);
+            this.token = tokenResponse?.access_token;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    });
+
     this.searchService.getContentTypes().pipe(takeUntil(this.unsubscribe$)).subscribe(formData => {
       this.allTabData = _.find(formData, (o) => o.title === 'frmelmnts.tab.all');
       this.formData = formData;
@@ -317,6 +339,15 @@ export class ExploreContentComponent implements OnInit, OnDestroy, AfterViewInit
     if(option.filters.se_boards && option.filters.se_boards.length>0 && _.toLower(option.filters.se_boards).includes('ncert')){
       option.filters.se_boards = [];
     }
+
+    console.log("optionoptionoption.....", option);
+   
+
+    if (window.location.href.includes('code')) {
+      console.log("getting code here")
+      delete(option.filters.code);
+    }
+
     this.searchService.contentSearch(option)
       .pipe(
         mergeMap(data => {
@@ -650,6 +681,68 @@ callGCApi(event: Event){
   event.stopPropagation(); // Prevents the event from bubbling up to the parent
   // window.alert("Call Google Classroom API"); // new tab
 }
+
+// ************************************ GOOGLE CLASS-ROOM INTEGRATION PART START *****************************************
+createCourse(event:any) {
+  console.log("getting event in ed", event?.data?.identifier);
+  // let doId = "do_3138963383266672641118";
+
+  this.googleClassroomService.getCourseDetails(event?.data?.identifier).then((response: any) => {
+    console.log("getting course response ", response?.result?.content);
+    let courseData = response?.result?.content;
+    this.courseDetail = {
+      name: courseData?.name, // done
+      section: courseData?.se_gradeLevels ? courseData?.se_gradeLevels[0] :  courseData.gradeLevel ? courseData.gradeLevel[0] : "Class not found", // done 
+      descriptionHeading: courseData?.description ? courseData?.description : 'Description Not available', // done
+      room: '104', // need to confirm
+      ownerId: 'me', // need to confirm
+      courseState: 'ACTIVE', // fixed value
+    }
+
+    console.log("courseDetail", this.courseDetail);
+
+    this.googleClassroomService.createCourse(this.token, this.courseDetail)
+      .then(response => {
+        const courseId = response?.id;
+        this.addCourseMaterial(courseId, event?.data?.identifier);
+        console.log("getting google classroom response", response);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+  }).catch((error) => {
+    window.alert("RESOURCE NOT FOUND")
+    console.log(error);
+  })
+}
+
+addCourseMaterial(courseId: string, doId: string) {
+  console.log("courseId", courseId)
+  const material = {
+    title: 'Course Introduction Material',
+    materials: [
+      {
+        link: {
+          url: `https://dev.oci.diksha.gov.in/explore-course/course/${doId}`,
+          title: this.courseDetail?.name,
+        }
+      }
+    ],
+    state: 'PUBLISHED'
+  };
+
+  this.googleClassroomService.addCourseWorkMaterial(this.token, courseId, material)
+    .then(response => {
+      console.log('Material added:', response);
+      window.alert(`Course has been added successfully : ${this.courseDetail?.name}`)
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
+// ********************************** GOOGLE CLASS-ROOM INTEGRATION PART START END *****************************************
 
 }
 
