@@ -11,28 +11,32 @@
       <div [ngClass]="isDesktopApp ? 'sb-desktop-filter-section' : ''" class="h-100">
         <div class="filters-area h-100">
           <div class="default-img">
-            <h6><img src="../../../../../../assets/images/diksha-logo.svg" alt="">{{resourceService?.frmelmnts?.lbl?.chatWithBooks}}</h6>
+            <h6><img src="../../../../../../assets/images/diksha-logo.svg"
+                alt="">{{resourceService?.frmelmnts?.lbl?.chatWithBooks}}</h6>
           </div>
           <ng-container *ngIf="searchQueryList.length>0">
-            <ng-container *ngFor="let search of searchQueryList;">
-            <h6>{{getKeys(search)}}</h6>
-            <ul >
-              <li *ngFor="let query of search[getKeys(search)]">
-                <a (click)="moveToQuery(query?.id,query?.searchQuery)" href="javascript:void(0);">{{query?.searchQuery}}</a>
-              </li>
-            </ul>
+            <div class="search-history">
+              <ng-container *ngFor="let search of searchQueryList;">
+                <h6>{{getKeys(search)}}</h6>
+                <ul>
+                  <li *ngFor="let query of search[getKeys(search)]">
+                    <a (click)="moveToQuery(query?.id,query?.searchQuery)"
+                      href="javascript:void(0);">{{query?.searchQuery}}</a>
+                  </li>
+                </ul>
+              </ng-container>
+            </div>
           </ng-container>
-        </ng-container>
-       
+
 
         </div>
       </div>
     </div>
     <div [ngClass]="SECOND_PANEL_LAYOUT" class="w-100">
       <div [ngClass]="layoutConfiguration ? 'sbt-page-content-area' : 'ui container mt-24'">
-        <div class="content-grid relative9 h-100 w-100">
-          <div #chatData id="chat-data" [appTelemetryImpression]="telemetryImpression" class="twelve wide column content-scroll h-100"
-            in-view-container>            
+        <div class="content-grid relative9 w-100">
+          <div #chatData id="chat-data" [appTelemetryImpression]="telemetryImpression"
+            class="twelve wide column content-scroll h-100" in-view-container>
             <ng-container *ngIf="apiData.length <= 0">
               <div class="default-content">
                 <h2><img src="../../../../../../assets/images/diksha-logo.svg" alt=""></h2>
@@ -68,11 +72,50 @@
                   </div>
                   <div class="ai-answer" *ngIf="data?.answer">
                     <div class="ai-answer-section">
-                      <div class="ai-answer-img"><img alt="logo image" src="../../../../../../assets/images/logo.png">
+                      <div class="ai-answer-block">
+                        <div class="ai-answer-img"><img alt="logo image" src="../../../../../../assets/images/logo.png">
+                        </div>
+                        <div class="ai-answer-text">{{data?.answer}}</div>
                       </div>
-                      <div class="ai-answer-text">{{data?.answer}}</div>
+                      <div class="w-100 review-box">
+                        <!-- <span><i class="fa-regular fa-copy fa-fw"></i></span> -->
+                        <span (click)="showOption(data?.id)"><i class="fa-light fa-thumbs-down fa-fw"></i></span>
+                      </div>
+                      <!-- hidden section start-->
+                      <div *ngIf="selectedId==data?.id" class="sb-section-preference" tabindex="0">
+                        <div class="preference">
+                          <p>Tell us more:</p>
+                          <p class="preference-continer">
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                                (click)="sendFeedback(data?.id,data?.answer,'Not factually correct',data?.query)">Not
+                                factually correct</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                              (click)="sendFeedback(data?.id,data?.answer,'Did not fully follow instructions',data?.query)">Did not
+                                fully follow instructions</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option" (click)="sendFeedback(data?.id,data?.answer,'Being lazy',data?.query)">Being
+                                lazy</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                                (click)="sendFeedback(data?.id,data?.answer,'Unsafe or problematic',data?.query)">Unsafe
+                                or problematic</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                                (click)="sendFeedback(data?.id,data?.answer,'Should not have used Memory',data?.query)">Should not
+                                have used Memory</span>
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      <!-- hidden section end-->
                     </div>
-                    <ng-container>
+                    <ng-container *ngIf="data?.reference">
                       <div class="ai-data-accordion">
                         <mat-accordion>
                           <mat-expansion-panel>
@@ -87,12 +130,21 @@
                               <div class="mat-expansion-panel-body">
                                 <div class="sb-mat-accordion__content"
                                   *ngFor="let reference of data?.reference; let i = index">
-                                  <h5>Reference {{i+1}}</h5>
+                                  <h5>{{resourceService?.frmelmnts?.lbl?.reference}}
+                                    {{i+1}}</h5>
                                   <ul>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.class}}:</span>{{reference?.metadata?.class}}</li>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.bookName}}:</span>{{reference?.metadata?.book_name}}</li>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.chapterName}}:</span>{{reference?.metadata?.chapter_name}}</li>
-                                    <li><span>{{resourceService?.frmelmnts?.lbl?.pageNumber}}:</span>{{reference?.metadata?.page}}</li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.class}}:</span>{{reference?.metadata?.class}}
+                                    </li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.bookName}}:</span>{{reference?.metadata?.book_name}}
+                                    </li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.chapterName}}:</span>{{reference?.metadata?.chapter_name}}
+                                    </li>
+                                    <li>
+                                      <span>{{resourceService?.frmelmnts?.lbl?.pageNumber}}:</span>{{reference?.metadata?.page}}
+                                    </li>
                                   </ul>
                                 </div>
                               </div>
@@ -104,16 +156,18 @@
                     </ng-container>
                   </div>
                 </ng-container>
+                <p *ngIf="showLoadingMsg" class="loading">Please wait, crafting response. It might take
+                  some time <img width="9%" src="../../../../../../assets/images/parallel-loader.gif" /></p>
               </div>
               <!-- Typing container -->
             </div>
           </div>
         </div>
-        <div class="typing-container">
+        <div class="typing-container" [class.content-data]="apiData.length>0">
           <div class="typing-content">
             <div class="typing-textarea">
-              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}" required
-                [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
+              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}"
+                required [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
               <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
                   class="fa fa-arrow-right"></i></span>
             </div>

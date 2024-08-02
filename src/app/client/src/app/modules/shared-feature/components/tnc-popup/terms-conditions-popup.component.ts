@@ -1,19 +1,25 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
-import { UserService, TenantService } from '@sunbird/core';
-import { Subscription, Subject } from 'rxjs';
-import { ResourceService, ToasterService } from '@sunbird/shared';
-import { IUserProfile, ILoaderMessage } from '@sunbird/shared';
-import { DomSanitizer } from '@angular/platform-browser';
-import * as _ from 'lodash-es';
-import { PopupControlService } from '../../../../service/popup-control.service';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  OnDestroy,
+} from "@angular/core";
+import { UserService, TenantService } from "@sunbird/core";
+import { Subscription, Subject } from "rxjs";
+import { ResourceService, ToasterService } from "@sunbird/shared";
+import { IUserProfile, ILoaderMessage } from "@sunbird/shared";
+import { DomSanitizer } from "@angular/platform-browser";
+import * as _ from "lodash-es";
+import { PopupControlService } from "../../../../service/popup-control.service";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-tnc-popup',
-  templateUrl: './terms-conditions-popup.component.html',
-  styleUrls: ['./terms-conditions-popup.component.scss']
+  selector: "app-tnc-popup",
+  templateUrl: "./terms-conditions-popup.component.html",
+  styleUrls: ["./terms-conditions-popup.component.scss"],
 })
-
 export class TermsAndConditionsPopupComponent implements OnInit, OnDestroy {
   @Input() tncUrl: string;
   @Input() showAcceptTnc: boolean;
@@ -35,31 +41,42 @@ export class TermsAndConditionsPopupComponent implements OnInit, OnDestroy {
   disableContinueBtn = false;
   showLoader = true;
   loaderMessage: ILoaderMessage = {
-    'loaderMessage': this.resourceService.messages.stmsg.m0129
+    loaderMessage: this.resourceService.messages.stmsg.m0129,
   };
 
-  constructor(public userService: UserService, public resourceService: ResourceService,
-    public toasterService: ToasterService, public tenantService: TenantService,
-    public sanitizer: DomSanitizer, public popupControlService: PopupControlService, private matDialog: MatDialog) {
-  }
+  constructor(
+    public userService: UserService,
+    public resourceService: ResourceService,
+    public toasterService: ToasterService,
+    public tenantService: TenantService,
+    public sanitizer: DomSanitizer,
+    public popupControlService: PopupControlService,
+    private matDialog: MatDialog
+  ) {}
 
   ngOnInit() {
     this.popupControlService.changePopupStatus(false);
     if (this.tncUrl) {
-      this.tncLatestVersionUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.tncUrl);
+      this.tncLatestVersionUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.tncUrl
+      );
     } else {
       this.userSubscription = this.userService.userData$.subscribe(
         (user: any) => {
           if (user && !user.err) {
             this.userProfile = user.userProfile;
-            this.tncLatestVersionUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.userProfile.tncLatestVersionUrl);
+            this.tncLatestVersionUrl =
+              this.sanitizer.bypassSecurityTrustResourceUrl(
+                this.userProfile.tncLatestVersionUrl
+              );
           } else if (user.err) {
             this.toasterService.error(this.resourceService.messages.emsg.m0005);
           }
-        });
+        }
+      );
     }
     this.tenantDataSubscription = this.tenantService.tenantData$.subscribe(
-      data => {
+      (data) => {
         if (data && !data.err) {
           this.logo = data.tenantData.logo;
           this.tenantName = data.tenantData.titleName;
@@ -74,24 +91,30 @@ export class TermsAndConditionsPopupComponent implements OnInit, OnDestroy {
   public onSubmitTnc(modalId: string) {
     const requestBody = {
       request: {
-        version: _.get(this.userProfile, 'tncLatestVersion')
-      }
+        version: _.get(this.userProfile, "tncLatestVersion"),
+      },
     };
-    if (_.get(this.userService, 'userProfile.managedBy')) {
-      requestBody.request['userId'] = this.userService.userid;
+    if (_.get(this.userService, "userProfile.managedBy")) {
+      requestBody.request["userId"] = this.userService.userid;
     }
     if (this.adminTncVersion || this.reportViewerTncVersion) {
-      requestBody.request['version'] = this.adminTncVersion || this.reportViewerTncVersion;
-      requestBody.request['tncType'] = this.adminTncVersion ? 'orgAdminTnc' : 'reportViewerTnc';
+      requestBody.request["version"] =
+        this.adminTncVersion || this.reportViewerTncVersion;
+      requestBody.request["tncType"] = this.adminTncVersion
+        ? "orgAdminTnc"
+        : "reportViewerTnc";
     }
 
     this.disableContinueBtn = true;
-    this.userService.acceptTermsAndConditions(requestBody).subscribe(res => {
-      this.onClose(modalId);
-    }, err => {
-      this.disableContinueBtn = false;
-      this.toasterService.error(this.resourceService.messages.fmsg.m0085);
-    });
+    this.userService.acceptTermsAndConditions(requestBody).subscribe(
+      (res) => {
+        this.onClose(modalId);
+      },
+      (err) => {
+        this.disableContinueBtn = false;
+        this.toasterService.error(this.resourceService.messages.fmsg.m0085);
+      }
+    );
   }
 
   public onClickCheckbox(tncChecked) {
@@ -118,5 +141,4 @@ export class TermsAndConditionsPopupComponent implements OnInit, OnDestroy {
     this.unsubscribe.next();
     this.unsubscribe.complete();
   }
-
 }

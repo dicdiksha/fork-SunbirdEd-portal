@@ -573,6 +573,10 @@ const API_LIST = {
       checksNeeded: ['ROLE_CHECK'],
       ROLE_CHECK: [ROLE.PUBLIC]
     },
+    '/learner/v1/chatWithBooks/update': {
+      checksNeeded: ['ROLE_CHECK'],
+      ROLE_CHECK: [ROLE.PUBLIC]
+    },
     '/learner/v1/chatWithBooks/read/:userId': {
       checksNeeded: ['ROLE_CHECK'],
       ROLE_CHECK: [ROLE.PUBLIC]
@@ -2054,6 +2058,7 @@ const API_LIST = {
     '/learner/user/v1/delete',
     '/learner/user/v1/block',
     '/learner/v1/chatWithBooks/save',
+    '/learner/v1/chatWithBooks/update',
     '/learner/v1/chatWithBooks/read/:userId'
   ]
 };

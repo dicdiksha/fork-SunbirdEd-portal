@@ -72,6 +72,7 @@ var learnerServiceApi = {
   'org/v1/type/update': 'v1/org/type/update',
   'role/read': 'v1/role/read',
   '/v1/chatWithBooks/save': '/v1/chatWithBooks/save',
+  '/v1/chatWithBooks/update': '/v1/chatWithBooks/update',
   '/v1/chatWithBooks/read': '/v1/chatWithBooks/read',
 }
 
