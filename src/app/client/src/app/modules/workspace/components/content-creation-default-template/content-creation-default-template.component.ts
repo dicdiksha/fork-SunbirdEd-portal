@@ -205,10 +205,12 @@ export class DefaultTemplateComponent implements OnInit {
         return _.find(childAssociations, e);
       });
     }
+    console.log("intersectionData",intersectionData);
     return intersectionData;
   }
 
   getParentAssociations(fields, associations, formData, callback) {
+    console.log("getParentAssociations start");
     if (fields.parent && fields.parent.length) {
       _.forEach(fields.parent, (val) => {
         _.forEach(this.formFieldProperties, (field) => {
@@ -230,6 +232,7 @@ export class DefaultTemplateComponent implements OnInit {
         });
       });
     }
+    console.log("getParentAssociations associations",associations);
     callback(associations);
   }
   /**
@@ -238,6 +241,7 @@ export class DefaultTemplateComponent implements OnInit {
 * @param {Object} range           - Which refers to framework terms/range object
 */
   getAssociations(keys, range, callback) {
+    console.log("getAssociations  start");
     let names = [];
     const associations = [];
     const filteredAssociations = [];
@@ -253,6 +257,7 @@ export class DefaultTemplateComponent implements OnInit {
         }
       });
     });
+    console.log("getAssociations  filteredAssociations.push", filteredAssociations);
     _.forEach(filteredAssociations, (val, index) => {
       if (val.associations) {
         _.forEach(val.associations, (key, value) => {
@@ -260,6 +265,8 @@ export class DefaultTemplateComponent implements OnInit {
         });
       }
     });
+    console.log("getAssociations  associations.push", associations);
+
     if (callback) {
       callback(associations);
     }
@@ -273,6 +280,7 @@ export class DefaultTemplateComponent implements OnInit {
 *                                   Should reset the selected values of the field or not
 */
   applyDependencyRules(field, associations, resetSelected) {
+    console.log("applyDependencyRules Start");
     // reset the depended field first
     // Update the depended field with associated value
     // Currently, supported only for the dropdown values
