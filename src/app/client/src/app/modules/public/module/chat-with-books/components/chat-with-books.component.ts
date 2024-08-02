@@ -36,8 +36,8 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
   isDesktopApp = false;
   showBackButton = false;
   apiData = [];
-  showLoadingMsg:boolean = false;
-
+  showLoadingMsg: boolean = false;
+  selectedId: string = ''
   constructor(public searchService: SearchService, public router: Router,
     public activatedRoute: ActivatedRoute, public paginationService: PaginationService,
     public resourceService: ResourceService, public toasterService: ToasterService,
@@ -93,11 +93,11 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
 
   public moveToTop() {
     window.scroll({
-        top: 168,
-        left: 0,
-        behavior: 'smooth'
+      top: 168,
+      left: 0,
+      behavior: 'smooth'
     });
-}
+  }
 
   moveToBottom() {
     setTimeout(() => {
@@ -205,7 +205,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
         this.showLoadingMsg = false;
-        this.apiData.push({ 'question': '', 'answer': res?.answer, 'reference': res?.context?.includes("Not Applicable") ? null :   res?.context});
+        this.apiData.push({ 'question': '','query': this.searchQuery, 'answer': res?.answer, 'reference': res?.context?.includes("Not Applicable") ? null : res?.context,'id': _uuid  });
         //save data in DB
         if (this.isUserLoggedIn()) {
           this.learnerService.postWithSubscribe(option).subscribe((res: any) => {
@@ -227,7 +227,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
       }
       this.learnerService.readWithSubscribe(option).subscribe((res: any) => {
         if (res.responseCode == 'OK') {
-      //let res = [{"searchQuery":"Hi Diksha\n","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"9b46b680-db58-866c-cb95-e1d219e41a50","searchQueryDate":"24-07-2024 04:44:39"},{"searchQuery":"give me some referance","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"3df04b26-5475-431d-6ad6-5e38660704f9","searchQueryDate":"25-07-2024 07:53:40"},{"searchQuery":"new chat","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"a71713e7-ef27-2463-2131-cef45cdc3f43","searchQueryDate":"24-07-2024 07:23:39"},{"searchQuery":"And how do you find a solution of an equation?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"a3c6db2d-8cdb-4d8f-c94c-494c9a73e542","searchQueryDate":"25-07-2024 09:36:29"},{"searchQuery":"Hi Diksha","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"72be583d-b3f5-a2af-302f-7c3c1a7b139c","searchQueryDate":"24-07-2024 12:00:48"},{"searchQuery":"tell me about science","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"3719afb3-15b3-5778-2c08-06650ce79720","searchQueryDate":"24-07-2024 12:39:37"},{"searchQuery":"?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"5d83c115-d113-69e6-00e5-d1d62f2061c3","searchQueryDate":"25-07-2024 03:58:19"},{"searchQuery":"who are endemic species?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"c701c47e-2755-a22e-a23b-7b6d9e2b78ff","searchQueryDate":"25-07-2024 09:36:45"},{"searchQuery":"indian history","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"265e6a07-7448-8ce7-fd54-ab0a6896791d","searchQueryDate":"25-07-2024 03:58:51"},{"searchQuery":"hi sir ji","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"15ea4c49-d69f-3088-bf3b-99bd2ba8a1b6","searchQueryDate":"24-07-2024 07:27:14"},{"searchQuery":"chat with book","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"d86859b4-caab-25a0-1da6-eba359545835","searchQueryDate":"24-07-2024 12:10:59"},{"searchQuery":"tell me new","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"6b9644ca-aa90-1e35-f4cf-78ed29338b48","searchQueryDate":"30-07-2024 06:35:37"},{"searchQuery":"what is new?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"7812a984-6d6c-5d6c-5639-93919127c4fe","searchQueryDate":"25-07-2024 07:53:29"},{"searchQuery":"what is an algebraic equation?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"41eee248-642b-8894-5a7f-1c3fb7b502ce","searchQueryDate":"25-07-2024 09:36:02"},{"searchQuery":"what is new in diksha?\n","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"c22e8b08-0a2f-4631-5c87-b6078486e7cb","searchQueryDate":"24-07-2024 04:46:31"},{"searchQuery":"what is today","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"54d9b51a-8364-ac9b-c049-b36f35f2cde4","searchQueryDate":"25-07-2024 03:37:32"}]
+          //let res = [{"searchQuery":"Hi Diksha\n","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"9b46b680-db58-866c-cb95-e1d219e41a50","searchQueryDate":"24-07-2024 04:44:39"},{"searchQuery":"give me some referance","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"3df04b26-5475-431d-6ad6-5e38660704f9","searchQueryDate":"25-07-2024 07:53:40"},{"searchQuery":"new chat","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"a71713e7-ef27-2463-2131-cef45cdc3f43","searchQueryDate":"24-07-2024 07:23:39"},{"searchQuery":"And how do you find a solution of an equation?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"a3c6db2d-8cdb-4d8f-c94c-494c9a73e542","searchQueryDate":"25-07-2024 09:36:29"},{"searchQuery":"Hi Diksha","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"72be583d-b3f5-a2af-302f-7c3c1a7b139c","searchQueryDate":"24-07-2024 12:00:48"},{"searchQuery":"tell me about science","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"3719afb3-15b3-5778-2c08-06650ce79720","searchQueryDate":"24-07-2024 12:39:37"},{"searchQuery":"?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"5d83c115-d113-69e6-00e5-d1d62f2061c3","searchQueryDate":"25-07-2024 03:58:19"},{"searchQuery":"who are endemic species?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"c701c47e-2755-a22e-a23b-7b6d9e2b78ff","searchQueryDate":"25-07-2024 09:36:45"},{"searchQuery":"indian history","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"265e6a07-7448-8ce7-fd54-ab0a6896791d","searchQueryDate":"25-07-2024 03:58:51"},{"searchQuery":"hi sir ji","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"15ea4c49-d69f-3088-bf3b-99bd2ba8a1b6","searchQueryDate":"24-07-2024 07:27:14"},{"searchQuery":"chat with book","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"d86859b4-caab-25a0-1da6-eba359545835","searchQueryDate":"24-07-2024 12:10:59"},{"searchQuery":"tell me new","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"6b9644ca-aa90-1e35-f4cf-78ed29338b48","searchQueryDate":"30-07-2024 06:35:37"},{"searchQuery":"what is new?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"7812a984-6d6c-5d6c-5639-93919127c4fe","searchQueryDate":"25-07-2024 07:53:29"},{"searchQuery":"what is an algebraic equation?","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"41eee248-642b-8894-5a7f-1c3fb7b502ce","searchQueryDate":"25-07-2024 09:36:02"},{"searchQuery":"what is new in diksha?\n","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"c22e8b08-0a2f-4631-5c87-b6078486e7cb","searchQueryDate":"24-07-2024 04:46:31"},{"searchQuery":"what is today","id":"4af1c209-5055-4d5b-9d4a-a72cde6b0bc6","userId":"54d9b51a-8364-ac9b-c049-b36f35f2cde4","searchQueryDate":"25-07-2024 03:37:32"}]
           const sortedSearchQueries = res?.result?.response.sort((a, b) => {
             const dateA = this.parseDate(a.searchQueryDate);
             const dateB = this.parseDate(b.searchQueryDate);
@@ -261,7 +261,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
               return { "Today": groupedData[date] };
             } else {
               //let day = new Date(date).toDateString()
-              console.log('date',date,typeof(date))
+              console.log('date', date, typeof (date))
               return { [date]: groupedData[date] };
             }
           });
@@ -280,7 +280,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     return new Date(`${year}-${month}-${day}T${time}`);
   }
 
-  moveToQuery(queryId,searchQuery) {
+  moveToQuery(queryId, searchQuery) {
     const myElement = document.getElementById(queryId);
     if (myElement) {
       const topPos = myElement.offsetTop;
@@ -291,4 +291,36 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     }
   }
 
+  sendFeedback(questionId, searchQueryResponse, shortResponse, searchQuery) {
+    // if (this.isUserLoggedIn()) {
+    const option = {
+      url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.UPDATE,
+      data: {
+        "request": {
+          "id": this.userService?.userid ?? '4af1c209-5055-4d5b-9d4a-a72cde6b0bc6',
+          "userId": questionId,
+          "searchQuery": searchQuery.trim(),
+          "searchQueryResponse": searchQueryResponse.trim(),
+          "shortResponse": shortResponse.trim()
+        }
+      }
+    }
+
+    this.learnerService.postWithSubscribe(option).subscribe((res: any) => {
+      if (res.responseCode !== 'OK') {
+        //no action
+        console.log("res====",res)
+      }
+    });
+    console.log("request========", option)
+    // }
+  }
+
+  showOption(selectedId=null){
+    if(this.selectedId == selectedId){
+      this.selectedId = '';
+      return
+    }
+    this.selectedId = selectedId;
+  }
 }

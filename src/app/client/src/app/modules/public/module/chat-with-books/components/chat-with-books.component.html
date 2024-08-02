@@ -72,9 +72,48 @@
                   </div>
                   <div class="ai-answer" *ngIf="data?.answer">
                     <div class="ai-answer-section">
-                      <div class="ai-answer-img"><img alt="logo image" src="../../../../../../assets/images/logo.png">
+                      <div class="ai-answer-block">
+                        <div class="ai-answer-img"><img alt="logo image" src="../../../../../../assets/images/logo.png">
+                        </div>
+                        <div class="ai-answer-text">{{data?.answer}}</div>
                       </div>
-                      <div class="ai-answer-text">{{data?.answer}}</div>
+                      <div class="w-100 review-box">
+                        <!-- <span><i class="fa-regular fa-copy fa-fw"></i></span> -->
+                        <span (click)="showOption(data?.id)"><i class="fa-light fa-thumbs-down fa-fw"></i></span>
+                      </div>
+                      <!-- hidden section start-->
+                      <div *ngIf="selectedId==data?.id" class="sb-section-preference" tabindex="0">
+                        <div class="preference">
+                          <p>Tell us more:</p>
+                          <p class="preference-continer">
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                                (click)="sendFeedback(data?.id,data?.answer,'Not factually correct',data?.query)">Not
+                                factually correct</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                              (click)="sendFeedback(data?.id,data?.answer,'Did not fully follow instructions',data?.query)">Did not
+                                fully follow instructions</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option" (click)="sendFeedback(data?.id,data?.answer,'Being lazy',data?.query)">Being
+                                lazy</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                                (click)="sendFeedback(data?.id,data?.answer,'Unsafe or problematic',data?.query)">Unsafe
+                                or problematic</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                                (click)="sendFeedback(data?.id,data?.answer,'Should not have used Memory',data?.query)">Should not
+                                have used Memory</span>
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      <!-- hidden section end-->
                     </div>
                     <ng-container *ngIf="data?.reference">
                       <div class="ai-data-accordion">
@@ -91,7 +130,8 @@
                               <div class="mat-expansion-panel-body">
                                 <div class="sb-mat-accordion__content"
                                   *ngFor="let reference of data?.reference; let i = index">
-                                  <h5>{{resourceService?.frmelmnts?.lbl?.reference}} {{i+1}}</h5>
+                                  <h5>{{resourceService?.frmelmnts?.lbl?.reference}}
+                                    {{i+1}}</h5>
                                   <ul>
                                     <li>
                                       <span>{{resourceService?.frmelmnts?.lbl?.class}}:</span>{{reference?.metadata?.class}}
@@ -116,8 +156,8 @@
                     </ng-container>
                   </div>
                 </ng-container>
-                <p *ngIf="showLoadingMsg" class="loading">Please wait, crafting response. It might take some time <img
-                    width="9%" src="../../../../../../assets/images/parallel-loader.gif" /></p>
+                <p *ngIf="showLoadingMsg" class="loading">Please wait, crafting response. It might take
+                  some time <img width="9%" src="../../../../../../assets/images/parallel-loader.gif" /></p>
               </div>
               <!-- Typing container -->
             </div>
