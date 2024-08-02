@@ -724,7 +724,8 @@ addCourseMaterial(courseId: string, doId: string) {
     materials: [
       {
         link: {
-          url: `https://dev.oci.diksha.gov.in/explore-course/course/${doId}`,
+          // url: `https://dev.oci.diksha.gov.in/explore-course/course/${doId}`,
+          url: `https://dev.oci.diksha.gov.in/play/collection/${doId}?contentType=Collection`,
           title: this.courseDetail?.name,
         }
       }
