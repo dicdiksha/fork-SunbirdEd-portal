@@ -255,7 +255,31 @@ const createUserWithMailId = async (accountDetails, client_id, req) => {
       request: {
         firstName: accountDetails.name,
         email: accountDetails.emailId,
-        emailVerified: true
+        emailVerified: true,
+        location: {
+          profileLocation: [
+            {
+              code: "07",
+              name: "Delhi",
+              id: "483c2468-3335-4ca0-9d86-c25fe90cfc63",
+              type: "state"
+            },
+            {
+              identifier: "2ead12c3-8a09-4164-9e68-6473167e7712",
+              code: "0710",
+              name: "East",
+              id: "2ead12c3-8a09-4164-9e68-6473167e7712",
+              type: "district",
+              parentId: "483c2468-3335-4ca0-9d86-c25fe90cfc63"
+            }
+          ],
+          profileUserTypes: [
+            {
+              type: "teacher"
+            }
+          ],
+          firstName: "Test Google login"
+        }
       }
     },
     json: true
