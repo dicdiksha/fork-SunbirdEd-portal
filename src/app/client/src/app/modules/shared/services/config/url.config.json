@@ -379,6 +379,7 @@
     "CHAT_WITH_BOOKS": {
       "SAVE": "v1/chatWithBooks/save",
       "READ": "v1/chatWithBooks/read",
+      "UPDATE": "v1/chatWithBooks/update",
       "AI": "https://bookchat.diksha.gov.in/chat"
     }
   }
