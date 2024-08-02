@@ -87,7 +87,7 @@
         <div class="max-w-400 computer only">
           <div class="mb-15 d-flex flex-jc-center">
             <span class="fmedium white-space-nowrap">{{resourceService?.frmelmnts?.lbl?.boards | transposeTerms: 'frmelmnts.lbl.boards' : resourceService?.selectedLang}} :</span>
-              <span class="fmedium font-w-bold pl-4">{{convertToString(guestUser?.framework?.board) | interpolate: 'CBSE': 'CBSE/NCERT'}}</span>
+              <span class="fmedium font-w-bold pl-4">{{guestUser?.framework?.board == "CBSE" ? 'CBSE/NCERT' : convertToString(guestUser?.framework?.board)}}</span>
               <!-- <span class="fmedium font-w-bold pl-4">{{convertToString(guestUser?.framework?.board)}}</span> -->
           </div>
           <div class="mb-15 d-flex flex-jc-center">
