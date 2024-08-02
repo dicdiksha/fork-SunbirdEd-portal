@@ -296,7 +296,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
       url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.UPDATE,
       data: {
         "request": {
-          "id": this.userService?.userid ?? '4af1c209-5055-4d5b-9d4a-a72cde6b0bc6',
+          "id": this.userService?.userid,
           "userId": questionId,
           "searchQuery": searchQuery.trim(),
           "searchQueryResponse": searchQueryResponse.trim(),
