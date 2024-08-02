@@ -235,6 +235,7 @@ span.material-symbols-rounded {
   border-top: 1px solid #c1c0ae;
   margin-top: 20%;
   position: relative;
+
   .typing-content {
     display: flex;
     max-width: 950px;
@@ -297,7 +298,7 @@ span.material-symbols-rounded {
   }
 }
 
-.typing-container.content-data{
+.typing-container.content-data {
   margin-top: 0px;
 }
 
@@ -370,11 +371,41 @@ span.material-symbols-rounded {
 }
 
 .ai-answer-section {
-  display: flex;
   width: 100%;
   float: left;
   margin-bottom: 10px;
   justify-content: space-between;
+
+  .ai-answer-block {
+    display: flex;
+  }
+
+  .review-box {
+    span {
+      padding-right: 10px;
+    }
+
+    i {
+      cursor: pointer;
+    }
+  }
+  .preference{
+    border-radius: 6px;
+    padding: 10px;
+    border: 2px solid #ddd;
+  }
+  .preference-action-continer{
+    width: 33%;
+    .preference-option {
+      border: 1px solid #ddd;
+      padding: 2px 4px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  }
+  
+  
+
 }
 
 .default-content {
