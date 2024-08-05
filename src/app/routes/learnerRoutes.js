@@ -102,7 +102,7 @@ module.exports = function (app) {
     })
   )
 
-  app.post('/learner/v1/chatWithBooks/update',
+  app.patch('/learner/v1/chatWithBooks/update',
     bodyParser.json(),
     proxyUtils.verifyToken(),
     isAPIWhitelisted.isAllowed(),
@@ -113,7 +113,7 @@ module.exports = function (app) {
       proxyReqOptDecorator: proxyUtils.decorateRequestHeaders(learnerURL),
       proxyReqPathResolver: (req) => {
         logger.info({ msg: '/learner/v1/chatWithBooks/update called upstream url /v1/chatWithBooks/update in request path resolver' });
-        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', '/user/')).path
+        return require('url').parse(envHelper.LEARNER_URL + req.originalUrl.replace('/learner/', 'user/')).path
       },
       userResDecorator: (proxyRes, proxyResData, req, res) => {
         logger.info({ msg: '/learner/v1/chatWithBooks/update called upstream url /v1/chatWithBooks/update in request path resolver' });
