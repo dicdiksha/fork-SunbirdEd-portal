@@ -294,10 +294,10 @@ export class SearchService {
               primaryCategory: requestParam?.filters?.primaryCategory? requestParam?.filters?.primaryCategory:[],
               visibility: requestParam?.filters?.visibility? requestParam?.filters?.visibility:[],
               identifier: "",
-              se_gradeLevels: requestParam?.filters?.se_gradeLevels? requestParam?.filters?.se_gradeLevels:[],
-              se_subjects: requestParam?.filters?.se_subjects? requestParam?.filters?.se_subjects:[],
-              se_mediums:requestParam?.filters?.se_mediums? requestParam?.filters?.se_mediums:[],
-              se_boards: requestParam?.filters?.se_boards? requestParam?.filters?.se_boards:[]
+              se_gradeLevels: requestParam?.filters?.se_gradeLevels ? (typeof requestParam?.filters?.se_gradeLevels === 'string' ? [requestParam?.filters?.se_gradeLevels] : requestParam?.filters?.se_gradeLevels)  : [],
+              se_subjects:  requestParam?.filters?.se_subjects ? (typeof requestParam?.filters?.se_subjects === 'string' ? [requestParam?.filters?.se_subjects] : requestParam?.filters?.se_subjects)  : [],
+              se_mediums:  requestParam?.filters?.se_mediums ? (typeof requestParam?.filters?.se_mediums === 'string' ? [requestParam?.filters?.se_mediums] : requestParam?.filters?.se_mediums)  : [],
+              se_boards:   requestParam?.filters?.se_boards ? (typeof requestParam?.filters?.se_boards === 'string' ? [requestParam?.filters?.se_boards] : requestParam?.filters?.se_boards)  : [],
           },
           limit: this.videoLimit,
           mode: "soft",
@@ -307,6 +307,7 @@ export class SearchService {
   }
   if(this.searchType =='video'){
     sessionStorage.setItem('key',this.searchQuery);
+    console.log(data,'this is data')
     return this.http.post<any>(`${this.apiUrl}`, data);
   }
   else{
