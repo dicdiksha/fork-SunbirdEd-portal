@@ -259,6 +259,22 @@ export class DataService {
     )
   }
 
+  saveFeedback(requestParam: RequestParam) {
+    const httpOptions: HttpOptions = {
+      headers: requestParam.header ? this.getHeader(requestParam.header) : this.getHeader(),
+      params: requestParam.param
+    }
+    return this.http.patch(this.baseUrl + requestParam.url, requestParam.data, httpOptions).pipe(
+      mergeMap((data: ServerResponse) => {
+        if (data.responseCode !== 'OK') {
+          return observableThrowError(data);
+        }
+        return observableOf(data);
+      }
+      )
+    )
+  }
+
   readWithSubscribe(requestParam: RequestParam) {
     const httpOptions: HttpOptions = {
       headers: requestParam.header ? this.getHeader(requestParam.header) : this.getHeader(),
