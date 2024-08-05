@@ -88,27 +88,22 @@
                           <p class="preference-continer">
                             <span class="preference-action-continer">
                               <span class="preference-option"
-                                (click)="sendFeedback(data?.id,data?.answer,'Not factually correct',data?.query)">Not
-                                factually correct</span>
+                                (click)="sendFeedback(data?.id,data?.answer,'Not relevant',data?.query)">Not relevant</span>
                             </span>
                             <span class="preference-action-continer">
                               <span class="preference-option"
-                              (click)="sendFeedback(data?.id,data?.answer,'Did not fully follow instructions',data?.query)">Did not
-                                fully follow instructions</span>
+                              (click)="sendFeedback(data?.id,data?.answer,'Not accurate',data?.query)">Not accurate</span>
                             </span>
                             <span class="preference-action-continer">
-                              <span class="preference-option" (click)="sendFeedback(data?.id,data?.answer,'Being lazy',data?.query)">Being
-                                lazy</span>
-                            </span>
-                            <span class="preference-action-continer">
-                              <span class="preference-option"
-                                (click)="sendFeedback(data?.id,data?.answer,'Unsafe or problematic',data?.query)">Unsafe
-                                or problematic</span>
+                              <span class="preference-option" (click)="sendFeedback(data?.id,data?.answer,'Too repetitive',data?.query)">Too repetitive</span>
                             </span>
                             <span class="preference-action-continer">
                               <span class="preference-option"
-                                (click)="sendFeedback(data?.id,data?.answer,'Should not have used Memory',data?.query)">Should not
-                                have used Memory</span>
+                                (click)="sendFeedback(data?.id,data?.answer,'Harmful or offensive',data?.query)">Harmful or offensive</span>
+                            </span>
+                            <span class="preference-action-continer">
+                              <span class="preference-option"
+                                (click)="sendFeedback(data?.id,data?.answer,'Something else',data?.query)">Something else</span>
                             </span>
                           </p>
                         </div>
