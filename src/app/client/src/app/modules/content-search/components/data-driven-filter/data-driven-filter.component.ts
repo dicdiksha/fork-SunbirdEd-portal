@@ -96,6 +96,7 @@ export class DataDrivenFilterComponent implements OnInit, OnChanges, OnDestroy {
     this.setFilterInteractData();
   }
   getFormatedFilterDetails() {
+    console.log("getFormatedFilterDetails start");
     const formAction = this.formAction ? this.formAction : 'search';
     return this.fetchFrameWorkDetails().pipe(
       mergeMap((frameworkDetails: any) => {
@@ -144,7 +145,9 @@ export class DataDrivenFilterComponent implements OnInit, OnChanges, OnDestroy {
           }
           return true;
         });
+        console.log("Before sort ",formFieldProperties);
         formFieldProperties = _.sortBy(_.uniqBy(formFieldProperties, 'code'), 'index');
+        console.log("After sort ",formFieldProperties);
         return formFieldProperties;
       }));
   }
@@ -219,6 +222,7 @@ export class DataDrivenFilterComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public applyFilters() {
+    console.log("applyFilters Start");
     this.formInputData = this.utilService.convertSelectedOption(this.formInputData, this.formFieldProperties, this.selectedLanguage, 'en');
     const queryParams: any = {};
     _.forIn(this.formInputData, (eachInputs: Array<any | object>, key) => {
@@ -254,11 +258,13 @@ export class DataDrivenFilterComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
   ngOnChanges() {
+    console.log("ngOnChanges start");
     if (this.formFieldProperties && this.enrichFilters) {
       this.enrichFiltersOnInputChange();
     }
   }
   private enrichFiltersOnInputChange() {
+    console.log("enrichFiltersOnInputChange start");
     if (this.activatedRoute.snapshot.queryParams.appliedFilters === 'false') {
       this.filtersDetails = this.formFieldProperties; // show all filters as implicit filters are applied
       return;
@@ -271,6 +277,7 @@ export class DataDrivenFilterComponent implements OnInit, OnChanges, OnDestroy {
             return _.find(eachFields.range, { name: _.get(field, 'name')});
           });
       }
+      console.log("enrichField",enrichField);
       return enrichField;
     });
     this.hardRefreshFilter();
