@@ -68,7 +68,7 @@ export class OnboardingUserSelectionComponent implements OnInit, OnDestroy {
       const { name = null, visibility = true, image = 'guest-img3.svg', searchFilter = [], code = null, label = null, translations = null } = field || {};
       if (visibility) {
         result.push({
-          name, searchFilter, code, isActive: false, icon: `assets/images/${image}`,
+          name, searchFilter, code, isActive: false, icon: `https://obj.diksha.gov.in/ntp-content-production/sunbird-portal/profile-icons/${image}`,
           label: _.get(this.resourceService, label || translations)
         });
       }
