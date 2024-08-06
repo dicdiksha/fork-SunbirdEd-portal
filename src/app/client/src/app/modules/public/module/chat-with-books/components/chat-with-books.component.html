@@ -27,8 +27,6 @@
               </ng-container>
             </div>
           </ng-container>
-
-
         </div>
       </div>
     </div>
@@ -64,11 +62,12 @@
               <!-- Chats container -->
               <div class="h-100">
                 <ng-container *ngFor="let data of apiData;">
-                  <div class="ai-question" *ngIf="data?.question">
-                    <div class="ai-question-img"><img alt="logo image"
-                        src="../../../../../../assets/images/profile-icon.svg">
+                  <div class="ai-question-section">
+                    <div class="ai-question" *ngIf="data?.question">
+                      <div class="ai-question-text" id="{{data?.id}}">{{data?.question}}</div>
+                      <div class="ai-question-img"><img alt="logo image" src="../../../../../../assets/images/profile-icon.svg">
+                      </div>
                     </div>
-                    <div class="ai-question-text" id="{{data?.id}}">{{data?.question}}</div>
                   </div>
                   <div class="ai-answer" *ngIf="data?.answer">
                     <div class="ai-answer-section">
@@ -84,24 +83,25 @@
                       <!-- hidden section start-->
                       <div *ngIf="selectedId==data?.id" class="sb-section-preference" tabindex="0">
                         <div class="preference">
-                          <p>Tell us more:</p>
-                          <p class="preference-continer">
-                            <span class="preference-action-continer">
+                          <i class="far fa-times close-btn"></i>
+                          <p class="tell-us-more">Tell us more:</p>
+                          <p class="preference-container">
+                            <span class="preference-action-container">
                               <span class="preference-option"
                                 (click)="sendFeedback(data?.id,data?.answer,'Not relevant',data?.query)">Not relevant</span>
                             </span>
-                            <span class="preference-action-continer">
+                            <span class="preference-action-container">
                               <span class="preference-option"
                               (click)="sendFeedback(data?.id,data?.answer,'Not accurate',data?.query)">Not accurate</span>
                             </span>
-                            <span class="preference-action-continer">
+                            <span class="preference-action-container">
                               <span class="preference-option" (click)="sendFeedback(data?.id,data?.answer,'Too repetitive',data?.query)">Too repetitive</span>
                             </span>
-                            <span class="preference-action-continer">
+                            <span class="preference-action-container">
                               <span class="preference-option"
                                 (click)="sendFeedback(data?.id,data?.answer,'Harmful or offensive',data?.query)">Harmful or offensive</span>
                             </span>
-                            <span class="preference-action-continer">
+                            <span class="preference-action-container">
                               <span class="preference-option"
                                 (click)="sendFeedback(data?.id,data?.answer,'Something else',data?.query)">Something else</span>
                             </span>
@@ -144,7 +144,6 @@
                                 </div>
                               </div>
                             </div>
-
                           </mat-expansion-panel>
                         </mat-accordion>
                       </div>
