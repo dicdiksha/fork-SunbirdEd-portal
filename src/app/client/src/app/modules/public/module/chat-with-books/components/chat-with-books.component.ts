@@ -53,7 +53,6 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
   }
   ngOnInit() {
     this.sessionID = UUID.UUID();
-    console.log("sessionID============", this.sessionID)
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.initLayout();
     this.getQueryFromBooks();
@@ -317,17 +316,17 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     }
     this.selectedOption = 'preference-selected';
-    this.learnerService.saveFeedback(option).subscribe((res: any) => {
-      if (res.responseCode !== 'OK') {
-        //no action data saved
-        this.selectedId = '';
-      }
-    })
+    // this.learnerService.saveFeedback(option).subscribe((res: any) => {
+    //   if (res.responseCode !== 'OK') {
+    //     //no action data saved
+    //     this.selectedId = '';
+    //   }
+    // })
 
     setTimeout(() => {
       this.selectedId = '';
       this.selectedOption = '';
-    }, 500);
+    }, 2000);
     // }
   }
 

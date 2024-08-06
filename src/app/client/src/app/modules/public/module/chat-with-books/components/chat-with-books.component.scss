@@ -57,6 +57,7 @@
         // background: rgba(0, 0, 0, 0.05);
         text-decoration: none;
         text-transform: lowercase;
+
         &::first-letter {
           text-transform: uppercase;
         }
@@ -326,6 +327,7 @@ span.material-symbols-rounded {
     }
   }
 }
+
 .ai-question-section {
   width: 100%;
   max-width: 70%;
@@ -333,7 +335,7 @@ span.material-symbols-rounded {
   justify-content: end;
   flex: 1 1 0%;
   float: right;
-  
+
   .ai-question {
     background: #e9e8d9;
     padding: 10px;
@@ -344,6 +346,7 @@ span.material-symbols-rounded {
     margin-bottom: 10px;
     justify-content: space-between;
     gap: 0.5rem;
+
     .ai-question-img {
       width: 24px;
       height: 24px;
@@ -354,11 +357,13 @@ span.material-symbols-rounded {
       flex-direction: column;
       flex-shrink: 0;
       position: relative;
+
       img {
         width: 24px;
         height: 24px;
       }
     }
+
     .ai-question-text {
       width: 100%;
       display: flex;
@@ -367,6 +372,7 @@ span.material-symbols-rounded {
     }
   }
 }
+
 .ai-answer {
   padding: 10px;
   overflow: hidden;
@@ -376,6 +382,7 @@ span.material-symbols-rounded {
   float: left;
   margin-bottom: 10px;
   justify-content: space-between;
+
   .ai-answer-section {
     width: 100%;
     float: left;
@@ -385,6 +392,7 @@ span.material-symbols-rounded {
       width: 100%;
       display: flex;
       gap: 0.5rem;
+
       .ai-answer-img {
         width: 24px;
         height: 24px;
@@ -395,11 +403,13 @@ span.material-symbols-rounded {
         flex-direction: column;
         flex-shrink: 0;
         position: relative;
+
         img {
           width: 24px;
           height: 24px;
         }
       }
+
       .ai-answer-text {
         width: 100%;
         display: flex;
@@ -410,6 +420,7 @@ span.material-symbols-rounded {
     .review-box {
       padding-left: 30px;
       margin-bottom: 10px;
+
       span {
         padding-right: 10px;
       }
@@ -418,24 +429,32 @@ span.material-symbols-rounded {
         cursor: pointer;
       }
     }
-    .preference{
+
+    .preference {
       margin-bottom: 10px;
       border-radius: 6px;
       padding: 10px;
       border: 2px solid #ddd;
       position: relative;
+
       p.tell-us-more {
         font-size: 13px;
       }
+
       .close-btn {
         position: absolute;
         right: 10px;
         top: 10px;
         cursor: pointer;
       }
+      .thanks-msg{
+        color: #2cb32c;
+      }
     }
-    .preference-action-container{
+
+    .preference-action-container {
       width: 33%;
+
       .preference-option {
         border: 1px solid #ddd;
         padding: 3px 5px;
@@ -443,7 +462,12 @@ span.material-symbols-rounded {
         cursor: pointer;
         margin-right: 10px;
       }
-    } 
+
+      .preference-selected {
+        background: rgba(255, 217, 84, 0.7);
+        border: 1px solid #ffd954;
+      }
+    }
 
   }
 }
