@@ -232,10 +232,10 @@ export class DefaultTemplateComponent implements OnInit {
         });
       });
     }
-    let associationstest = associations;
-    associationstest.sort((a,b) => a.code.localeCompare(b.code, undefined, {numeric: true}));
-    console.log(associationstest);
-    console.log("getParentAssociations associations==",associationstest);
+    // let associationstest = associations;
+    associations.sort((a,b) => a.code.localeCompare(b.code, undefined, {numeric: true}));
+    console.log(associations);
+    console.log("getParentAssociations associations==",associations);
     callback(associations);
   }
   /**
