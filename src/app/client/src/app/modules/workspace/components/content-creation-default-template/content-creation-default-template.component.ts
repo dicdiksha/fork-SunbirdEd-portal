@@ -232,7 +232,9 @@ export class DefaultTemplateComponent implements OnInit {
         });
       });
     }
-    let associationstest = _.sortBy(associations, ['code']);
+    let associationstest = associations;
+    associationstest.sort((a,b) => a.code.localeCompare(b.code, undefined, {numeric: true}));
+    console.log(associationstest);
     console.log("getParentAssociations associations==",associationstest);
     callback(associations);
   }
