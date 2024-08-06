@@ -293,4 +293,14 @@ export class DataService {
     return this.http.post(aiUrl,data, aiHttpOptions)
   }
 
+  deleteHistory(aiUrl,data:any) {
+    const aiHttpOptions: HttpOptions = {
+      headers: {
+        "Accept":"application/json","Content-Type":"application/json"
+      },
+      body:data
+    };
+    return this.http.delete(aiUrl,aiHttpOptions)
+  }
+
 }
