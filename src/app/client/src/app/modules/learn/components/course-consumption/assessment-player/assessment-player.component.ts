@@ -90,7 +90,8 @@ export class AssessmentPlayerComponent implements OnInit, OnDestroy, ComponentCa
   telemetryShareData: Array<ITelemetryShare>;
   shareLinkModal: boolean;
   isUnitCompleted = false;
-  isFullScreenView = false;
+  // isFullScreenView = false;
+   isFullScreenView = true;
   isCourseCompleted = false;
   showCourseCompleteMessage = false;
   certificateDescription = {};
@@ -164,8 +165,10 @@ export class AssessmentPlayerComponent implements OnInit, OnDestroy, ComponentCa
     this.initLayout();
     this.subscribeToQueryParam();
     this.subscribeToContentProgressEvents().subscribe(data => { });
+    console.log(this.isFullScreenView,'------fullscreen assement 167')
     this.navigationHelperService.contentFullScreenEvent.
     pipe(takeUntil(this.unsubscribe)).subscribe(isFullScreen => {
+      console.log(isFullScreen,'fullscreen------- 171')
       this.isFullScreenView = isFullScreen;
     });
     this.noContentMessage = _.get(this.resourceService, 'messages.stmsg.m0121');

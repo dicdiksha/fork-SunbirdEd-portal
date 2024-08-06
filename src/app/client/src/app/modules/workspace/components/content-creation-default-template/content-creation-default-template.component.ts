@@ -232,7 +232,10 @@ export class DefaultTemplateComponent implements OnInit {
         });
       });
     }
-    console.log("getParentAssociations associations",associations);
+    // let associationstest = associations;
+    associations.sort((a,b) => a.code.localeCompare(b.code, undefined, {numeric: true}));
+    console.log("associations",associations);
+    console.log("getParentAssociations associations====",associations);
     callback(associations);
   }
   /**
@@ -265,7 +268,7 @@ export class DefaultTemplateComponent implements OnInit {
         });
       }
     });
-    console.log("getAssociations  associations.push", associations);
+    console.log("getAssociations  associations.push====", associations);
 
     if (callback) {
       callback(associations);
