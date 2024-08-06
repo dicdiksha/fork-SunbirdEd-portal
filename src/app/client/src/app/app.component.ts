@@ -275,6 +275,12 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+  //used to prevent the page from being refreshed or closed by handling the beforeunload event.
+  preventRefresh(event: Event) {
+    event.preventDefault();
+    return '';
+  }
   checkFormData(): Observable<any> {
     const formReadInputParams = {
       formType: 'newUserOnboarding',
@@ -282,17 +288,40 @@ export class AppComponent implements OnInit, OnDestroy {
       contentType: 'global',
       component: 'portal'
     };
-    return of(this.formService.getFormConfig(formReadInputParams).subscribe(
-      (formResponsedata) => {
-        console.log('userOnboarding Form is called and we are trying to get the update',formResponsedata);
-        if (_.get(formResponsedata, 'shownewUserOnboarding') === 'false') {
-          this.FORM_CONFIG_ENABLED = true;
+    const observable = new Observable<any>((observer) => {
+      this.formService.getFormConfig(formReadInputParams).subscribe(
+        (formResponsedata) => {
+          console.log('userOnboarding Form is called and we are trying to get the update', formResponsedata);
+          if (_.get(formResponsedata, 'shownewUserOnboarding') === 'false') {
+            this.FORM_CONFIG_ENABLED = true;
+          }
+          observer.next(formResponsedata);
+          observer.complete();
+          window.removeEventListener('beforeunload', this.preventRefresh);
+        },
+        (error) => {
+          observer.error(error);
+          window.removeEventListener('beforeunload', this.preventRefresh);
         }
-      }
-    ));
+      );
+    });
+
+    return observable;
+  
+    // return of(this.formService.getFormConfig(formReadInputParams).subscribe(
+    //   (formResponsedata) => {
+    //     console.log('userOnboarding Form is called and we are trying to get the update',formResponsedata);
+    //     if (_.get(formResponsedata, 'shownewUserOnboarding') === 'false') {
+    //       this.FORM_CONFIG_ENABLED = true;
+    //     }
+    //   }
+    // ));
   }
   
   ngOnInit() {
+    //used to display a warning message when the user attempts to refresh or close the page.
+    window.addEventListener('beforeunload', this.preventRefresh);
+
     this.checkToShowPopups();
     this.isIOS = this.utilService.isIos;
     this.isDesktopApp = this.utilService.isDesktopApp;
@@ -886,6 +915,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    //used to display a warning message when the user attempts to refresh or close the page.
+    window.removeEventListener('beforeunload', this.preventRefresh);
+
     if (this.resourceDataSubscription) {
       this.resourceDataSubscription.unsubscribe();
     }
