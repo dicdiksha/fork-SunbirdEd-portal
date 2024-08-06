@@ -9,7 +9,10 @@
 }
 
 [tooltip] {
-  position: relative; 
+  position: relative;
+  bottom: 6px;
+  right: 10px;
+  font-size: 10px; 
 }
 
 
@@ -39,11 +42,13 @@
   word-wrap: break-word;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 1ch 1.5ch;
-  border-radius: .3ch;
+  padding: 2ch 2.5ch;
+  border-radius: 5px;
   box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
   background: #333;
   color: #fff;
+  font-size: 15px;
+  word-spacing: 2px;
   z-index: 1000; 
 }
 
@@ -149,9 +154,6 @@
   animation: tooltips-horz 300ms ease-out forwards;
 }
 
-.videoTooltip{
-  margin-right: 2px;
-}
 
 .radio{
   display: block;
