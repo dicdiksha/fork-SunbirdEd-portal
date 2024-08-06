@@ -113,8 +113,11 @@ export class ContentPlayerComponent implements AfterViewInit, OnChanges, OnInit,
   }
 
   checkFullScreenView() {
+    console.log(this.isFullScreenView,'---------fullscreen1')
     this.navigationHelperService.contentFullScreenEvent.pipe(takeUntil(this.unsubscribe$)).subscribe(isFullScreen => {
+      console.log(isFullScreen,'--------fullscreen')
       this.isFullScreenView = isFullScreen;
+      console.log(this.isFullScreenView,'-------fullscreen------2')
     });
   }
 

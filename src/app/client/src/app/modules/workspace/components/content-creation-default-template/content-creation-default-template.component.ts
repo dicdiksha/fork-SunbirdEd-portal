@@ -232,7 +232,8 @@ export class DefaultTemplateComponent implements OnInit {
         });
       });
     }
-    console.log("getParentAssociations associations",associations);
+    let associationstest = _.sortBy(associations, ['code']);
+    console.log("getParentAssociations associations==",associationstest);
     callback(associations);
   }
   /**
@@ -265,7 +266,7 @@ export class DefaultTemplateComponent implements OnInit {
         });
       }
     });
-    console.log("getAssociations  associations.push", associations);
+    console.log("getAssociations  associations.push====", associations);
 
     if (callback) {
       callback(associations);
