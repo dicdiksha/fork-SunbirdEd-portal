@@ -205,7 +205,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
         this.showLoadingMsg = false;
-        this.apiData.push({ 'question': '','query': this.searchQuery, 'answer': res?.answer, 'reference': res?.context?.includes("Not Applicable") ? null : res?.context,'id': _uuid  });
+        this.apiData.push({ 'question': '', 'query': this.searchQuery, 'answer': res?.answer, 'reference': res?.context?.includes("Not Applicable") ? null : res?.context, 'id': _uuid });
         //save data in DB
         if (this.isUserLoggedIn()) {
           this.learnerService.postWithSubscribe(option).subscribe((res: any) => {
@@ -243,7 +243,6 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
             const months = { '01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May', '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October', '11': 'November', '12': 'December' };
             return `${day} ${months[month]} ${year}`;
           };
-
           // Group data by date
           const groupedData = sortedSearchQueries.reduce((acc, item) => {
             const date = item.searchQueryDate.split(' ')[0]; // Get date part only
@@ -293,34 +292,34 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
 
   sendFeedback(questionId, searchQueryResponse, shortResponse, searchQuery) {
     // if (this.isUserLoggedIn()) {
-    const option = {
-      url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.UPDATE,
-      data: {
-        "request": {
-          "id": this.userService?.userid,
-          "userId": questionId,
-          "searchQuery": searchQuery.trim(),
-          "searchQueryResponse": searchQueryResponse.trim(),
-          "shortResponse": shortResponse.trim()
+      const option = {
+        url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.UPDATE,
+        data: {
+          "request": {
+            "id": this.userService?.userid,
+            "userId": questionId,
+            "searchQueryResponse": searchQueryResponse.trim(),
+            "shortResponse": shortResponse.trim()
+          }
         }
       }
-    }
 
-    this.learnerService.saveFeedback(option).subscribe((res: any) => {
-      if (res.responseCode !== 'OK') {
-        //no action
-        console.log("res====",res)
-      }
-    });
-    console.log("request========", option)
+      this.learnerService.saveFeedback(option).subscribe((res: any) => {
+        if (res.responseCode !== 'OK') {
+          //no action data saved
+          this.selectedId = '';
+        }
+      })
+      this.selectedId = '';
     // }
   }
 
-  showOption(selectedId=null){
-    if(this.selectedId == selectedId){
+  showOption(selectedId = null) {
+    if (this.selectedId == selectedId) {
       this.selectedId = '';
       return
     }
     this.selectedId = selectedId;
   }
+
 }

@@ -78,7 +78,7 @@
                         <div class="ai-answer-text">{{data?.answer}}</div>
                       </div>
                       <div class="w-100 review-box">
-                        <!-- <span><i class="fa-regular fa-copy fa-fw"></i></span> -->
+                        <span cdkCopyToClipboard="{{data?.answer}}"><i class="fa-regular fa-copy fa-fw"></i></span>
                         <span (click)="showOption(data?.id)"><i class="fa-light fa-thumbs-down fa-fw"></i></span>
                       </div>
                       <!-- hidden section start-->
@@ -116,7 +116,7 @@
                           <mat-expansion-panel>
                             <mat-expansion-panel-header>
                               <mat-panel-title class="sb-mat-accordion__title">
-                                {{resourceService?.frmelmnts?.lbl?.references}}
+                                References
                               </mat-panel-title>
                             </mat-expansion-panel-header>
 
