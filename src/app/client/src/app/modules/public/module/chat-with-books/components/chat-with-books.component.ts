@@ -37,7 +37,10 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
   showBackButton = false;
   apiData = [];
   showLoadingMsg: boolean = false;
-  selectedId: string = ''
+  selectedId: string = '';
+  selectedOption = '';
+  shortResponse = '';
+  disabledTextarea: boolean = false;
   constructor(public searchService: SearchService, public router: Router,
     public activatedRoute: ActivatedRoute, public paginationService: PaginationService,
     public resourceService: ResourceService, public toasterService: ToasterService,
@@ -50,6 +53,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
   }
   ngOnInit() {
     this.sessionID = UUID.UUID();
+    console.log("sessionID============", this.sessionID)
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.initLayout();
     this.getQueryFromBooks();
@@ -178,6 +182,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     if (!this.searchQuery && this.searchQuery.trim() == '') {
       return
     }
+    this.disabledTextarea = true;
     this.showLoadingMsg = true;
     this.searchQuery = this.searchQuery.trim();
     const _uuid = UUID.UUID();
@@ -202,21 +207,28 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
 
 
     this.apiData.push({ 'question': this.searchQuery, 'answer': '', 'reference': '', 'id': _uuid });
-    this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe((res: any) => {
-      if (res) {
-        this.showLoadingMsg = false;
-        this.apiData.push({ 'question': '', 'query': this.searchQuery, 'answer': res?.answer, 'reference': res?.context?.includes("Not Applicable") ? null : res?.context, 'id': _uuid });
-        //save data in DB
-        if (this.isUserLoggedIn()) {
-          this.learnerService.postWithSubscribe(option).subscribe((res: any) => {
-            if (res.responseCode !== 'OK') {
-              //no action
-            }
-          });
+    this.learnerService.chatWithBooks(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.AI, { question: this.searchQuery, session_id: this.sessionID }).subscribe(
+      (res: any) => {
+        if (res) {
+          this.showLoadingMsg = false;
+          this.apiData.push({ 'question': '', 'query': this.searchQuery, 'answer': res?.answer, 'reference': res?.context?.includes("Not Applicable") ? null : res?.context, 'id': _uuid });
+          //save data in DB
+          if (this.isUserLoggedIn()) {
+            this.learnerService.postWithSubscribe(option).subscribe((res: any) => {
+              if (res.responseCode !== 'OK') {
+                //no action
+              }
+            });
+          }
+          this.moveToBottom()
+          this.disabledTextarea = false;
         }
+      },
+      (error: any) => {
         this.moveToBottom()
+        this.disabledTextarea = false;
       }
-    })
+    )
     this.searchQuery = '';
   }
 
@@ -292,25 +304,30 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
 
   sendFeedback(questionId, searchQueryResponse, shortResponse, searchQuery) {
     // if (this.isUserLoggedIn()) {
-      const option = {
-        url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.UPDATE,
-        data: {
-          "request": {
-            "id": this.userService?.userid,
-            "userId": questionId,
-            "searchQueryResponse": searchQueryResponse.trim(),
-            "shortResponse": shortResponse.trim()
-          }
+    this.shortResponse = shortResponse;
+    const option = {
+      url: this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.UPDATE,
+      data: {
+        "request": {
+          "id": this.userService?.userid,
+          "userId": questionId,
+          "searchQueryResponse": searchQueryResponse.trim(),
+          "shortResponse": shortResponse.trim()
         }
       }
+    }
+    this.selectedOption = 'preference-selected';
+    this.learnerService.saveFeedback(option).subscribe((res: any) => {
+      if (res.responseCode !== 'OK') {
+        //no action data saved
+        this.selectedId = '';
+      }
+    })
 
-      this.learnerService.saveFeedback(option).subscribe((res: any) => {
-        if (res.responseCode !== 'OK') {
-          //no action data saved
-          this.selectedId = '';
-        }
-      })
+    setTimeout(() => {
       this.selectedId = '';
+      this.selectedOption = '';
+    }, 500);
     // }
   }
 
@@ -320,6 +337,16 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
       return
     }
     this.selectedId = selectedId;
+  }
+
+  deleteHistory() {
+    this.selectedId = '';
+    this.apiData = []
+    this.learnerService.deleteHistory(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.DELETE_HISTORY, { session_id: this.sessionID }).subscribe((res: any) => {
+      if (res) {
+        this.moveToBottom()
+      }
+    })
   }
 
 }
