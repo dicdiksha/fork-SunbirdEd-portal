@@ -380,7 +380,8 @@
       "SAVE": "v1/chatWithBooks/save",
       "READ": "v1/chatWithBooks/read",
       "UPDATE": "v1/chatWithBooks/update",
-      "AI": "https://bookchat.diksha.gov.in/chat"
+      "AI": "https://bookchat.diksha.gov.in/chat",
+      "DELETE_HISTORY": "https://bookchat.diksha.gov.in/cache/contents"
     }
   }
 }

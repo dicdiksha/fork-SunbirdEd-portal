@@ -27,8 +27,6 @@
               </ng-container>
             </div>
           </ng-container>
-
-
         </div>
       </div>
     </div>
@@ -64,11 +62,12 @@
               <!-- Chats container -->
               <div class="h-100">
                 <ng-container *ngFor="let data of apiData;">
-                  <div class="ai-question" *ngIf="data?.question">
-                    <div class="ai-question-img"><img alt="logo image"
-                        src="../../../../../../assets/images/profile-icon.svg">
+                  <div class="ai-question-section">
+                    <div class="ai-question" *ngIf="data?.question">
+                      <div class="ai-question-text" id="{{data?.id}}">{{data?.question}}</div>
+                      <!-- <div class="ai-question-img"><img alt="logo image" src="../../../../../../assets/images/profile-icon.svg">
+                      </div> -->
                     </div>
-                    <div class="ai-question-text" id="{{data?.id}}">{{data?.question}}</div>
                   </div>
                   <div class="ai-answer" *ngIf="data?.answer">
                     <div class="ai-answer-section">
@@ -78,34 +77,38 @@
                         <div class="ai-answer-text">{{data?.answer}}</div>
                       </div>
                       <div class="w-100 review-box">
-                        <!-- <span><i class="fa-regular fa-copy fa-fw"></i></span> -->
-                        <span (click)="showOption(data?.id)"><i class="fa-light fa-thumbs-down fa-fw"></i></span>
+                        <span title="Delete chat history" (click)="deleteHistory()"><i class="fa-solid fa-arrows-rotate"></i></span>
+                        <span title="Copy answer" cdkCopyToClipboard="{{data?.answer}}"><i class="fa-regular fa-copy fa-fw"></i></span>
+                        <span title="Dislike the answer" (click)="showOption(data?.id)"><i class="fa-light fa-thumbs-down fa-fw"></i></span>
                       </div>
                       <!-- hidden section start-->
                       <div *ngIf="selectedId==data?.id" class="sb-section-preference" tabindex="0">
                         <div class="preference">
-                          <p>Tell us more:</p>
-                          <p class="preference-continer">
-                            <span class="preference-action-continer">
-                              <span class="preference-option"
+                          <i class="far fa-times close-btn"></i>
+                          <p class="tell-us-more">Tell us more:</p>
+                          <p *ngIf="selectedOption ==''" class="preference-container">
+                            <span class="preference-action-container">
+                              <span class="preference-option" [ngClass]="shortResponse=='Not relevant' ? selectedOption:''"
                                 (click)="sendFeedback(data?.id,data?.answer,'Not relevant',data?.query)">Not relevant</span>
                             </span>
-                            <span class="preference-action-continer">
-                              <span class="preference-option"
+                            <span class="preference-action-container">
+                              <span class="preference-option" [ngClass]="shortResponse=='Not accurate' ? selectedOption:''"
                               (click)="sendFeedback(data?.id,data?.answer,'Not accurate',data?.query)">Not accurate</span>
                             </span>
-                            <span class="preference-action-continer">
-                              <span class="preference-option" (click)="sendFeedback(data?.id,data?.answer,'Too repetitive',data?.query)">Too repetitive</span>
+                            <span class="preference-action-container">
+                              <span class="preference-option" [ngClass]="shortResponse=='Too repetitive' ? selectedOption:''" 
+                              (click)="sendFeedback(data?.id,data?.answer,'Too repetitive',data?.query)">Too repetitive</span>
                             </span>
-                            <span class="preference-action-continer">
-                              <span class="preference-option"
+                            <span class="preference-action-container">
+                              <span class="preference-option" [ngClass]="shortResponse=='Harmful or offensive' ? selectedOption:''"
                                 (click)="sendFeedback(data?.id,data?.answer,'Harmful or offensive',data?.query)">Harmful or offensive</span>
                             </span>
-                            <span class="preference-action-continer">
-                              <span class="preference-option"
+                            <span class="preference-action-container">
+                              <span class="preference-option" [ngClass]="shortResponse=='Something else' ? selectedOption:''"
                                 (click)="sendFeedback(data?.id,data?.answer,'Something else',data?.query)">Something else</span>
                             </span>
                           </p>
+                          <p *ngIf="selectedOption !=''" class="thanks-msg">Thanks for your feedback</p>
                         </div>
                       </div>
                       <!-- hidden section end-->
@@ -144,7 +147,6 @@
                                 </div>
                               </div>
                             </div>
-
                           </mat-expansion-panel>
                         </mat-accordion>
                       </div>
@@ -161,7 +163,7 @@
         <div class="typing-container" [class.content-data]="apiData.length>0">
           <div class="typing-content">
             <div class="typing-textarea">
-              <textarea id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}"
+              <textarea [readonly]="disabledTextarea" id="chat-input" spellcheck="false" placeholder="{{resourceService?.frmelmnts?.lbl?.promptText}}"
                 required [(ngModel)]="searchQuery" (keyup.enter)="saveBooksQuery()"></textarea>
               <span (click)="saveBooksQuery()" id="send-btn" class="material-symbols-rounded"><i
                   class="fa fa-arrow-right"></i></span>
