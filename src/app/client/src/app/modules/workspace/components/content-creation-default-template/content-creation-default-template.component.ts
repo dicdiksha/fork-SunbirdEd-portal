@@ -235,7 +235,7 @@ export class DefaultTemplateComponent implements OnInit {
     // let associationstest = associations;
     associations.sort((a,b) => a.code.localeCompare(b.code, undefined, {numeric: true}));
     console.log("associations",associations);
-    console.log("getParentAssociations associations==",associations);
+    console.log("getParentAssociations associations====",associations);
     callback(associations);
   }
   /**
