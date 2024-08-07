@@ -532,6 +532,13 @@ span.material-symbols-rounded {
         background-color: rgba(0, 0, 0, .015);
       }
     }
+    .section-full{
+      width: 100%;
+      text-align: center;
+      .sb-btn-normal{
+        box-shadow: none;
+      }
+    }
   }
 }
 

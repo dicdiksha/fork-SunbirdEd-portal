@@ -41,6 +41,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
   selectedOption = '';
   shortResponse = '';
   disabledTextarea: boolean = false;
+  termAndCondition: boolean = false;
   constructor(public searchService: SearchService, public router: Router,
     public activatedRoute: ActivatedRoute, public paginationService: PaginationService,
     public resourceService: ResourceService, public toasterService: ToasterService,
@@ -52,6 +53,7 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
     public telemetryService: TelemetryService, private schemaService: SchemaService, private learnerService: LearnerService, private renderer: Renderer2) {
   }
   ngOnInit() {
+    this.termAndCondition = localStorage.getItem('termCondition') == 'Accept' ? true : false;
     this.sessionID = UUID.UUID();
     this.isDesktopApp = this.utilService.isDesktopApp;
     this.initLayout();
@@ -340,12 +342,20 @@ export class ChatWithBooksComponent implements OnInit, OnDestroy, AfterViewInit 
 
   deleteHistory() {
     this.selectedId = '';
-    this.apiData = []
+    this.apiData = [];
     this.learnerService.deleteHistory(this.configService.urlConFig.URLS.CHAT_WITH_BOOKS.DELETE_HISTORY, { session_id: this.sessionID }).subscribe((res: any) => {
       if (res) {
+        this.sessionID = UUID.UUID();
         this.moveToBottom()
       }
     })
+  }
+
+  acceptTermCondtion(termCondition){
+    localStorage.setItem('termCondition',termCondition);
+    if(termCondition == 'Accept'){
+      this.termAndCondition = true;
+    }
   }
 
 }
