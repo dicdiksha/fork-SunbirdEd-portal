@@ -328,9 +328,9 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
     
     //117337 - removed meadium from selection option check for enable submit button
     let tempOptions = this.selectedOption;
-    if(tempOptions.board && tempOptions.board=="NCERT"){
-      delete tempOptions.medium;
-    }
+    // if(tempOptions.board && tempOptions.board=="NCERT"){
+    //   delete tempOptions.medium;
+    // }
 
     const enableSubmitButton = _.every(tempOptions, (value, index) => {
       return _.includes(optionalFields, index) ? true : value.length;
